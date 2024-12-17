@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
+
         <!-- Email Field -->
         <EditText
             android:id="@+id/et_email"

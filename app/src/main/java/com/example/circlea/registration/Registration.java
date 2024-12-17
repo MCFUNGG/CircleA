@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -26,7 +28,8 @@ public class Registration extends AppCompatActivity {
     private EditText etEmail, etPhone, etPassword, etConfirmPassword;
     private CheckBox checkboxAgreement;
     private Button btnRegister;
-    private EditText etUserPhone, etVerificationCode; // Removed unused TextView references
+    private EditText etUserPhone, etVerificationCode;
+// Removed unused TextView references
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
