@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import okhttp3.Response;
 
 public class ParentApplicationFillDetail extends AppCompatActivity {
 
-    private Spinner studentLevelSpinner, subjectInputSpinner;
+    private Spinner studentLevelSpinner, subjectInputSpinner, lessonPerWeekSpinner,districtSpinner;
     private Button submitButton;
 
     @Override
@@ -37,11 +38,13 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
         studentLevelSpinner = findViewById(R.id.student_level_spinner);
         subjectInputSpinner = findViewById(R.id.subject_input_spinner);
+        lessonPerWeekSpinner = findViewById(R.id.lesson_per_week_spinner);
+        districtSpinner = findViewById(R.id.district_spinner);
+
         submitButton = findViewById(R.id.submit_button);
-
         // 获取学生级别选项
-        loadStudentLevels();
-
+        loadStudentLevelsAndSubjects();
+        setupLessonPerWeekSpinner(lessonPerWeekSpinner);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,16 +53,16 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         });
     }
 
-    private void loadStudentLevels() {
+    private void loadStudentLevelsAndSubjects() {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2/FYP/php/get_student_levels.php";
+        String url = "http://10.0.2.2/FYP/php/get_studentLevelsAndSubject.php";
 
-        // 创建请求
+        // Create request
         Request request = new Request.Builder()
                 .url(url)
                 .build();
 
-        // 发送请求
+        // Send request
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -73,22 +76,49 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                     String serverResponse = response.body().string();
                     Log.d("LoadLevelsRequest", "Server response: " + serverResponse);
 
-                    // 解析 JSON 响应
+                    // Parse JSON response
                     try {
-                        JSONArray jsonResponse = new JSONArray(serverResponse);
-                        ArrayList<String> levels = new ArrayList<>();
+                        JSONObject jsonResponse = new JSONObject(serverResponse);
+                        JSONArray levelsArray = jsonResponse.getJSONArray("levels");
+                        JSONArray subjectsArray = jsonResponse.getJSONArray("subjects");
+                        JSONArray districtsArray = jsonResponse.getJSONArray("districts"); // Add this line
 
-                        for (int i = 0; i < jsonResponse.length(); i++) {
-                            levels.add(jsonResponse.getString(i));
+                        ArrayList<String> levels = new ArrayList<>();
+                        ArrayList<String> subjects = new ArrayList<>();
+                        ArrayList<String> districts = new ArrayList<>(); // Add this line
+
+                        for (int i = 0; i < levelsArray.length(); i++) {
+                            levels.add(levelsArray.getString(i));
                         }
 
-                        // 更新 UI 线程
+                        for (int i = 0; i < subjectsArray.length(); i++) {
+                            subjects.add(subjectsArray.getString(i));
+                        }
+
+                        // Parse districts
+                        for (int i = 0; i < districtsArray.length(); i++) {
+                            districts.add(districtsArray.getString(i)); // Add this line
+                        }
+
+                        // Update UI thread
                         runOnUiThread(() -> {
-                            // 将数据设置到 Spinner 中
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(ParentApplicationFillDetail.this,
+                            // Set student levels to Spinner
+                            ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(ParentApplicationFillDetail.this,
                                     android.R.layout.simple_spinner_item, levels);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            studentLevelSpinner.setAdapter(adapter);
+                            levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            studentLevelSpinner.setAdapter(levelAdapter);
+
+                            // Set subjects to Spinner
+                            ArrayAdapter<String> subjectAdapter = new ArrayAdapter<>(ParentApplicationFillDetail.this,
+                                    android.R.layout.simple_spinner_item, subjects);
+                            subjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            subjectInputSpinner.setAdapter(subjectAdapter);
+
+                            // Set districts to Spinner
+                            ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(ParentApplicationFillDetail.this,
+                                    android.R.layout.simple_spinner_item, districts); // Update this line
+                            districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            districtSpinner.setAdapter(districtAdapter); // Update this line
                         });
                     } catch (JSONException e) {
                         Log.e("LoadLevelsRequest", "JSON parsing error: " + e.getMessage());
@@ -96,8 +126,21 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                     }
                 } else {
                     Log.e("LoadLevelsRequest", "Request failed, response code: " + response.code());
-                    runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Failed to fetch levels", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Failed to fetch levels and subjects", Toast.LENGTH_SHORT).show());
                 }
             }
         });
-    }}
+    }
+    private void setupLessonPerWeekSpinner(Spinner lessonPerWeekSpinner) {
+        ArrayList<String> lessonOptions = new ArrayList<>();
+        for (int i = 1; i <= 7; i++) {
+            lessonOptions.add(String.valueOf(i)); // 添加 1 到 7 的选项
+        }
+
+        ArrayAdapter<String> lessonAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, lessonOptions);
+        lessonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        lessonPerWeekSpinner.setAdapter(lessonAdapter); // 设置适配器
+    }
+
+}

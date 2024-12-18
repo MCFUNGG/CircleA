@@ -9,7 +9,7 @@
         android:text="Application Page " />
 
     <Button
-        android:id="@+id/create_cv_button"
+        android:id="@+id/post_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="發佈招聘"
