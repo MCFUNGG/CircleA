@@ -1,5 +1,6 @@
 package com.example.circlea.registration;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,6 +20,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.circlea.Home;
+import com.example.circlea.Login;
 import com.example.circlea.R;
 
 import java.io.IOException;
@@ -131,7 +134,8 @@ public class Registration extends AppCompatActivity {
                     Log.d("SendToDatabase", "Server response: " + serverResponse);
                     runOnUiThread(() -> {
                         Toast.makeText(Registration.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                        // Optionally, navigate to the next activity here
+                        Intent intent = new Intent(Registration.this, Login.class);
+                        startActivity(intent);
                     });
                 } else {
                     Log.e("SendToDatabase", "Request failed, response code: " + response.code());

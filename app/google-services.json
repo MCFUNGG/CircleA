@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "344639075923",
+    "project_id": "email-21f78",
+    "storage_bucket": "email-21f78.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:344639075923:android:e1e93b5eaea187cb9378a6",
+        "android_client_info": {
+          "package_name": "com.example.circlea"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClIU1BG6YCj28wiiKNkrYvy9PXrZgY_Hw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
