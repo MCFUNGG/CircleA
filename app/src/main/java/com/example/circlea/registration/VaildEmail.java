@@ -36,7 +36,7 @@ public class VaildEmail extends AppCompatActivity {
 
         // Initialize views
         verificationCodeEditText = findViewById(R.id.et_verification_code);
-        getCodeButton = findViewById(R.id.btn_get_code);
+        getCodeButton = findViewById(R.id.btn_send_code);
         submitCodeButton = findViewById(R.id.btn_submit_code);
         verificationMessage = findViewById(R.id.tv_email_verification_message);
         emailAddressTextView = findViewById(R.id.tv_email_address);
