@@ -41,6 +41,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         lessonPerWeekSpinner = findViewById(R.id.lesson_per_week_spinner);
         districtSpinner = findViewById(R.id.district_spinner);
 
+
         submitButton = findViewById(R.id.submit_button);
         // 获取学生级别选项
         loadStudentLevelsAndSubjects();
