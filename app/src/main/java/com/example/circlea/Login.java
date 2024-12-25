@@ -19,7 +19,6 @@ import okhttp3.Response;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circlea.registration.Registration;
-import com.example.circlea.registration.VaildEmail;
 
 import org.json.JSONException;
 import org.json.JSONObject;
