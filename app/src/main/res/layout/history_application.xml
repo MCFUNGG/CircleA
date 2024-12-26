@@ -1,0 +1,26 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Application Details"
+            android:textSize="24sp"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:id="@+id/history_application_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- 动态添加的申请项将放在这里 -->
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

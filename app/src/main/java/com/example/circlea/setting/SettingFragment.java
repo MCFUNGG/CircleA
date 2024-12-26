@@ -1,4 +1,4 @@
-package com.example.circlea;
+package com.example.circlea.setting;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -7,13 +7,24 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-public class HomeFragment extends Fragment {
+import com.example.circlea.R;
+
+public class SettingFragment extends Fragment {
+
+    private Button createCvButton;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false); // 确保这个布局文件存在
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_setting, container, false);
+
+        // Initialize the button
+
+
+        return view;
     }
 }

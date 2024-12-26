@@ -1,4 +1,4 @@
-package com.example.circlea;
+package com.example.circlea.application;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +14,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.circlea.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

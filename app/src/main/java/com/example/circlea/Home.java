@@ -7,6 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.example.circlea.application.ApplicationFragment;
+import com.example.circlea.home.HomeFragment;
+import com.example.circlea.setting.SettingFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Home extends AppCompatActivity {

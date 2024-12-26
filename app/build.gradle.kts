@@ -47,4 +47,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth:23.1.0")
     implementation("com.google.firebase:firebase-analytics")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.google.android.gms:play-services-safetynet:17.0.0")
+
 }
