@@ -62,6 +62,15 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                 onSubmitButtonClick();
             }
         });
+
+        Button exitButton = findViewById(R.id.exitButton);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish(); // 关闭当前活动
+                // 或者使用 System.exit(0); 直接退出应用
+            }
+        });
     }
 
     private void loadStudentLevelsAndSubjects() {

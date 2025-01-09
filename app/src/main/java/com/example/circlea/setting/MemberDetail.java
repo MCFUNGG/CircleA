@@ -61,6 +61,15 @@ public class MemberDetail extends AppCompatActivity {
                 saveMemberDetails();
             }
         });
+
+        Button exitButton = findViewById(R.id.exitButton);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+
+            }
+        });
     }
 
     private void saveMemberDetails() {

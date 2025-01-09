@@ -28,7 +28,6 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // 检查数据是否有效
         if (data != null && position < data.size()) {
             holder.textView.setText(data.get(position));
         }

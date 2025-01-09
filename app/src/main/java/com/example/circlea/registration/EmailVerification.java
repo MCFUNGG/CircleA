@@ -2,6 +2,7 @@ package com.example.circlea.registration;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,15 @@ public class EmailVerification extends AppCompatActivity {
             emailAddressTextView.setText("Email not provided");
             Toast.makeText(this, "Email not provided", Toast.LENGTH_SHORT).show();
         }
+
+        Button exitButton = findViewById(R.id.exitButton);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+
+            }
+        });
 
         sendVerificationEmailButton.setOnClickListener(v -> {
             authHelper.registerUser(email, password, this, new FirebaseAuthHelper.RegistrationCallback() {
@@ -142,6 +152,8 @@ public class EmailVerification extends AppCompatActivity {
                             Toast.makeText(EmailVerification.this, message, Toast.LENGTH_SHORT).show();
                             if (success) {
                                 // Navigate to the main activity or further actions
+                                Intent intent = new Intent(EmailVerification.this, PhoneNumVerification.class);
+                                startActivity(intent);
                             }
                         });
                     } catch (JSONException e) {

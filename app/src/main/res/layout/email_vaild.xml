@@ -6,6 +6,12 @@
     android:padding="16dp"
     android:background="@android:color/white">
 
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/exit" />
+
     <TextView
         android:id="@+id/tv_email_verification_message"
         android:layout_width="match_parent"

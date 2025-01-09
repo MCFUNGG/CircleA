@@ -79,6 +79,12 @@
             android:name=".setting.MemberDetail"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name=".registration.PhoneNumVerification"
+            android:exported="true">
+        </activity>
+
     </application>
 
 </manifest>

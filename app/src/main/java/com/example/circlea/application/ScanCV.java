@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ public class ScanCV extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
+        Button exitButton = findViewById(R.id.exitButton);
         Button selectImageBtn = findViewById(R.id.selectImageBtn);
 
         selectImageBtn.setOnClickListener(v -> {
@@ -41,7 +43,17 @@ public class ScanCV extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, SELECT_IMAGE_REQUEST);
         });
+
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish(); // 关闭当前活动
+                // 或者使用 System.exit(0); 直接退出应用
+            }
+        });
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -69,6 +81,8 @@ public class ScanCV extends AppCompatActivity {
             }
         }
     }
+
+
 
     private void processImage(Bitmap bitmap) {
         try {

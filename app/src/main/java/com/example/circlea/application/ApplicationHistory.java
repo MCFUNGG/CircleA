@@ -3,6 +3,7 @@ package com.example.circlea.application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,13 +40,22 @@ public class ApplicationHistory extends AppCompatActivity {
 
         // Fetch application data
         fetchApplicationData();
+
+        Button exitButton = findViewById(R.id.exitButton);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+
+            }
+        });
     }
 
     private void fetchApplicationData() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
 
-        String url = "http://10.0.2.2/FYP/php/get_application_data.php";
+        String url = "http://10.0.2.2/FYP/php/get_user_own_application_data.php";
 
         // Use the retrieved member_id
         RequestBody requestBody = new FormBody.Builder()

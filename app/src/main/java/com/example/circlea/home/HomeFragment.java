@@ -1,11 +1,13 @@
 package com.example.circlea.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,27 +17,40 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.circlea.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
 
-    private RecyclerView horizontalRecyclerView, verticalRecyclerView;
-    private ImageButton menuButton;
-    private EditText searchBar;
+    private RecyclerView horizontalRecyclerView, verticalRecyclerView, findingTutorsRecyclerView;
+    private OkHttpClient client;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        client = new OkHttpClient();
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // 初始化视图
+        // Initialize views
         horizontalRecyclerView = view.findViewById(R.id.horizontalRecyclerView);
         verticalRecyclerView = view.findViewById(R.id.verticalRecyclerView);
+        findingTutorsRecyclerView = view.findViewById(R.id.findingTutorsRecyclerView);
 
-        // 设置水平 RecyclerView
+        // Set up horizontal RecyclerView
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         horizontalRecyclerView.setLayoutManager(horizontalLayoutManager);
-        //custom
+
         ArrayList<String> horizontalData = new ArrayList<>();
         horizontalData.add("1");
         horizontalData.add("2");
@@ -43,18 +58,92 @@ public class HomeFragment extends Fragment {
         HorizontalAdapter horizontalAdapter = new HorizontalAdapter(horizontalData);
         horizontalRecyclerView.setAdapter(horizontalAdapter);
 
-
+        // Set up vertical RecyclerView
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(getContext());
         verticalRecyclerView.setLayoutManager(verticalLayoutManager);
 
-        //custom
         ArrayList<String> verticalData = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 5; i++) {
             verticalData.add("Tutor " + i);
         }
+
         VerticalAdapter verticalAdapter = new VerticalAdapter(verticalData);
         verticalRecyclerView.setAdapter(verticalAdapter);
 
+        // Set up finding tutors RecyclerView
+        LinearLayoutManager findingTutorsLayoutManager = new LinearLayoutManager(getContext());
+        findingTutorsRecyclerView.setLayoutManager(findingTutorsLayoutManager);
+
+        // Fetch application data
+        fetchApplicationData();
+
         return view;
+    }
+
+    private void fetchApplicationData() {
+        String url = "http://10.0.2.2/FYP/php/get_all_application_data.php";
+
+        // Create a GET request
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        // Execute the request
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("FetchApplicationData", "Request failed: " + e.getMessage());
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(getContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String jsonResponse = response.body().string();
+                    Log.d("FetchApplicationData", "Server response: " + jsonResponse);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonResponse);
+                        if (jsonObject.getBoolean("success")) {
+                            JSONArray dataArray = jsonObject.getJSONArray("data");
+
+                            // Create a list to hold the application data
+                            ArrayList<ApplicationItem> applicationsList = new ArrayList<>();
+
+                            // Iterate through the application array
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                JSONObject data = dataArray.getJSONObject(i);
+                                String subject = data.optString("subject_name", "N/A");
+                                String classLevel = data.optString("class_level_name", "N/A");
+                                String fee = data.optString("feePerHr", "N/A");
+                                String district = data.optString("district_name", "N/A");
+
+                                // Create ApplicationItem object and add it to the list
+                                applicationsList.add(new ApplicationItem(subject, classLevel, fee, district));
+                            }
+
+                            // Update UI on the main thread
+                            requireActivity().runOnUiThread(() -> {
+                                ApplicationAdapter findingTutorsAdapter = new ApplicationAdapter(applicationsList);
+                                findingTutorsRecyclerView.setAdapter(findingTutorsAdapter);
+                            });
+                        } else {
+                            String message = jsonObject.optString("message", "Unknown error");
+                            requireActivity().runOnUiThread(() ->
+                                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
+                        }
+                    } catch (JSONException e) {
+                        Log.e("FetchApplicationData", "JSON parsing error: " + e.getMessage());
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(getContext(), "Error processing data", Toast.LENGTH_SHORT).show());
+                    }
+                } else {
+                    Log.e("FetchApplicationData", "Request failed, response code: " + response.code());
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(getContext(), "Failed to fetch application data", Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
     }
 }

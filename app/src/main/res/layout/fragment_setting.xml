@@ -54,11 +54,19 @@
 
 
         <Button
-            android:id="@+id/my_cv_button"
+            android:id="@+id/user_own_detail_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="member details" />
+
+        <Button
+            android:id="@+id/cart_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="member cart" />
+
 
         <View
             android:layout_width="match_parent"

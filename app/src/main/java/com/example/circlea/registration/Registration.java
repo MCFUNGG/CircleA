@@ -3,6 +3,7 @@ package com.example.circlea.registration;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -33,6 +34,15 @@ public class Registration extends AppCompatActivity {
         btnRegister = findViewById(R.id.btn_register);
 
         btnRegister.setOnClickListener(v -> registerUser());
+
+        Button exitButton = findViewById(R.id.exitButton);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+
+            }
+        });
     }
 
     private void registerUser() {

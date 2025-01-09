@@ -7,6 +7,12 @@
     android:padding="16dp"
     android:background="@android:color/white">
 
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/exit" />
+
     <!-- Display Instructions -->
     <TextView
         android:id="@+id/tv_phone_verification_message"
@@ -28,7 +34,8 @@
         android:padding="12dp"
         android:background="@android:drawable/edit_text"
         android:layout_marginBottom="16dp"
-        android:contentDescription="Phone number input" />
+        android:contentDescription="Phone number input"
+        android:text="+852 " /> <!-- Set default text with country code -->
 
     <!-- Button to Send Verification Code -->
     <Button
