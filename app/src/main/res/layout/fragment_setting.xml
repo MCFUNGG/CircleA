@@ -19,22 +19,14 @@
             android:src="@drawable/ic_launcher_foreground" />
 
         <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="User Name"
-            android:textSize="24sp" />
-
-        <TextView
             android:id="@+id/user_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="user@example.com"
-            android:textSize="16sp" />
+            android:textSize="24sp" />
+
 
         <TextView
             android:id="@+id/user_phone"
@@ -73,6 +65,15 @@
             android:layout_height="1dp"
             android:layout_marginBottom="16dp"
             android:background="#CCCCCC" />
+
+        <TextView
+            android:id="@+id/text_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="log out"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="18sp"
+            android:padding="16dp" />
     </LinearLayout>
 
 

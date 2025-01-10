@@ -102,7 +102,7 @@ public class EmailVerification extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (user.isEmailVerified()) {
                         Toast.makeText(this, "Email verified successfully!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(this, Login.class);
+                        Intent intent = new Intent(EmailVerification.this, PhoneNumVerification.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(this, "Email not verified. Please check your inbox.", Toast.LENGTH_SHORT).show();
@@ -112,6 +112,15 @@ public class EmailVerification extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No user is currently logged in.", Toast.LENGTH_SHORT).show();
         }
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // 將用戶資料發送到伺服器
+                        sendLoginDataToServer(email, password);
+                    } else {
+                        Toast.makeText(EmailVerification.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void sendLoginDataToServer(String email, String password) {
@@ -152,8 +161,7 @@ public class EmailVerification extends AppCompatActivity {
                             Toast.makeText(EmailVerification.this, message, Toast.LENGTH_SHORT).show();
                             if (success) {
                                 // Navigate to the main activity or further actions
-                                Intent intent = new Intent(EmailVerification.this, PhoneNumVerification.class);
-                                startActivity(intent);
+
                             }
                         });
                     } catch (JSONException e) {

@@ -34,28 +34,34 @@ import okhttp3.Response;
 
 public class ParentApplicationFillDetail extends AppCompatActivity {
 
-    private Spinner studentLevelSpinner, lessonPerWeekSpinner, districtSpinner;
+    private Spinner studentLevelSpinner, lessonPerWeekSpinner;
     private Button submitButton;
     private EditText feePerHr;
     private RadioGroup radioGroup;
     private EditText descriptionInput;
+    private LinearLayout districtContainer;
+    private LinearLayout subjectContainer; // Add a container for subjects
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_application_step1);
 
+        // Initialize views
         studentLevelSpinner = findViewById(R.id.student_level_spinner);
         lessonPerWeekSpinner = findViewById(R.id.lesson_per_week_spinner);
-        districtSpinner = findViewById(R.id.district_spinner);
         submitButton = findViewById(R.id.submit_button);
         feePerHr = findViewById(R.id.fee_input);
         radioGroup = findViewById(R.id.radio_group);
         descriptionInput = findViewById(R.id.description_input);
+        districtContainer = findViewById(R.id.district_container);
+        subjectContainer = findViewById(R.id.subject_container); // Initialize subject container
 
+        // Load data and setup spinners
         loadStudentLevelsAndSubjects();
         setupLessonPerWeekSpinner(lessonPerWeekSpinner);
 
+        // Set up button listeners
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,10 +73,21 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish(); // 关闭当前活动
-                // 或者使用 System.exit(0); 直接退出应用
+                finish();
             }
         });
+    }
+
+    private void setupLessonPerWeekSpinner(Spinner lessonPerWeekSpinner) {
+        ArrayList<String> lessonOptions = new ArrayList<>();
+        for (int i = 1; i <= 7; i++) {
+            lessonOptions.add(String.valueOf(i));
+        }
+
+        ArrayAdapter<String> lessonAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, lessonOptions);
+        lessonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        lessonPerWeekSpinner.setAdapter(lessonAdapter);
     }
 
     private void loadStudentLevelsAndSubjects() {
@@ -82,9 +99,9 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("LoadLevelsRequest", "请求失败: " + e.getMessage());
+                Log.e("LoadLevelsRequest", "Request failed: " + e.getMessage());
                 runOnUiThread(() ->
-                        Toast.makeText(ParentApplicationFillDetail.this, "获取数据时出错", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(ParentApplicationFillDetail.this, "Error fetching data", Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -100,7 +117,6 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                         ArrayList<String> levels = new ArrayList<>();
                         ArrayList<String> subjects = new ArrayList<>();
                         ArrayList<String> districts = new ArrayList<>();
-
                         ArrayList<String> levelIds = new ArrayList<>();
                         ArrayList<String> subjectIds = new ArrayList<>();
                         ArrayList<String> districtIds = new ArrayList<>();
@@ -126,69 +142,92 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                         runOnUiThread(() -> {
                             studentLevelSpinner.setAdapter(new ArrayAdapter<>(ParentApplicationFillDetail.this, android.R.layout.simple_spinner_item, levels));
                             setupSubjectCheckBoxes(subjects, subjectIds);
-                            districtSpinner.setAdapter(new ArrayAdapter<>(ParentApplicationFillDetail.this, android.R.layout.simple_spinner_item, districts));
+                            setupDistrictCheckBoxes(districts, districtIds);
 
                             studentLevelSpinner.setTag(levelIds);
-                            districtSpinner.setTag(districtIds);
                         });
                     } catch (JSONException e) {
-                        Log.e("LoadLevelsRequest", "JSON解析错误: " + e.getMessage());
+                        Log.e("LoadLevelsRequest", "JSON parsing error: " + e.getMessage());
                         runOnUiThread(() ->
-                                Toast.makeText(ParentApplicationFillDetail.this, "处理响应时出错", Toast.LENGTH_SHORT).show());
+                                Toast.makeText(ParentApplicationFillDetail.this, "Error processing response", Toast.LENGTH_SHORT).show());
                     }
                 } else {
-                    Log.e("LoadLevelsRequest", "请求失败，响应代码: " + response.code());
+                    Log.e("LoadLevelsRequest", "Request failed with response code: " + response.code());
                     runOnUiThread(() ->
-                            Toast.makeText(ParentApplicationFillDetail.this, "获取级别和科目失败", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(ParentApplicationFillDetail.this, "Failed to fetch levels and subjects", Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
 
+    private void setupDistrictCheckBoxes(ArrayList<String> districts, ArrayList<String> districtIds) {
+        districtContainer.removeAllViews(); // Clear previous checkboxes
+
+        for (int i = 0; i < districts.size(); i++) {
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setText(districts.get(i));
+            checkBox.setTag(districtIds.get(i));
+            districtContainer.addView(checkBox);
+        }
+    }
+
     private void setupSubjectCheckBoxes(ArrayList<String> subjects, ArrayList<String> subjectIds) {
-        LinearLayout subjectContainer = findViewById(R.id.subject_container);
-        subjectContainer.removeAllViews();
+        subjectContainer.removeAllViews(); // Clear previous checkboxes
 
         for (int i = 0; i < subjects.size(); i++) {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(subjects.get(i));
-            checkBox.setTag(subjectIds.get(i));
-            subjectContainer.addView(checkBox);
+            checkBox.setTag(subjectIds.get(i)); // Set the subject ID as tag
+            subjectContainer.addView(checkBox); // Add checkbox to the container
         }
     }
 
-    private void setupLessonPerWeekSpinner(Spinner lessonPerWeekSpinner) {
-        ArrayList<String> lessonOptions = new ArrayList<>();
-        for (int i = 1; i <= 7; i++) {
-            lessonOptions.add(String.valueOf(i));
-        }
+    private ArrayList<String> getSelectedSubjectIds() {
+        ArrayList<String> selectedIds = new ArrayList<>();
 
-        ArrayAdapter<String> lessonAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, lessonOptions);
-        lessonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        lessonPerWeekSpinner.setAdapter(lessonAdapter);
+        for (int i = 0; i < subjectContainer.getChildCount(); i++) {
+            CheckBox checkBox = (CheckBox) subjectContainer.getChildAt(i);
+            if (checkBox.isChecked()) {
+                selectedIds.add((String) checkBox.getTag()); // Add selected subject ID
+            }
+        }
+        return selectedIds; // Return list of selected subject IDs
     }
 
-    public void onSubmitButtonClick() {
+    private ArrayList<String> getSelectedDistrictIds() {
+        ArrayList<String> selectedIds = new ArrayList<>();
+        for (int i = 0; i < districtContainer.getChildCount(); i++) {
+            CheckBox checkBox = (CheckBox) districtContainer.getChildAt(i);
+            if (checkBox.isChecked()) {
+                selectedIds.add((String) checkBox.getTag()); // Add selected district ID
+            }
+        }
+        return selectedIds; // Return list of selected district IDs
+    }
+
+    private void onSubmitButtonClick() {
         String memberId = getMemberIdFromLocalDatabase();
-        String studentLevel = studentLevelSpinner.getSelectedItem().toString();
-        String lessonsPerWeek = lessonPerWeekSpinner.getSelectedItem().toString();
-        String district = districtSpinner.getSelectedItem().toString();
-        String description = descriptionInput.getText().toString();
+        String studentLevel = studentLevelSpinner.getSelectedItem() != null ? studentLevelSpinner.getSelectedItem().toString() : "";
+        String lessonsPerWeek = lessonPerWeekSpinner.getSelectedItem() != null ? lessonPerWeekSpinner.getSelectedItem().toString() : "";
+        String description = descriptionInput.getText().toString().trim(); // Trim whitespace
 
-        // 获取选中的科目ID
-        String selectedSubjectId = getSelectedSubjectId();
+        ArrayList<String> selectedSubjectIds = getSelectedSubjectIds();
 
-        if (selectedSubjectId == null) {
-            Toast.makeText(this, "请至少选择一个科目", Toast.LENGTH_SHORT).show();
+        if (selectedSubjectIds.isEmpty()) {
+            Toast.makeText(this, "Please select at least one subject", Toast.LENGTH_SHORT).show();
             return;
         }
 
         ArrayList<String> levelIds = (ArrayList<String>) studentLevelSpinner.getTag();
-        ArrayList<String> districtIds = (ArrayList<String>) districtSpinner.getTag();
+        ArrayList<String> selectedDistrictIds = getSelectedDistrictIds(); // Get selected districts
+
+        // Ensure at least one district is selected
+        if (selectedDistrictIds.isEmpty()) {
+            Toast.makeText(this, "Please select at least one district", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String selectedLevelId = levelIds.get(studentLevelSpinner.getSelectedItemPosition());
-        String selectedDistrictId = districtIds.get(districtSpinner.getSelectedItemPosition());
 
         String appCreator = "";
         int selectedId = radioGroup.getCheckedRadioButtonId();
@@ -198,41 +237,27 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             appCreator = "T";
         }
 
-        if (studentLevel.isEmpty() || lessonsPerWeek.isEmpty() || district.isEmpty()) {
-            Toast.makeText(this, "请填写所有必填信息", Toast.LENGTH_SHORT).show();
+        // Check if studentLevel and lessonsPerWeek are filled
+        if (studentLevel.isEmpty() || lessonsPerWeek.isEmpty() || description.isEmpty()) {
+            Toast.makeText(this, "Please fill in all required information", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            submitData(memberId, appCreator, selectedSubjectId, selectedLevelId, selectedDistrictId, description);
+            submitData(memberId, appCreator, selectedSubjectIds, selectedLevelId, selectedDistrictIds, description);
         }
     }
 
-    private String getSelectedSubjectId() {
-        LinearLayout subjectContainer = findViewById(R.id.subject_container);
-        for (int i = 0; i < subjectContainer.getChildCount(); i++) {
-            CheckBox checkBox = (CheckBox) subjectContainer.getChildAt(i);
-            if (checkBox.isChecked()) {
-                return (String) checkBox.getTag(); // 返回选中的科目ID
-            }
-        }
-        return null; // 如果没有选中任何科目，返回null
-    }
-
-    private void submitData(String memberId, String appCreator, String subjectId, String classLevelId, String districtId, String description) {
+    private void submitData(String memberId, String appCreator, ArrayList<String> subjectIds, String classLevelId, ArrayList<String> districtIds, String description) {
         OkHttpClient client = new OkHttpClient();
         Log.d("SubmitData", "Member ID: " + memberId);
         Log.d("SubmitData", "App Creator: " + appCreator);
-        Log.d("SubmitData", "Subject ID: " + subjectId); // 修正日志输出
-        Log.d("SubmitData", "Class Level ID: " + classLevelId);
-        Log.d("SubmitData", "District ID: " + districtId);
-        Log.d("SubmitData", "Description: " + description);
-        Log.d("SubmitData", "Fee per Hour: " + feePerHr.getText().toString());
+        Log.d("SubmitData", "Selected Subject IDs: " + subjectIds.toString());
 
         RequestBody formBody = new FormBody.Builder()
                 .add("member_id", memberId)
                 .add("app_creator", appCreator)
-                .add("subject_id", subjectId) // 只发送一个科目ID
+                .add("subject_ids", new JSONArray(subjectIds).toString()) // Send JSON array of subject IDs
                 .add("class_level_id", classLevelId)
-                .add("district_id", districtId)
+                .add("district_ids", new JSONArray(districtIds).toString()) // Send JSON array of district IDs
                 .add("description", description)
                 .add("fee_per_hr", feePerHr.getText().toString())
                 .build();
@@ -245,7 +270,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "请求失败，请重试。", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Request failed, please try again.", Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -257,12 +282,11 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                         boolean success = jsonResponse.getBoolean("success");
                         String message = jsonResponse.getString("message");
                         runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, message, Toast.LENGTH_SHORT).show());
-                        Log.d("ServerResponse", "Message: " + message);
                     } catch (JSONException e) {
-                        runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "处理响应时出错", Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Error processing response", Toast.LENGTH_SHORT).show());
                     }
                 } else {
-                    runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "提交申请失败", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Application submission failed", Toast.LENGTH_SHORT).show());
                 }
             }
         });
@@ -270,6 +294,6 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
     private String getMemberIdFromLocalDatabase() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        return sharedPreferences.getString("member_id", ""); // 如果未找到，默认返回空字符串
+        return sharedPreferences.getString("member_id", ""); // Return empty string if not found
     }
 }
