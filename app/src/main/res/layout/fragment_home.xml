@@ -83,10 +83,30 @@
 
         <!-- Finding Tutors Title -->
         <TextView
+            android:id="@+id/lookingforstudents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Looking for Students"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/findingStudentsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/item_finding_students" />
+
+
+        <!-- Finding Tutors Title -->
+        <TextView
             android:id="@+id/applicationTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Finding Tutors"
+            android:text="Looking for Tutors"
             android:textStyle="bold"
             android:textSize="18sp"
             android:layout_marginBottom="8dp" />
