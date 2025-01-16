@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.circlea.Login;
 import com.example.circlea.R;
 import com.example.circlea.application.ParentApplicationFillDetail;
 
@@ -37,7 +38,7 @@ public class SettingFragment extends Fragment {
 
     private OkHttpClient client;
     private TextView userEmailTextView;
-    private TextView userPhoneTextView,usernameTextView;
+    private TextView userPhoneTextView,usernameTextView,logOutTextView;
     private Button userOwnDetailbtn, userOwnCartbtn;
 
     @Nullable
@@ -53,6 +54,7 @@ public class SettingFragment extends Fragment {
         userPhoneTextView = view.findViewById(R.id.user_phone);
         userOwnDetailbtn = view.findViewById(R.id.user_own_detail_button);
         userOwnCartbtn = view.findViewById(R.id.cart_button);
+        logOutTextView = view.findViewById(R.id.log_out_tv);
 
         // Set up button click listener
         userOwnDetailbtn.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +70,23 @@ public class SettingFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MemberCart.class);
                 startActivity(intent);
+            }
+        });
+
+        logOutTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Clear all data from SharedPreferences
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear(); // This will remove all entries
+                editor.apply(); // Apply the changes asynchronously
+
+                // Start the Login activity
+                Intent intent = new Intent(getActivity(), Login.class);
+                startActivity(intent);
+                // Optionally, you may want to finish the current activity
+                getActivity().finish();
             }
         });
 

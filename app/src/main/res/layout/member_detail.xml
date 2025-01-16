@@ -1,21 +1,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-    <Button
-        android:id="@+id/exitButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/exit" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Member Detail Form"
-        android:textSize="24sp"
-        android:layout_gravity="center"
-        android:paddingBottom="16dp"/>
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:background="#1e4072"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="40dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="#1e4072"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="40dp">
+
+            <Button
+                android:id="@+id/exitButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/exit"
+                android:layout_marginRight="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Member Detail Form"
+                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:gravity="center" />
+        </LinearLayout>
+        </LinearLayout>
+
+
+
+
+
+
 
     <TextView
         android:layout_width="wrap_content"

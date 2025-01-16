@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            >
 
             <!-- Left top corner menu button -->
             <ImageButton
@@ -38,7 +39,8 @@
                 android:padding="8dp"
                 android:background="@drawable/rounded_background"
                 android:drawableStart="@drawable/ic_search"
-                android:drawablePadding="8dp" />
+                android:drawablePadding="8dp"
+                />
         </LinearLayout>
 
         <!-- Horizontal RecyclerView -->
@@ -48,7 +50,8 @@
             android:layout_height="100dp"
             android:orientation="horizontal"
             tools:listitem="@layout/item_horizontal"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            />
 
         <!-- Divider line -->
         <View

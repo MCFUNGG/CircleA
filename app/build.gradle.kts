@@ -49,5 +49,5 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.google.android.gms:play-services-safetynet:17.0.0")
-
+    implementation("androidx.cardview:cardview:1.0.0")
 }

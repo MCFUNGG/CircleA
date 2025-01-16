@@ -117,15 +117,15 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this, message, Toast.LENGTH_SHORT).show();
                             if (success) {
                                 // 儲存用戶 ID 到 SharedPreferences
-                                runOnUiThread(() -> Toast.makeText(Login.this, "member_id: "+memberID, Toast.LENGTH_SHORT).show());
-                                SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("member_id", memberID);
-                                editor.apply(); // 确保使用 apply() 方法
+                                    runOnUiThread(() -> Toast.makeText(Login.this, "member_id: "+memberID, Toast.LENGTH_SHORT).show());
+                                    SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("member_id", memberID);
+                                    editor.apply();
 
                                 // 确认 ID 是否保存成功
                                 String savedMemberId = sharedPreferences.getString("member_id", null);
-                                Log.d("LoginRequest", "Saved member ID: " + savedMemberId);
+                                Log.d("LoginRequest", "CircleA(sharedPreferences):Saved member ID: " + savedMemberId);
 
 
                                 // Navigate to the main activity

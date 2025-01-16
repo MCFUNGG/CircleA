@@ -1,25 +1,27 @@
 package com.example.circlea.setting;
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circlea.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.Locale;
 
 import okhttp3.Call;
@@ -40,6 +42,14 @@ public class MemberDetail extends AppCompatActivity {
     private RadioGroup genderRadioGroup;
     private Button submitButton;
 
+    // Variables to hold initial values
+    private String initialAddressDistrictId;
+    private String initialAddress;
+    private String initialDob;
+    private String initialProfile;
+    private String initialDescription;
+    private String initialGender;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,20 +64,125 @@ public class MemberDetail extends AppCompatActivity {
         genderRadioGroup = findViewById(R.id.gender);
         submitButton = findViewById(R.id.submit_button);
 
+        // Set up DatePicker for dobEditText
+        dobEditText.setOnClickListener(v -> showDatePickerDialog());
+
+        // Fetch past member details to populate the UI
+        getPastMemberDetails();
+
         // Set button click listener
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveMemberDetails();
-            }
-        });
+        submitButton.setOnClickListener(v -> saveMemberDetails());
 
         Button exitButton = findViewById(R.id.exitButton);
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+        exitButton.setOnClickListener(v -> finish());
+    }
 
+    private void showDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            // Format the selected date to yyyy-MM-dd
+            String formattedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+            dobEditText.setText(formattedDate);
+        }, year, month, day);
+        datePickerDialog.show();
+    }
+
+    private void getPastMemberDetails() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String memberId = sharedPreferences.getString("member_id", null);
+
+        if (memberId == null) {
+            return; // If no memberId, return
+        }
+
+        String url = "http://10.0.2.2/FYP/php/get_member_detail.php"; // Update with your URL
+
+        // Create the request body
+        RequestBody requestBody = new FormBody.Builder()
+                .add("member_id", memberId)
+                .build();
+
+        // Build the request
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        // Send the request
+        OkHttpClient client = new OkHttpClient();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("FetchSettingData", "Request failed: " + e.getMessage());
+                runOnUiThread(() ->
+                        Toast.makeText(MemberDetail.this, "Failed to fetch data", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String jsonResponse = response.body().string();
+                    Log.d("FetchSettingData", "Server response: " + jsonResponse);
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonResponse);
+                        if (jsonObject.getBoolean("success")) {
+                            JSONArray dataArray = jsonObject.getJSONArray("data");
+
+                            // Check if dataArray has at least one entry
+                            if (dataArray.length() > 0) {
+                                JSONObject data = dataArray.getJSONObject(0);
+                                populateFields(data);
+                            } else {
+                                Log.d("SettingData", "No data found for member");
+                            }
+                        } else {
+                            String message = jsonObject.optString("message", "Unknown error");
+                            runOnUiThread(() ->
+                                    Toast.makeText(MemberDetail.this, message, Toast.LENGTH_SHORT).show()
+                            );
+                        }
+                    } catch (JSONException e) {
+                        Log.e("FetchSettingData", "JSON parsing error: " + e.getMessage());
+                        runOnUiThread(() ->
+                                Toast.makeText(MemberDetail.this, "Error processing data", Toast.LENGTH_SHORT).show()
+                        );
+                    }
+                } else {
+                    Log.e("FetchSettingData", "Request failed, response code: " + response.code());
+                    runOnUiThread(() ->
+                            Toast.makeText(MemberDetail.this, "Failed to fetch data", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }
+        });
+    }
+
+    private void populateFields(JSONObject data) throws JSONException {
+        runOnUiThread(() -> {
+            initialAddressDistrictId = data.optString("Address_District_id", "");
+            initialAddress = data.optString("Address", "");
+            initialDob = data.optString("DOB", "");
+            initialProfile = data.optString("profile", "");
+            initialDescription = data.optString("description", "");
+            initialGender = data.optString("Gender", "");
+
+            addressDistrictIdEditText.setText(initialAddressDistrictId);
+            addressEditText.setText(initialAddress);
+            dobEditText.setText(initialDob);
+            profileEditText.setText(initialProfile);
+            descriptionEditText.setText(initialDescription);
+
+            // Set selected gender in the RadioGroup
+            if ("M".equalsIgnoreCase(initialGender)) {
+                genderRadioGroup.check(R.id.gender_male);
+            } else if ("F".equalsIgnoreCase(initialGender)) {
+                genderRadioGroup.check(R.id.gender_female);
             }
         });
     }
@@ -76,7 +191,7 @@ public class MemberDetail extends AppCompatActivity {
         // Get input data
         String addressDistrictId = addressDistrictIdEditText.getText().toString().trim();
         String address = addressEditText.getText().toString().trim();
-        String dob = dobEditText.getText().toString().trim();
+        String dob = dobEditText.getText().toString().trim(); // This should now be in yyyy-MM-dd format
         String profile = profileEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
         String gender = "";
@@ -98,15 +213,25 @@ public class MemberDetail extends AppCompatActivity {
             return;
         }
 
-        // Format the date of birth
-        String formattedDob = formatDateString(dob);
-        if (formattedDob == null) {
-            Toast.makeText(this, "Invalid date format. Please use MM/DD/YYYY.", Toast.LENGTH_SHORT).show();
+        // Check if the date is formatted correctly (yyyy-MM-dd)
+        if (!dob.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            Toast.makeText(this, "Invalid date format. Please use YYYY-MM-DD.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check for changes before submitting
+        if (addressDistrictId.equals(initialAddressDistrictId) &&
+                address.equals(initialAddress) &&
+                dob.equals(initialDob) &&
+                profile.equals(initialProfile) &&
+                description.equals(initialDescription) &&
+                gender.equals(initialGender)) {
+            Toast.makeText(this, "No changes detected. Submission canceled.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String memberId = getMemberIdFromLocalDatabase();
-        sendMemberDetailToServer(memberId, gender, address, addressDistrictId, formattedDob, profile, description);
+        sendMemberDetailToServer(memberId, gender, address, addressDistrictId, dob, profile, description);
     }
 
     private void sendMemberDetailToServer(String memberId, String gender, String address, String addressDistrictId, String dob, String profile, String description) {
@@ -161,18 +286,6 @@ public class MemberDetail extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private String formatDateString(String dateString) {
-        SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        try {
-            Date date = inputFormat.parse(dateString);
-            return outputFormat.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null; // Return null if parsing fails
-        }
     }
 
     private String getMemberIdFromLocalDatabase() {
