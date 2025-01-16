@@ -85,6 +85,11 @@
             android:exported="true">
         </activity>
 
+        <activity
+            android:name=".setting.MemberCart"
+            android:exported="true">
+        </activity>
+
     </application>
 
 </manifest>

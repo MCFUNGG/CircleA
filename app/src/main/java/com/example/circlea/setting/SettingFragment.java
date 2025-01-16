@@ -38,7 +38,7 @@ public class SettingFragment extends Fragment {
     private OkHttpClient client;
     private TextView userEmailTextView;
     private TextView userPhoneTextView;
-    private Button userOwnDetailbtn;
+    private Button userOwnDetailbtn,userOwnCartbtn;
 
     @Nullable
     @Override
@@ -51,6 +51,7 @@ public class SettingFragment extends Fragment {
         userEmailTextView = view.findViewById(R.id.user_email);
         userPhoneTextView = view.findViewById(R.id.user_phone);
         userOwnDetailbtn = view.findViewById(R.id.user_own_detail_button);
+        userOwnCartbtn = view.findViewById(R.id.cart_button);
 
         // Set up button click listener
         userOwnDetailbtn.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +61,16 @@ public class SettingFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        userOwnCartbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MemberCart.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         // Fetch setting data when the fragment is created
         fetchSettingData();
@@ -76,7 +87,7 @@ public class SettingFragment extends Fragment {
             return;
         }
 
-        String url = "http://10.0.2.2/FYP/php/get_user_own_profile.php"; // Update with your URL
+        String url = "http://10.0.2.2/FYP/php/get_member_own_profile.php"; // Update with your URL
 
         // Create the request body
         RequestBody requestBody = new FormBody.Builder()

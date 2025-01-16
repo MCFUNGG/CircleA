@@ -37,7 +37,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         client = new OkHttpClient();
-
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Initialize views
@@ -49,7 +48,6 @@ public class HomeFragment extends Fragment {
         // Set up horizontal RecyclerView
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         horizontalRecyclerView.setLayoutManager(horizontalLayoutManager);
-
         ArrayList<String> horizontalData = new ArrayList<>();
         horizontalData.add("1");
         horizontalData.add("2");
@@ -60,7 +58,6 @@ public class HomeFragment extends Fragment {
         // Set up vertical RecyclerView
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(getContext());
         verticalRecyclerView.setLayoutManager(verticalLayoutManager);
-
         ArrayList<String> verticalData = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             verticalData.add("Tutor " + i);
@@ -117,18 +114,19 @@ public class HomeFragment extends Fragment {
                             // Iterate through the application array
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject data = dataArray.getJSONObject(i);
+                                String appId = data.optString("app_id", "N/A");
                                 String subject = data.optString("subject_name", "N/A");
                                 String classLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
                                 String district = data.optString("district_name", "N/A");
 
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(subject, classLevel, fee, district));
+                                applicationsList.add(new ApplicationItem(appId, subject, classLevel, fee, district));
                             }
 
-                            // Update UI on the main thread using FindingStudentsAdapter (for tutors looking for students)
+                            // Update UI on the main thread using FindingStudentsAdapter
                             requireActivity().runOnUiThread(() -> {
-                                FindingStudentsAdapter findingStudentsAdapter = new FindingStudentsAdapter(applicationsList);
+                                FindingStudentsAdapter findingStudentsAdapter = new FindingStudentsAdapter(applicationsList, getContext());
                                 findingStudentsRecyclerView.setAdapter(findingStudentsAdapter);
                             });
                         } else {
@@ -184,19 +182,20 @@ public class HomeFragment extends Fragment {
                             // Iterate through the application array
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject data = dataArray.getJSONObject(i);
+                                String appId = data.optString("app_id", "N/A");
                                 String subject = data.optString("subject_name", "N/A");
                                 String classLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
                                 String district = data.optString("district_name", "N/A");
 
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(subject, classLevel, fee, district));
+                                applicationsList.add(new ApplicationItem(appId, subject, classLevel, fee, district));
                             }
 
-                            // Update UI on the main thread using ApplicationAdapter (for students)
+                            // Update UI on the main thread using ApplicationAdapter
                             requireActivity().runOnUiThread(() -> {
-                                ApplicationAdapter findingStudentsAdapter = new ApplicationAdapter(applicationsList);
-                                findingTutorsRecyclerView.setAdapter(findingStudentsAdapter);
+                                ApplicationAdapter findingTutorsAdapter = new ApplicationAdapter(applicationsList);
+                                findingTutorsRecyclerView.setAdapter(findingTutorsAdapter);
                             });
                         } else {
                             String message = jsonObject.optString("message", "Unknown error");

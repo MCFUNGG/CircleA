@@ -20,45 +20,66 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical">
 
-    <!-- 文本 -->
-    <TextView
-        android:id="@+id/classlevel_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="Class level"
-        android:textSize="14sp"
-        android:layout_marginLeft="20dp"
-        android:textColor="#000000" />
-    <TextView
-        android:id="@+id/subject_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="Subject"
-        android:textSize="14sp"
-        android:layout_marginLeft="20dp"
-        android:textColor="#000000" />
-    <TextView
-        android:id="@+id/district_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="District"
-        android:textSize="14sp"
-        android:layout_marginLeft="20dp"
-        android:textColor="#000000" />
+        <!-- 文本 -->
+        <TextView
+            android:id="@+id/classlevel_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="Class level"
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/fee_tv"
+        <TextView
+            android:id="@+id/subject_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="Subject"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/district_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="District"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/fee_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:text="Fee"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="Fee"
-        android:textSize="14sp"
-        android:layout_marginLeft="20dp"
-        android:textColor="#000000" />
+        android:orientation="horizontal"
+
+        android:layout_marginRight="10dp">
+
+
+
+        <Button
+            android:id="@+id/star_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/star" />
     </LinearLayout>
 </LinearLayout>

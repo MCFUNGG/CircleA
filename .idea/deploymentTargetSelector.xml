@@ -11,13 +11,13 @@
       <SelectionState runConfigName="Registration">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="PhoneNumVerification">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="EmailVerification">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="Login">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="MemberCart">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

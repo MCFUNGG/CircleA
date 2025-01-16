@@ -1,7 +1,8 @@
-package com.example.circlea.application;
+package com.example.circlea.setting;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -11,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -18,13 +21,14 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.FormBody;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.circlea.R;
 
-public class ApplicationHistory extends AppCompatActivity {
+public class MemberCart extends AppCompatActivity {
 
     private LinearLayout applicationsContainer;
     private OkHttpClient client;
@@ -32,34 +36,33 @@ public class ApplicationHistory extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.history_application); // Ensure this layout file contains the container
+        setContentView(R.layout.member_cart);
 
-        // Initialize LinearLayout container
         applicationsContainer = findViewById(R.id.history_application_container);
-        client = new OkHttpClient(); // Initialize OkHttpClient
+        client = new OkHttpClient();
 
         // Fetch application data
         fetchApplicationData();
 
         Button exitButton = findViewById(R.id.exitButton);
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-
-            }
-        });
+        exitButton.setOnClickListener(v -> finish());
     }
 
     private void fetchApplicationData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        String memberId = sharedPreferences.getString("member_id", null);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        Set<String> appIds = sharedPreferences.getStringSet("selected_app_ids", new HashSet<>());
+        String url = "http://10.0.2.2/FYP/php/get_member_cart.php";
 
-        String url = "http://10.0.2.2/FYP/php/get_member_own_application_data.php";
+        if (appIds.isEmpty()) {
+            Toast.makeText(this, "No applications saved", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Use the retrieved member_id
+        // Convert Set to a comma-separated string to send to PHP
+        String appIdString = TextUtils.join(",", appIds);
+
         RequestBody requestBody = new FormBody.Builder()
-                .add("member_id", memberId) // Use the member_id from SharedPreferences
+                .add("app_ids", appIdString) // Send all application IDs
                 .build();
 
         Request request = new Request.Builder()
@@ -70,60 +73,53 @@ public class ApplicationHistory extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("FetchApplicationData", "Request failed: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(ApplicationHistory.this, "Failed to fetch data", Toast.LENGTH_SHORT).show());
+                Log.e("CartFetchApplicationData", "Request failed: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(MemberCart.this, "Failed to fetch data", Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String jsonResponse = response.body().string();
-                    Log.d("FetchApplicationData", "Server response: " + jsonResponse);
+                    Log.d("CartFetchApplicationData", "Server response: " + jsonResponse);
 
                     try {
                         JSONObject jsonObject = new JSONObject(jsonResponse);
                         if (jsonObject.getBoolean("success")) {
                             JSONArray dataArray = jsonObject.getJSONArray("data");
 
-                            // Clear previous views
                             runOnUiThread(() -> applicationsContainer.removeAllViews());
 
-                            // Iterate through the application array
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject data = dataArray.getJSONObject(i);
-                                LayoutInflater inflater = LayoutInflater.from(ApplicationHistory.this);
+                                LayoutInflater inflater = LayoutInflater.from(MemberCart.this);
                                 View applicationView = inflater.inflate(R.layout.application_item, applicationsContainer, false);
 
                                 // Safely retrieve values
-                                String role = data.optString("app_creator", "N/A");
-                                String subject = data.optString("subject_id", "N/A");
-                                String studentLevel = data.optString("class_level_id", "N/A");
-                                String fee = data.optString("feePerHr", "N/A");
-                                String district = data.optString("district_id", "N/A");
-                                String description = data.optString("description", "N/A");
+                                String subject = data.optString("subject_name", "N/A");
+                                String studentLevel = data.optString("class_level_name", "N/A");
+                                String fee = data.optString("fee_per_hour", "N/A");
+                                String district = data.optString("district_name", "N/A");
 
                                 // Set values
-                                ((TextView) applicationView.findViewById(R.id.role_text)).setText(role);
                                 ((TextView) applicationView.findViewById(R.id.subject_text)).setText(subject);
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
                                 ((TextView) applicationView.findViewById(R.id.fee_text)).setText(fee);
                                 ((TextView) applicationView.findViewById(R.id.district_text)).setText(district);
-                                ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
 
-                                // Add to the container
                                 runOnUiThread(() -> applicationsContainer.addView(applicationView));
                             }
                         } else {
                             String message = jsonObject.optString("message", "Unknown error");
-                            runOnUiThread(() -> Toast.makeText(ApplicationHistory.this, message, Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(MemberCart.this, message, Toast.LENGTH_SHORT).show());
                         }
                     } catch (JSONException e) {
-                        Log.e("FetchApplicationData", "JSON parsing error: " + e.getMessage());
-                        runOnUiThread(() -> Toast.makeText(ApplicationHistory.this, "Error processing data", Toast.LENGTH_SHORT).show());
+                        Log.e("CartFetchApplicationData", "JSON parsing error: " + e.getMessage());
+                        runOnUiThread(() -> Toast.makeText(MemberCart.this, "Error processing data", Toast.LENGTH_SHORT).show());
                     }
                 } else {
-                    Log.e("FetchApplicationData", "Request failed, response code: " + response.code());
-                    runOnUiThread(() -> Toast.makeText(ApplicationHistory.this, "Failed to fetch application data", Toast.LENGTH_SHORT).show());
+                    Log.e("CartFetchApplicationData", "Request failed, response code: " + response.code());
+                    runOnUiThread(() -> Toast.makeText(MemberCart.this, "Failed to fetch application data", Toast.LENGTH_SHORT).show());
                 }
             }
         });
