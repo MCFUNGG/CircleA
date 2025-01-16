@@ -34,13 +34,14 @@ import okhttp3.Response;
 
 public class ParentApplicationFillDetail extends AppCompatActivity {
 
-    private Spinner studentLevelSpinner, lessonPerWeekSpinner;
+    private Spinner studentLevelSpinner;
     private Button submitButton;
     private EditText feePerHr;
     private RadioGroup radioGroup;
     private EditText descriptionInput;
     private LinearLayout districtContainer;
-    private LinearLayout subjectContainer; // Add a container for subjects
+    private LinearLayout subjectContainer, dateContainer;
+    private ArrayList<String> selectedDates; // To hold selected dates and their times
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,50 +50,30 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
         // Initialize views
         studentLevelSpinner = findViewById(R.id.student_level_spinner);
-        lessonPerWeekSpinner = findViewById(R.id.lesson_per_week_spinner);
         submitButton = findViewById(R.id.submit_button);
         feePerHr = findViewById(R.id.fee_input);
         radioGroup = findViewById(R.id.radio_group);
         descriptionInput = findViewById(R.id.description_input);
         districtContainer = findViewById(R.id.district_container);
-        subjectContainer = findViewById(R.id.subject_container); // Initialize subject container
+        subjectContainer = findViewById(R.id.subject_container);
+        dateContainer = findViewById(R.id.date_container);
+
+        selectedDates = new ArrayList<>(); // Initialize the list for selected dates
 
         // Load data and setup spinners
         loadStudentLevelsAndSubjects();
-        setupLessonPerWeekSpinner(lessonPerWeekSpinner);
+        setupDateCheckBoxes();
 
         // Set up button listeners
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSubmitButtonClick();
-            }
-        });
+        submitButton.setOnClickListener(v -> onSubmitButtonClick());
 
         Button exitButton = findViewById(R.id.exitButton);
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
-
-    private void setupLessonPerWeekSpinner(Spinner lessonPerWeekSpinner) {
-        ArrayList<String> lessonOptions = new ArrayList<>();
-        for (int i = 1; i <= 7; i++) {
-            lessonOptions.add(String.valueOf(i));
-        }
-
-        ArrayAdapter<String> lessonAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, lessonOptions);
-        lessonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        lessonPerWeekSpinner.setAdapter(lessonAdapter);
+        exitButton.setOnClickListener(v -> finish());
     }
 
     private void loadStudentLevelsAndSubjects() {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2/FYP/php/get_studentLevelsAndSubject.php";
+        String url = "http://10.0.2.2/FYP/php/get_studentLevels&Subject&District.php";
 
         Request request = new Request.Builder().url(url).build();
 
@@ -161,7 +142,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
     }
 
     private void setupDistrictCheckBoxes(ArrayList<String> districts, ArrayList<String> districtIds) {
-        districtContainer.removeAllViews(); // Clear previous checkboxes
+        districtContainer.removeAllViews();
 
         for (int i = 0; i < districts.size(); i++) {
             CheckBox checkBox = new CheckBox(this);
@@ -172,13 +153,63 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
     }
 
     private void setupSubjectCheckBoxes(ArrayList<String> subjects, ArrayList<String> subjectIds) {
-        subjectContainer.removeAllViews(); // Clear previous checkboxes
+        subjectContainer.removeAllViews();
 
         for (int i = 0; i < subjects.size(); i++) {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(subjects.get(i));
-            checkBox.setTag(subjectIds.get(i)); // Set the subject ID as tag
-            subjectContainer.addView(checkBox); // Add checkbox to the container
+            checkBox.setTag(subjectIds.get(i));
+            subjectContainer.addView(checkBox);
+        }
+    }
+
+    private void setupDateCheckBoxes() {
+        dateContainer.removeAllViews();
+
+        String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+        for (String day : daysOfWeek) {
+            LinearLayout dayLayout = new LinearLayout(this);
+            dayLayout.setOrientation(LinearLayout.HORIZONTAL);
+            dayLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            ));
+
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setText(day);
+
+            EditText timeInput = new EditText(this);
+            timeInput.setHint("1400-1630");
+            timeInput.setLayoutParams(new LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1.0f
+            ));
+            timeInput.setEnabled(false);
+
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                timeInput.setEnabled(isChecked);
+                if (!isChecked) {
+                    timeInput.setText("");
+                    selectedDates.removeIf(date -> date.startsWith(day));
+                } else {
+                    // When checked, ensure the date is added only if there's time
+                    timeInput.setOnFocusChangeListener((v, hasFocus) -> {
+                        if (!hasFocus) {
+                            String time = timeInput.getText().toString();
+                            if (!time.isEmpty()) {
+                                selectedDates.add(day + ": " + time);
+                            }
+                        }
+                    });
+                }
+            });
+
+            dayLayout.addView(checkBox);
+            dayLayout.addView(timeInput);
+
+            dateContainer.addView(dayLayout);
         }
     }
 
@@ -188,10 +219,10 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         for (int i = 0; i < subjectContainer.getChildCount(); i++) {
             CheckBox checkBox = (CheckBox) subjectContainer.getChildAt(i);
             if (checkBox.isChecked()) {
-                selectedIds.add((String) checkBox.getTag()); // Add selected subject ID
+                selectedIds.add((String) checkBox.getTag());
             }
         }
-        return selectedIds; // Return list of selected subject IDs
+        return selectedIds;
     }
 
     private ArrayList<String> getSelectedDistrictIds() {
@@ -199,17 +230,16 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         for (int i = 0; i < districtContainer.getChildCount(); i++) {
             CheckBox checkBox = (CheckBox) districtContainer.getChildAt(i);
             if (checkBox.isChecked()) {
-                selectedIds.add((String) checkBox.getTag()); // Add selected district ID
+                selectedIds.add((String) checkBox.getTag());
             }
         }
-        return selectedIds; // Return list of selected district IDs
+        return selectedIds;
     }
 
     private void onSubmitButtonClick() {
         String memberId = getMemberIdFromLocalDatabase();
         String studentLevel = studentLevelSpinner.getSelectedItem() != null ? studentLevelSpinner.getSelectedItem().toString() : "";
-        String lessonsPerWeek = lessonPerWeekSpinner.getSelectedItem() != null ? lessonPerWeekSpinner.getSelectedItem().toString() : "";
-        String description = descriptionInput.getText().toString().trim(); // Trim whitespace
+        String description = descriptionInput.getText().toString().trim();
 
         ArrayList<String> selectedSubjectIds = getSelectedSubjectIds();
 
@@ -219,9 +249,8 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         }
 
         ArrayList<String> levelIds = (ArrayList<String>) studentLevelSpinner.getTag();
-        ArrayList<String> selectedDistrictIds = getSelectedDistrictIds(); // Get selected districts
+        ArrayList<String> selectedDistrictIds = getSelectedDistrictIds();
 
-        // Ensure at least one district is selected
         if (selectedDistrictIds.isEmpty()) {
             Toast.makeText(this, "Please select at least one district", Toast.LENGTH_SHORT).show();
             return;
@@ -237,29 +266,32 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             appCreator = "T";
         }
 
-        // Check if studentLevel and lessonsPerWeek are filled
-        if (studentLevel.isEmpty() || lessonsPerWeek.isEmpty() || description.isEmpty()) {
+        if (studentLevel.isEmpty() || description.isEmpty() || selectedDates.isEmpty()) {
             Toast.makeText(this, "Please fill in all required information", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            submitData(memberId, appCreator, selectedSubjectIds, selectedLevelId, selectedDistrictIds, description);
+            // Convert selectedDates to JSON format for submission
+            String selectedDatesJson = new JSONArray(selectedDates).toString();
+            submitData(memberId, appCreator, selectedSubjectIds, selectedLevelId, selectedDistrictIds, description, selectedDatesJson);
         }
     }
 
-    private void submitData(String memberId, String appCreator, ArrayList<String> subjectIds, String classLevelId, ArrayList<String> districtIds, String description) {
+    private void submitData(String memberId, String appCreator, ArrayList<String> subjectIds, String classLevelId, ArrayList<String> districtIds, String description, String selectedDatesJson) {
         OkHttpClient client = new OkHttpClient();
         Log.d("SubmitData", "Member ID: " + memberId);
         Log.d("SubmitData", "App Creator: " + appCreator);
         Log.d("SubmitData", "Selected Subject IDs: " + subjectIds.toString());
+        Log.d("SubmitData", "Selected Dates: " + selectedDatesJson);
 
         RequestBody formBody = new FormBody.Builder()
                 .add("member_id", memberId)
                 .add("app_creator", appCreator)
-                .add("subject_ids", new JSONArray(subjectIds).toString()) // Send JSON array of subject IDs
+                .add("subject_ids", new JSONArray(subjectIds).toString())
                 .add("class_level_id", classLevelId)
-                .add("district_ids", new JSONArray(districtIds).toString()) // Send JSON array of district IDs
+                .add("district_ids", new JSONArray(districtIds).toString())
                 .add("description", description)
                 .add("fee_per_hr", feePerHr.getText().toString())
+                .add("selected_dates", selectedDatesJson) // Add selected dates
                 .build();
 
         Request request = new Request.Builder()
@@ -276,24 +308,31 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String serverResponse = response.body().string();
-                    try {
-                        JSONObject jsonResponse = new JSONObject(serverResponse);
-                        boolean success = jsonResponse.getBoolean("success");
-                        String message = jsonResponse.getString("message");
-                        runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, message, Toast.LENGTH_SHORT).show());
-                    } catch (JSONException e) {
-                        runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Error processing response", Toast.LENGTH_SHORT).show());
-                    }
+                    String responseData = response.body().string();
+                    runOnUiThread(() -> {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(responseData);
+                            if (jsonResponse.getBoolean("success")) {
+                                Toast.makeText(ParentApplicationFillDetail.this, "Application submitted successfully!", Toast.LENGTH_SHORT).show();
+                                finish(); // Close the activity
+                            } else {
+                                Toast.makeText(ParentApplicationFillDetail.this, jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ParentApplicationFillDetail.this, "Error processing response", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
-                    runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Application submission failed", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Server error, please try again later.", Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
 
     private String getMemberIdFromLocalDatabase() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        return sharedPreferences.getString("member_id", ""); // Return empty string if not found
+        // Replace with actual implementation to retrieve member ID from shared preferences or local database
+        SharedPreferences sharedPreferences = getSharedPreferences("YourPrefs", MODE_PRIVATE);
+        return sharedPreferences.getString("member_id", "");
     }
 }

@@ -15,7 +15,7 @@ import com.example.circlea.R;
 
 public class Registration extends AppCompatActivity {
 
-    private EditText etEmail, etPhone, etPassword, etConfirmPassword;
+    private EditText etEmail, etPhone, etPassword, etConfirmPassword, etUsername;
     private CheckBox checkboxAgreement;
     private Button btnRegister;
     private FirebaseAuthHelper firebaseAuthHelper;
@@ -29,6 +29,7 @@ public class Registration extends AppCompatActivity {
         etEmail = findViewById(R.id.et_email);
         etPhone = findViewById(R.id.et_phone);
         etPassword = findViewById(R.id.et_password);
+        etUsername = findViewById(R.id.et_username);
         etConfirmPassword = findViewById(R.id.et_confirm_password);
         checkboxAgreement = findViewById(R.id.checkbox_agreement);
         btnRegister = findViewById(R.id.btn_register);
@@ -50,9 +51,9 @@ public class Registration extends AppCompatActivity {
         String phone = etPhone.getText().toString();
         String password = etPassword.getText().toString();
         String confirmPassword = etConfirmPassword.getText().toString();
-
+        String username = etUsername.getText().toString();
         // Check for empty fields
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(phone) ||
+        if (TextUtils.isEmpty(username) ||TextUtils.isEmpty(email) || TextUtils.isEmpty(phone) ||
                 TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
@@ -72,6 +73,7 @@ public class Registration extends AppCompatActivity {
 
         // Proceed to EmailVerification activity
         Intent intent = new Intent(Registration.this, EmailVerification.class);
+        intent.putExtra("username",username);
         intent.putExtra("email", email);
         intent.putExtra("password", password);
         intent.putExtra("phone", phone);

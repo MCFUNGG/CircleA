@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.circlea.Home;
 import com.example.circlea.Login;
 import com.example.circlea.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,7 +36,7 @@ public class EmailVerification extends AppCompatActivity {
     private FirebaseAuthHelper authHelper;
     private String email;
     private String password;
-    private String phone;
+    private String phone,username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class EmailVerification extends AppCompatActivity {
         continueButton = findViewById(R.id.btn_continue);
         emailAddressTextView = findViewById(R.id.tv_email_address);
 
+        username = getIntent().getStringExtra("username");
         email = getIntent().getStringExtra("email");
         password = getIntent().getStringExtra("password");
         phone = getIntent().getStringExtra("password");
@@ -101,8 +103,9 @@ public class EmailVerification extends AppCompatActivity {
             user.reload().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     if (user.isEmailVerified()) {
+                        sendLoginDataToServer(email, password);
                         Toast.makeText(this, "Email verified successfully!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(EmailVerification.this, PhoneNumVerification.class);
+                        Intent intent = new Intent(EmailVerification.this, Home.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(this, "Email not verified. Please check your inbox.", Toast.LENGTH_SHORT).show();
@@ -116,7 +119,7 @@ public class EmailVerification extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // 將用戶資料發送到伺服器
-                        sendLoginDataToServer(email, password);
+                       // sendLoginDataToServer(email, password);
                     } else {
                         Toast.makeText(EmailVerification.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -128,6 +131,7 @@ public class EmailVerification extends AppCompatActivity {
 
         // Build the request body
         RequestBody formBody = new FormBody.Builder()
+                .add("username", username)
                 .add("email", email)
                 .add("password", password)
                 .add("phone",phone)

@@ -37,8 +37,8 @@ public class SettingFragment extends Fragment {
 
     private OkHttpClient client;
     private TextView userEmailTextView;
-    private TextView userPhoneTextView;
-    private Button userOwnDetailbtn,userOwnCartbtn;
+    private TextView userPhoneTextView,usernameTextView;
+    private Button userOwnDetailbtn, userOwnCartbtn;
 
     @Nullable
     @Override
@@ -48,6 +48,7 @@ public class SettingFragment extends Fragment {
         client = new OkHttpClient();
 
         // Initialize TextViews
+        usernameTextView = view.findViewById(R.id.username);
         userEmailTextView = view.findViewById(R.id.user_email);
         userPhoneTextView = view.findViewById(R.id.user_phone);
         userOwnDetailbtn = view.findViewById(R.id.user_own_detail_button);
@@ -126,11 +127,12 @@ public class SettingFragment extends Fragment {
                                 JSONObject data = dataArray.getJSONObject(0); // Get the first object
                                 String email = data.optString("email", "N/A"); // Get email
                                 String phone = data.optString("phone", "N/A"); // Get phone
-
+                                String username = data.optString("username", "N/A");
                                 // Update UI with user data
                                 requireActivity().runOnUiThread(() -> {
                                     userEmailTextView.setText(email); // Set email
-                                    userPhoneTextView.setText(phone); // Set phone
+                                    userPhoneTextView.setText(phone);
+                                    usernameTextView.setText(username);// Set phone
                                 });
 
                                 // Log the data for debugging
@@ -140,6 +142,7 @@ public class SettingFragment extends Fragment {
                                 requireActivity().runOnUiThread(() -> {
                                     userEmailTextView.setText("N/A");
                                     userPhoneTextView.setText("N/A");
+                                    usernameTextView.setText("N/A");
                                 });
                             }
                         } else {
