@@ -3,8 +3,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,11 +22,32 @@
             android:layout_marginBottom="16dp" />
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_tutor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Show Tutor Applications" />
+
+            <Button
+                android:id="@+id/button_ps"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Show Parent/Student Applications" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/history_application_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <!-- 动态添加的申请项将放在这里 -->
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+            <!-- Dynamically added application items will go here -->
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

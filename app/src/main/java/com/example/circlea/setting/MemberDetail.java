@@ -92,7 +92,7 @@ public class MemberDetail extends AppCompatActivity {
     }
 
     private void getPastMemberDetails() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
 
         if (memberId == null) {
