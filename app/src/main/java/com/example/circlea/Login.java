@@ -35,6 +35,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+
         // Initialize views
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
@@ -111,22 +112,31 @@ public class Login extends AppCompatActivity {
                         String message = jsonResponse.getString("message");
 
                         // 獲取用戶 ID
-                        String memberID = jsonResponse.optString("member_id", null); // 使用 optString 避免 JSONException
+                        String memberID = jsonResponse.optString("member_id"); // 使用 optString 避免 JSONException
 
                         runOnUiThread(() -> {
                             Toast.makeText(Login.this, message, Toast.LENGTH_SHORT).show();
                             if (success) {
-                                // 儲存用戶 ID 到 SharedPreferences
-                                    runOnUiThread(() -> Toast.makeText(Login.this, "member_id: "+memberID, Toast.LENGTH_SHORT).show());
-                                    SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putString("member_id", memberID);
-                                    editor.apply();
+                                // Show member ID in a Toast message
+                                runOnUiThread(() -> Toast.makeText(Login.this, "member_id: " + memberID, Toast.LENGTH_SHORT).show());
 
-                                // 确认 ID 是否保存成功
+                                SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                                // Remove the existing member_id if it exists
+                                String existingMemberId = sharedPreferences.getString("member_id", null);
+                                if (existingMemberId != null) {
+                                    editor.remove("member_id");
+                                    Log.d("LoginRequest", "Removed existing member ID: " + existingMemberId);
+                                }
+
+                                // Save the new member ID
+                                editor.putString("member_id", memberID);
+                                editor.apply();
+
+                                // Confirm ID is saved successfully
                                 String savedMemberId = sharedPreferences.getString("member_id", null);
-                                Log.d("LoginRequest", "CircleA(sharedPreferences):Saved member ID: " + savedMemberId);
-
+                                Log.d("LoginRequest", "CircleA(sharedPreferences): Saved member ID: " + savedMemberId);
 
                                 // Navigate to the main activity
                                 Intent intent = new Intent(Login.this, Home.class);

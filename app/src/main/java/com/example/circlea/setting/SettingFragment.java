@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.circlea.CheckSharedPreferences;
 import com.example.circlea.Login;
 import com.example.circlea.R;
 import com.example.circlea.application.ParentApplicationFillDetail;
@@ -47,6 +48,9 @@ public class SettingFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         client = new OkHttpClient();
+
+        CheckSharedPreferences checkPrefs = new CheckSharedPreferences(requireContext());
+        checkPrefs.printSharedPreferences();
 
         // Initialize TextViews
         usernameTextView = view.findViewById(R.id.username);
@@ -99,7 +103,7 @@ public class SettingFragment extends Fragment {
     }
 
     private void fetchSettingData() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
 
         if (memberId == null) {

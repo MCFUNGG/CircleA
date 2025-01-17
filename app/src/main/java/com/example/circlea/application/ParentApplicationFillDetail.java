@@ -9,9 +9,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,46 +36,87 @@ import okhttp3.Response;
 
 public class ParentApplicationFillDetail extends AppCompatActivity {
 
+    private ViewFlipper viewFlipper;
+    private ProgressBar progressBar;
+    private Button nextButton;
+    private Button exitButton;
+
     private Spinner studentLevelSpinner;
-    private Button submitButton;
     private EditText feePerHr;
     private RadioGroup radioGroup;
     private EditText descriptionInput;
-    private LinearLayout districtContainer;
-    private LinearLayout subjectContainer, dateContainer;
-    private ArrayList<String> selectedDates; // To hold selected dates and their times
+    private LinearLayout districtContainer, subjectContainer;
+    private LinearLayout dateContainer;
+
+    private int currentStep = 0;
+    private final ArrayList<String> selectedDates = new ArrayList<>();
+    private final ArrayList<String> selectedSubjects = new ArrayList<>();
+    private final ArrayList<String> selectedSubjectIds = new ArrayList<>();
+    private final ArrayList<String> selectedDistricts = new ArrayList<>();
+    private final ArrayList<String> subjectIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.post_application_step1);
+        setContentView(R.layout.post_application_step1); // Update your layout file
 
         // Initialize views
+        viewFlipper = findViewById(R.id.view_flipper);
+        progressBar = findViewById(R.id.progress_bar);
+        nextButton = findViewById(R.id.next_button);
+        exitButton = findViewById(R.id.exit_button);
+        Button backButton = findViewById(R.id.back_button);
+
         studentLevelSpinner = findViewById(R.id.student_level_spinner);
-        submitButton = findViewById(R.id.submit_button);
         feePerHr = findViewById(R.id.fee_input);
         radioGroup = findViewById(R.id.radio_group);
         descriptionInput = findViewById(R.id.description_input);
         districtContainer = findViewById(R.id.district_container);
-        subjectContainer = findViewById(R.id.subject_container);
         dateContainer = findViewById(R.id.date_container);
 
-        selectedDates = new ArrayList<>(); // Initialize the list for selected dates
-
-        // Load data and setup spinners
+        // Load data
         loadStudentLevelsAndSubjects();
-        setupDateCheckBoxes();
 
-        // Set up button listeners
-        submitButton.setOnClickListener(v -> onSubmitButtonClick());
+        nextButton.setOnClickListener(v -> {
+            if (currentStep < 2) {
+                currentStep++;
+                viewFlipper.showNext();
+                progressBar.setProgress(currentStep + 1);
+                updateNextButtonText(); // Update button text based on the current step
+                if (currentStep == 1) {
+                    setupDateCheckBoxes();
+                }
+            } else {
+                submitData();
+            }
+        });
 
-        Button exitButton = findViewById(R.id.exitButton);
+        backButton.setOnClickListener(v -> {
+            if (currentStep > 0) {
+                currentStep--;
+                viewFlipper.showPrevious();
+                progressBar.setProgress(currentStep + 1);
+                updateNextButtonText(); // Update button text based on the current step
+            }
+        });
+
         exitButton.setOnClickListener(v -> finish());
+
+        updateNextButtonText(); // Initial setup for button text
+    }
+
+    // Method to update the text of the next button
+    private void updateNextButtonText() {
+        if (currentStep == 2) {
+            nextButton.setText("Submit");
+        } else {
+            nextButton.setText("Next");
+        }
     }
 
     private void loadStudentLevelsAndSubjects() {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2/FYP/php/get_studentLevels&Subject&District.php";
+        String url = "http://10.0.2.2/FYP/php/get_studentLevels&Subject&District.php"; // Your PHP URL
 
         Request request = new Request.Builder().url(url).build();
 
@@ -97,15 +140,12 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
                         ArrayList<String> levels = new ArrayList<>();
                         ArrayList<String> subjects = new ArrayList<>();
+                        subjectIds.clear();
                         ArrayList<String> districts = new ArrayList<>();
-                        ArrayList<String> levelIds = new ArrayList<>();
-                        ArrayList<String> subjectIds = new ArrayList<>();
-                        ArrayList<String> districtIds = new ArrayList<>();
 
                         for (int i = 0; i < levelsArray.length(); i++) {
                             JSONObject levelObj = levelsArray.getJSONObject(i);
                             levels.add(levelObj.getString("class_level_name"));
-                            levelIds.add(levelObj.getString("class_level_id"));
                         }
 
                         for (int i = 0; i < subjectsArray.length(); i++) {
@@ -116,16 +156,15 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
                         for (int i = 0; i < districtsArray.length(); i++) {
                             JSONObject districtObj = districtsArray.getJSONObject(i);
-                            districts.add(districtObj.getString("district_name"));
-                            districtIds.add(districtObj.getString("district_id"));
+                            String districtName = districtObj.getString("district_name");
+                            String districtId = districtObj.getString("district_id");
+                            districts.add(districtId + ":" + districtName);
                         }
 
                         runOnUiThread(() -> {
                             studentLevelSpinner.setAdapter(new ArrayAdapter<>(ParentApplicationFillDetail.this, android.R.layout.simple_spinner_item, levels));
-                            setupSubjectCheckBoxes(subjects, subjectIds);
-                            setupDistrictCheckBoxes(districts, districtIds);
-
-                            studentLevelSpinner.setTag(levelIds);
+                            setupSubjectCheckBoxes(subjects);
+                            setupDistrictCheckBoxes(districts);
                         });
                     } catch (JSONException e) {
                         Log.e("LoadLevelsRequest", "JSON parsing error: " + e.getMessage());
@@ -141,88 +180,54 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         });
     }
 
-    private void setupDistrictCheckBoxes(ArrayList<String> districts, ArrayList<String> districtIds) {
-        districtContainer.removeAllViews();
-
-        for (int i = 0; i < districts.size(); i++) {
-            CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(districts.get(i));
-            checkBox.setTag(districtIds.get(i));
-            districtContainer.addView(checkBox);
-        }
-    }
-
-    private void setupSubjectCheckBoxes(ArrayList<String> subjects, ArrayList<String> subjectIds) {
+    private void setupSubjectCheckBoxes(ArrayList<String> subjects) {
+        LinearLayout subjectContainer = findViewById(R.id.subject_container);
         subjectContainer.removeAllViews();
 
         for (int i = 0; i < subjects.size(); i++) {
+            String subject = subjects.get(i);
+            String subjectId = subjectIds.get(i);
+
             CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(subjects.get(i));
-            checkBox.setTag(subjectIds.get(i));
+            checkBox.setText(subject);
+            checkBox.setTag(subjectId);
+            checkBox.setChecked(selectedSubjectIds.contains(subjectId)); // Restore selection state
+
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    selectedSubjectIds.add(subjectId);
+                } else {
+                    selectedSubjectIds.remove(subjectId);
+                }
+            });
+
             subjectContainer.addView(checkBox);
         }
     }
 
-    private void setupDateCheckBoxes() {
-        dateContainer.removeAllViews();
+    private void setupDistrictCheckBoxes(ArrayList<String> districts) {
+        districtContainer.removeAllViews();
 
-        String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-
-        for (String day : daysOfWeek) {
-            LinearLayout dayLayout = new LinearLayout(this);
-            dayLayout.setOrientation(LinearLayout.HORIZONTAL);
-            dayLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            ));
+        for (String district : districts) {
+            String[] parts = district.split(":");
+            String districtId = parts[0];
+            String districtName = parts[1];
 
             CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(day);
-
-            EditText timeInput = new EditText(this);
-            timeInput.setHint("1400-1630");
-            timeInput.setLayoutParams(new LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    1.0f
-            ));
-            timeInput.setEnabled(false);
+            checkBox.setText(districtName);
+            checkBox.setTag(districtId);
+            checkBox.setChecked(selectedDistricts.contains(districtId)); // Restore selection state
 
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                timeInput.setEnabled(isChecked);
-                if (!isChecked) {
-                    timeInput.setText("");
-                    selectedDates.removeIf(date -> date.startsWith(day));
+                if (isChecked) {
+                    selectedDistricts.add(districtId);
                 } else {
-                    // When checked, ensure the date is added only if there's time
-                    timeInput.setOnFocusChangeListener((v, hasFocus) -> {
-                        if (!hasFocus) {
-                            String time = timeInput.getText().toString();
-                            if (!time.isEmpty()) {
-                                selectedDates.add(day + ": " + time);
-                            }
-                        }
-                    });
+                    selectedDistricts.remove(districtId);
                 }
             });
 
-            dayLayout.addView(checkBox);
-            dayLayout.addView(timeInput);
-
-            dateContainer.addView(dayLayout);
+            districtContainer.addView(checkBox);
         }
-    }
-
-    private ArrayList<String> getSelectedSubjectIds() {
-        ArrayList<String> selectedIds = new ArrayList<>();
-
-        for (int i = 0; i < subjectContainer.getChildCount(); i++) {
-            CheckBox checkBox = (CheckBox) subjectContainer.getChildAt(i);
-            if (checkBox.isChecked()) {
-                selectedIds.add((String) checkBox.getTag());
-            }
-        }
-        return selectedIds;
     }
 
     private ArrayList<String> getSelectedDistrictIds() {
@@ -236,62 +241,91 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         return selectedIds;
     }
 
-    private void onSubmitButtonClick() {
-        String memberId = getMemberIdFromLocalDatabase();
-        String studentLevel = studentLevelSpinner.getSelectedItem() != null ? studentLevelSpinner.getSelectedItem().toString() : "";
-        String description = descriptionInput.getText().toString().trim();
+    private void setupDateCheckBoxes() {
+        dateContainer.removeAllViews();
+        String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
-        ArrayList<String> selectedSubjectIds = getSelectedSubjectIds();
+        for (String day : daysOfWeek) {
+            LinearLayout dayLayout = new LinearLayout(this);
+            dayLayout.setOrientation(LinearLayout.HORIZONTAL);
+            dayLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            ));
 
-        if (selectedSubjectIds.isEmpty()) {
-            Toast.makeText(this, "Please select at least one subject", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setText(day);
+            checkBox.setChecked(selectedDates.stream().anyMatch(date -> date.startsWith(day))); // Restore selection state
 
-        ArrayList<String> levelIds = (ArrayList<String>) studentLevelSpinner.getTag();
-        ArrayList<String> selectedDistrictIds = getSelectedDistrictIds();
+            EditText timeInput = new EditText(this);
+            timeInput.setHint("1400-1630");
+            timeInput.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+            timeInput.setEnabled(checkBox.isChecked());
 
-        if (selectedDistrictIds.isEmpty()) {
-            Toast.makeText(this, "Please select at least one district", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            // Set the text of the EditText if the checkbox is checked and the time is stored
+            selectedDates.stream()
+                    .filter(date -> date.startsWith(day))
+                    .findFirst()
+                    .ifPresent(date -> timeInput.setText(date.split(": ")[1])); // Restore time value
 
-        String selectedLevelId = levelIds.get(studentLevelSpinner.getSelectedItemPosition());
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                timeInput.setEnabled(isChecked);
+                if (!isChecked) {
+                    timeInput.setText("");
+                    selectedDates.removeIf(date -> date.startsWith(day));
+                } else {
+                    timeInput.setOnFocusChangeListener((v, hasFocus) -> {
+                        if (!hasFocus) {
+                            String time = timeInput.getText().toString();
+                            if (!time.isEmpty()) {
+                                selectedDates.add(day + ": " + time);
+                            }
+                        }
+                    });
+                }
+            });
 
-        String appCreator = "";
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        if (selectedId == R.id.radio_parent) {
-            appCreator = "PS";
-        } else if (selectedId == R.id.radio_tutor) {
-            appCreator = "T";
-        }
-
-        if (studentLevel.isEmpty() || description.isEmpty() || selectedDates.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required information", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            // Convert selectedDates to JSON format for submission
-            String selectedDatesJson = new JSONArray(selectedDates).toString();
-            submitData(memberId, appCreator, selectedSubjectIds, selectedLevelId, selectedDistrictIds, description, selectedDatesJson);
+            dayLayout.addView(checkBox);
+            dayLayout.addView(timeInput);
+            dateContainer.addView(dayLayout);
         }
     }
 
-    private void submitData(String memberId, String appCreator, ArrayList<String> subjectIds, String classLevelId, ArrayList<String> districtIds, String description, String selectedDatesJson) {
-        OkHttpClient client = new OkHttpClient();
-        Log.d("SubmitData", "Member ID: " + memberId);
-        Log.d("SubmitData", "App Creator: " + appCreator);
-        Log.d("SubmitData", "Selected Subject IDs: " + subjectIds.toString());
-        Log.d("SubmitData", "Selected Dates: " + selectedDatesJson);
+    private void submitData() {
+        String memberId = getMemberIdFromLocalDatabase();
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        String appCreator = "";
 
+        if (selectedId == R.id.radio_tutor) {
+            appCreator = "T";
+        } else if (selectedId == R.id.radio_parent) {
+            appCreator = "PS";
+        } else {
+            Toast.makeText(this, "Please select an option", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String classLevelId = studentLevelSpinner.getSelectedItem() != null ? studentLevelSpinner.getSelectedItem().toString() : "";
+        String description = descriptionInput.getText().toString().trim();
+        String fee = feePerHr.getText().toString().trim();
+
+        ArrayList<String> selectedDistrictIds = getSelectedDistrictIds();
+
+        if (classLevelId.isEmpty() || description.isEmpty() || selectedDistrictIds.isEmpty() || fee.isEmpty() || selectedDates.isEmpty() || selectedSubjectIds.isEmpty()) {
+            Toast.makeText(this, "Please fill in all required information", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient();
         RequestBody formBody = new FormBody.Builder()
                 .add("member_id", memberId)
                 .add("app_creator", appCreator)
-                .add("subject_ids", new JSONArray(subjectIds).toString())
+                .add("subject_ids", new JSONArray(selectedSubjectIds).toString())
                 .add("class_level_id", classLevelId)
-                .add("district_ids", new JSONArray(districtIds).toString())
+                .add("district_ids", new JSONArray(selectedDistrictIds).toString())
                 .add("description", description)
-                .add("fee_per_hr", feePerHr.getText().toString())
-                .add("selected_dates", selectedDatesJson) // Add selected dates
+                .add("fee_per_hr", fee)
+                .add("selected_dates", new JSONArray(selectedDates).toString())
                 .build();
 
         Request request = new Request.Builder()
@@ -314,7 +348,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(responseData);
                             if (jsonResponse.getBoolean("success")) {
                                 Toast.makeText(ParentApplicationFillDetail.this, "Application submitted successfully!", Toast.LENGTH_SHORT).show();
-                                finish(); // Close the activity
+                                finish();
                             } else {
                                 Toast.makeText(ParentApplicationFillDetail.this, jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
                             }
@@ -330,8 +364,30 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("selectedSubjects", selectedSubjectIds);
+        outState.putStringArrayList("selectedDistricts", selectedDistricts);
+        outState.putStringArrayList("selectedDates", selectedDates);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        selectedSubjectIds.clear();
+        selectedDistricts.clear();
+        selectedDates.clear();
+
+        selectedSubjectIds.addAll(savedInstanceState.getStringArrayList("selectedSubjects"));
+        selectedDistricts.addAll(savedInstanceState.getStringArrayList("selectedDistricts"));
+        selectedDates.addAll(savedInstanceState.getStringArrayList("selectedDates"));
+
+        // Re-populate checkboxes after restoring state
+        loadStudentLevelsAndSubjects(); // Reloads the data
+    }
+
     private String getMemberIdFromLocalDatabase() {
-        // Replace with actual implementation to retrieve member ID from shared preferences or local database
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         return sharedPreferences.getString("member_id", "");
     }
