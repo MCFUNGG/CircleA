@@ -55,7 +55,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 new SendDataToServerTask(application.getAppId()).execute();
 
                 // Continue with navigating to the detail activity
-                Intent intent = new Intent(context, Student_detail.class);
+                Intent intent = new Intent(context, StudentDetail.class);
                 intent.putExtra("member_id", application.getMemberId());
                 intent.putExtra("subject", application.getSubject());
                 intent.putExtra("classLevel", application.getClassLevel());
