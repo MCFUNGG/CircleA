@@ -119,9 +119,10 @@ public class HomeFragment extends Fragment {
                                 String classLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
                                 String district = data.optString("district_name", "N/A");
+                                String memberId = data.optString("member_id", "N/A");
 
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subject, classLevel, fee, district));
+                                applicationsList.add(new ApplicationItem(appId, subject, classLevel, fee, district, memberId));
                             }
 
                             // Update UI on the main thread using FindingStudentsAdapter
@@ -187,9 +188,9 @@ public class HomeFragment extends Fragment {
                                 String classLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
                                 String district = data.optString("district_name", "N/A");
-
+                                String memberId = data.optString("member_id", "N/A");
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subject, classLevel, fee, district));
+                                applicationsList.add(new ApplicationItem(appId, subject, classLevel, fee, district, memberId));
                             }
 
                             // Update UI on the main thread using ApplicationAdapter
