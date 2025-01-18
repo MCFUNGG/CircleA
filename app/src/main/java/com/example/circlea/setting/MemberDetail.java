@@ -53,7 +53,7 @@ public class MemberDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.member_detail); // Ensure your XML file is named correctly
+        setContentView(R.layout.member_detail);
 
         // Initialize views
         addressDistrictIdEditText = findViewById(R.id.address_district_id);

@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -54,7 +55,8 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
     private final ArrayList<String> selectedSubjectIds = new ArrayList<>();
     private final ArrayList<String> selectedDistricts = new ArrayList<>();
     private final ArrayList<String> subjectIds = new ArrayList<>();
-
+    private final HashMap<String, String> classLevelMap = new HashMap<>(); // Map for class level name to ID
+    private final ArrayList<String> subjects = new ArrayList<>(); // Declare the subjects ArrayList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +107,6 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         updateNextButtonText(); // Initial setup for button text
     }
 
-    // Method to update the text of the next button
     private void updateNextButtonText() {
         if (currentStep == 2) {
             nextButton.setText("Submit");
@@ -139,13 +140,15 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                         JSONArray districtsArray = jsonResponse.getJSONArray("districts");
 
                         ArrayList<String> levels = new ArrayList<>();
-                        ArrayList<String> subjects = new ArrayList<>();
                         subjectIds.clear();
                         ArrayList<String> districts = new ArrayList<>();
 
                         for (int i = 0; i < levelsArray.length(); i++) {
                             JSONObject levelObj = levelsArray.getJSONObject(i);
-                            levels.add(levelObj.getString("class_level_name"));
+                            String levelId = levelObj.getString("class_level_id");
+                            String levelName = levelObj.getString("class_level_name");
+                            levels.add(levelName);
+                            classLevelMap.put(levelName, levelId); // Store mapping of name to ID
                         }
 
                         for (int i = 0; i < subjectsArray.length(); i++) {
@@ -262,7 +265,6 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             timeInput.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             timeInput.setEnabled(checkBox.isChecked());
 
-            // Set the text of the EditText if the checkbox is checked and the time is stored
             selectedDates.stream()
                     .filter(date -> date.startsWith(day))
                     .findFirst()
@@ -294,7 +296,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
     private void submitData() {
         String memberId = getMemberIdFromLocalDatabase();
         int selectedId = radioGroup.getCheckedRadioButtonId();
-        String appCreator = "";
+        String appCreator;
 
         if (selectedId == R.id.radio_tutor) {
             appCreator = "T";
@@ -305,13 +307,14 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             return;
         }
 
-        String classLevelId = studentLevelSpinner.getSelectedItem() != null ? studentLevelSpinner.getSelectedItem().toString() : "";
+        String classLevelName = (String) studentLevelSpinner.getSelectedItem();
+        String classLevelId = classLevelMap.get(classLevelName); // Get the ID from the map
         String description = descriptionInput.getText().toString().trim();
         String fee = feePerHr.getText().toString().trim();
 
         ArrayList<String> selectedDistrictIds = getSelectedDistrictIds();
 
-        if (classLevelId.isEmpty() || description.isEmpty() || selectedDistrictIds.isEmpty() || fee.isEmpty() || selectedDates.isEmpty() || selectedSubjectIds.isEmpty()) {
+        if (classLevelId == null || selectedDistrictIds.isEmpty() || fee.isEmpty() || selectedDates.isEmpty() || selectedSubjectIds.isEmpty()) {
             Toast.makeText(this, "Please fill in all required information", Toast.LENGTH_SHORT).show();
             return;
         }
