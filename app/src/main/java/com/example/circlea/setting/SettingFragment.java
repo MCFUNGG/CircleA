@@ -22,12 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.circlea.CheckSharedPreferences;
+import com.example.circlea.Home;
 import com.example.circlea.Login;
 import com.example.circlea.R;
 
@@ -91,6 +93,11 @@ public class SettingFragment extends Fragment {
         userOwnCartbtn = view.findViewById(R.id.cart_button);
         logOutTextView = view.findViewById(R.id.log_out_tv);
         userIcon = view.findViewById(R.id.user_icon); // 初始化用户头像
+        ImageButton menuButton = view.findViewById(R.id.menuButton);
+
+        menuButton.setOnClickListener(v -> {
+            ((Home) getActivity()).openDrawer(); // Call method from Home activity
+        });
 
         // 设置头像点击事件
         userIcon.setOnClickListener(v -> {

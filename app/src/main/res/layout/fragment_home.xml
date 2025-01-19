@@ -12,22 +12,21 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <ImageButton
+            android:id="@+id/menuButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:src="@drawable/ic_menu"
+            android:contentDescription="Menu" />
+
         <!-- Search bar and menu button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="16dp"
-            >
+            android:layout_marginBottom="16dp">
 
-            <!-- Left top corner menu button -->
-            <ImageButton
-                android:id="@+id/menuButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@null"
-                android:src="@drawable/ic_menu"
-                android:contentDescription="Menu" />
 
             <!-- Search bar -->
             <EditText
@@ -39,8 +38,7 @@
                 android:padding="8dp"
                 android:background="@drawable/rounded_background"
                 android:drawableStart="@drawable/ic_search"
-                android:drawablePadding="8dp"
-                />
+                android:drawablePadding="8dp" />
         </LinearLayout>
 
         <!-- Horizontal RecyclerView -->
@@ -50,8 +48,7 @@
             android:layout_height="100dp"
             android:orientation="horizontal"
             tools:listitem="@layout/item_horizontal"
-            android:layout_marginBottom="16dp"
-            />
+            android:layout_marginBottom="16dp" />
 
         <!-- Divider line -->
         <View
@@ -94,15 +91,12 @@
             android:textSize="18sp"
             android:layout_marginBottom="8dp" />
 
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/findingStudentsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             tools:listitem="@layout/item_finding_students" />
-
 
         <!-- Finding Tutors Title -->
         <TextView

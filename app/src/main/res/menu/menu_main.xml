@@ -1,0 +1,41 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/nav_custom_item_application"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_post_application"
+        android:title="Post Application" />
+
+    <item
+        android:id="@+id/nav_history_application"
+        android:title="My Application" />
+
+    <item
+        android:id="@+id/nav_custom_item_tutor"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_create_cv"
+        android:title="Create CV" />
+
+    <item
+        android:id="@+id/nav_history_cv"
+        android:title="My CV" />
+
+    <item
+        android:id="@+id/nav_custom_item_view"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_application"
+        android:title="Applications" />
+
+    <item
+        android:id="@+id/nav_setting"
+        android:title="Settings" />
+</menu>

@@ -1,13 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/menuButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:src="@drawable/ic_menu"
+        android:contentDescription="Menu" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Application Page " />
-
 
     <View
         android:layout_width="match_parent"
@@ -15,14 +23,13 @@
         android:layout_marginBottom="16dp"
         android:background="#CCCCCC" />
 
-
-
     <Button
         android:id="@+id/post_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="發佈招聘"
         android:layout_marginTop="24dp" />
+
     <Button
         android:id="@+id/my_application_button"
         android:layout_width="match_parent"
@@ -35,12 +42,13 @@
         android:layout_height="1dp"
         android:layout_marginBottom="16dp"
         android:background="#CCCCCC" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="i am tutor"
+        android:text="I am a tutor"
         android:textSize="16sp" />
 
     <Button
@@ -56,5 +64,4 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="My CV" />
-
 </LinearLayout>
