@@ -87,7 +87,7 @@
             android:id="@+id/lookingforstudents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Looking for Students"
+            android:text="Tutor Application"
             android:textStyle="bold"
             android:textSize="18sp"
             android:layout_marginBottom="8dp" />
@@ -104,7 +104,7 @@
             android:id="@+id/applicationTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Looking for Tutors"
+            android:text="Parent/Student Application"
             android:textStyle="bold"
             android:textSize="18sp"
             android:layout_marginBottom="8dp" />
