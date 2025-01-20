@@ -3,11 +3,13 @@ package com.example.circlea.application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
@@ -183,9 +185,18 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         });
     }
 
+    // ... existing code ...
     private void setupSubjectCheckBoxes(ArrayList<String> subjects) {
         LinearLayout subjectContainer = findViewById(R.id.subject_container);
         subjectContainer.removeAllViews();
+
+        // Use GridLayout for consistent button sizes
+        GridLayout gridLayout = new GridLayout(this);
+        gridLayout.setColumnCount(2); // Two columns
+        gridLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
 
         for (int i = 0; i < subjects.size(); i++) {
             String subject = subjects.get(i);
@@ -196,6 +207,22 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             checkBox.setTag(subjectId);
             checkBox.setChecked(selectedSubjectIds.contains(subjectId)); // Restore selection state
 
+            // Apply button-like styling
+            checkBox.setButtonDrawable(null); // Remove default checkbox
+            checkBox.setBackgroundResource(R.drawable.radio_selector); // Use the same selector
+            checkBox.setTextColor(getResources().getColorStateList(R.drawable.radio_text_selector));
+            checkBox.setGravity(Gravity.CENTER);
+            checkBox.setPadding(12, 12, 12, 12);
+
+            // Set layout parameters for equal width and height
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+            params.width = 0;
+            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+            params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // Ensure equal height
+            params.setMargins(4, 4, 4, 4);
+            checkBox.setLayoutParams(params);
+
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     selectedSubjectIds.add(subjectId);
@@ -204,9 +231,12 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                 }
             });
 
-            subjectContainer.addView(checkBox);
+            gridLayout.addView(checkBox);
         }
+
+        subjectContainer.addView(gridLayout);
     }
+// ... existing code ...
 
     private void setupDistrictCheckBoxes(ArrayList<String> districts) {
         districtContainer.removeAllViews();

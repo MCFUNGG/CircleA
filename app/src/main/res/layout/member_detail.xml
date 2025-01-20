@@ -1,74 +1,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F5F5F5">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:background="#1e4072"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="40dp">
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bottom_shadow">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:background="#1e4072"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="40dp">
+            android:padding="16dp">
 
             <Button
                 android:id="@+id/exitButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/exit"
-                android:layout_marginRight="8dp" />
+                android:layout_marginEnd="8dp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Member Detail Form"
-                android:textSize="24sp"
-                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textColor="#333333"
                 android:layout_weight="1"
-                android:gravity="center" />
+                android:gravity="center"
+                android:fontFamily="sans-serif-medium" />
         </LinearLayout>
-        </LinearLayout>
-
-
-
-
-
-
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gender:" />
+        android:text="Gender:"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:layout_marginBottom="8dp" />
 
     <RadioGroup
         android:id="@+id/gender"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
 
         <RadioButton
             android:id="@+id/gender_male"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Male" />
+            android:text="Male"
+            android:textColor="#333333" />
 
         <RadioButton
             android:id="@+id/gender_female"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Female" />
+            android:text="Female"
+            android:textColor="#333333" />
     </RadioGroup>
 
     <EditText
@@ -77,7 +76,9 @@
         android:layout_height="wrap_content"
         android:hint="Address District ID"
         android:maxLength="50"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#DDDDDD" />
 
     <EditText
         android:id="@+id/address"
@@ -85,14 +86,18 @@
         android:layout_height="wrap_content"
         android:hint="Address"
         android:maxLength="255"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#DDDDDD" />
 
     <EditText
         android:id="@+id/dob"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Date of Birth (MM/DD/YYYY)"
-        android:inputType="date" />
+        android:inputType="date"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#DDDDDD" />
 
     <EditText
         android:id="@+id/profile"
@@ -100,7 +105,9 @@
         android:layout_height="wrap_content"
         android:hint="Profile"
         android:maxLength="50"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#DDDDDD" />
 
     <EditText
         android:id="@+id/description"
@@ -108,12 +115,16 @@
         android:layout_height="wrap_content"
         android:hint="Description"
         android:maxLength="1024"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#DDDDDD" />
 
     <Button
         android:id="@+id/submit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#1E88E5"
+        android:textColor="#FFFFFF" />
 </LinearLayout>

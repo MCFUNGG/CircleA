@@ -10,89 +10,96 @@
         android:id="@+id/menuButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@null"
         android:src="@drawable/ic_menu"
-        android:contentDescription="Menu" />
+        android:contentDescription="Menu"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bottom_shadow">
 
-        <ImageView
-            android:id="@+id/user_icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_launcher_foreground" />
-
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="Username"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/user_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="user@example.com"
-            android:textSize="24sp" />
-
-
-        <TextView
-            android:id="@+id/user_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="+1234567890"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="16dp"
-            android:background="#CCCCCC" />
-
-
-        <Button
-            android:id="@+id/user_own_detail_button"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="member details" />
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center">
 
-        <Button
-            android:id="@+id/cart_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="member cart" />
+            <ImageView
+                android:id="@+id/user_icon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:layout_gravity="center"
+                android:layout_marginBottom="12dp" />
 
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-medium" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="16dp"
-            android:background="#CCCCCC" />
+            <TextView
+                android:id="@+id/user_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="user@example.com"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp" />
 
-        <TextView
-            android:id="@+id/log_out_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="log out"
-            android:textColor="@android:color/holo_blue_dark"
-            android:textSize="18sp"
-            android:padding="16dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/user_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+1234567890"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp" />
 
+            <Button
+                android:id="@+id/user_own_detail_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Member Details"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/cart_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Member Cart"
+                android:layout_marginBottom="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/log_out_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Log Out"
+                android:textSize="18sp"
+                android:padding="16dp"
+                android:layout_gravity="center" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

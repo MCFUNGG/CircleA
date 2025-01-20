@@ -1,5 +1,6 @@
 package com.example.circlea.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,10 +12,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.circlea.R;
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -23,10 +28,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudentsAdapter.ViewHolder> {
 
     private ArrayList<ApplicationItem> data;
     private Context context;
+    private static final String SERVER_ADDRESS = "localhost";  // Change to your server address
+    private static final int SERVER_PORT = 8080;  // Change to your server port
+
 
     public FindingStudentsAdapter(ArrayList<ApplicationItem> data, Context context) {
         this.data = data;
@@ -51,9 +67,27 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
 
             // Set up the LinearLayout click listener to navigate to the detail activity
             holder.layout.setOnClickListener(v -> {
-                // Send the appId to PHP server first
-                new SendDataToServerTask(application.getAppId()).execute();
+                // Retrieve the member_id from SharedPreferences
+                SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
+                String TutorsMemberID = sharedPreferences.getString("member_id", null);
+                //get application id
+                String UserMemberId = application.getMemberId();
 
+                if (UserMemberId != null) {
+                    // Use the member_id (e.g., for logging or additional operations)
+                    Log.d("RetrieveMemberID", "Retrieved member_id: " + UserMemberId);
+                    Log.d("RetrieveMemberID", "retreived tutor member id: " + TutorsMemberID);
+                    // Send the member_id to the PHP server
+                    sendMemberIdToServerPS(UserMemberId);
+                    sendMemberIdToServerT(TutorsMemberID);
+                } else {
+                    // Handle case when member_id is not found
+                    Log.d("RetrieveMemberID", "No member_id found in SharedPreferences.");
+                    Toast.makeText(context, "User not logged in. Please log in first.", Toast.LENGTH_SHORT).show();
+                    return; // Exit if member_id is required and not found
+                }
+
+                // Continue with navigating to the detail activity
                 // Continue with navigating to the detail activity
                 Intent intent = new Intent(context, StudentDetail.class);
                 intent.putExtra("member_id", application.getMemberId());
@@ -65,56 +99,110 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 context.startActivity(intent);
             });
 
+
             // Set up star button click listener to save appId and navigate to the detail activity
             holder.starButton.setOnClickListener(v -> saveAppIdToPreferences(application.getMemberId()));
         }
     }
 
-    // AsyncTask to send data to PHP
-    private static class SendDataToServerTask extends AsyncTask<Void, Void, Void> {
-        private String member_Id;
+    // 使用 OkHttp 发送 member_id 到 matching_T.php
+    private void sendMemberIdToServerT(String TutorsMemberID) {
+        OkHttpClient client = new OkHttpClient();
 
-        public SendDataToServerTask(String member_Id) {
-            this.member_Id = member_Id;
-        }
+        String url = "http://10.0.2.2/Matching/get_MemberID.php";
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                // Set up the connection
-                URL url = new URL("http://10.0.2.2/FYP/php/matching_T.php");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setDoOutput(true);
+        // Create the POST request body with the number
+        RequestBody formBody = new FormBody.Builder()
+                .add("TutorsMemberID", String.valueOf(TutorsMemberID))
+                .build();
 
-                // Prepare the data to send (send appId as form data)
-                String data = "member_id=" + URLEncoder.encode(member_Id, "UTF-8");
+        // Create the POST request
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
 
-                // Send the data
-                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-                writer.write(data);
-                writer.flush();
-                writer.close();
+        Log.d("getNumber", "Number: " + TutorsMemberID);
 
-                // Get the response
-                int responseCode = connection.getResponseCode();
-                Log.d("SendDataToServerTask", "Response Code: " + responseCode);
-
-                // Optionally read the response from the server if needed
-                // InputStreamReader reader = new InputStreamReader(connection.getInputStream());
-                // BufferedReader in = new BufferedReader(reader);
-                // String inputLine;
-                // StringBuffer response = new StringBuffer();
-                // while ((inputLine = in.readLine()) != null) {
-                //     response.append(inputLine);
-                // }
-                // in.close();
-
-            } catch (Exception e) {
-                Log.e("SendDataToServerTask", "Error sending data to server", e);
+        // Execute the request
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("SendMemberID", "Request failed: " + e.getMessage());
+                // Notify user of failure
+                ((Activity) context).runOnUiThread(() ->
+                        Toast.makeText(context, "Failed to send member_id. Please try again.", Toast.LENGTH_SHORT).show()
+                );
             }
-            return null;
-        }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String serverResponse = response.body().string();
+                    Log.d("SendMemberID", "Server response: " + serverResponse);
+
+                    // Notify user of success
+                    ((Activity) context).runOnUiThread(() ->
+                            Toast.makeText(context, "Data sent successfully.", Toast.LENGTH_SHORT).show()
+                    );
+                } else {
+                    Log.e("SendMemberID", "Server returned error: " + response.code());
+                    ((Activity) context).runOnUiThread(() ->
+                            Toast.makeText(context, "Server error. Please try again.", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }
+        });
+    }
+
+    private void sendMemberIdToServerPS(String UserMemberId) {
+        OkHttpClient client = new OkHttpClient();
+
+        // Build the URL with the member_id as a GET parameter
+        String url = "http://10.0.2.2/Matching/get_MemberID.php";
+
+        // Create the POST request body with the number
+        RequestBody formBody = new FormBody.Builder()
+                .add("PSMemberID", String.valueOf(UserMemberId))
+                .build();
+
+        // Create the POST request
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        Log.d("getNumber", "Number: " + UserMemberId);
+
+        // Execute the request
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("SendMemberID", "Request failed: " + e.getMessage());
+                // Notify user of failure
+                ((Activity) context).runOnUiThread(() ->
+                        Toast.makeText(context, "Failed to send member_id. Please try again.", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String serverResponse = response.body().string();
+                    Log.d("SendMemberID", "Server response: " + serverResponse);
+
+                    // Notify user of success
+                    ((Activity) context).runOnUiThread(() ->
+                            Toast.makeText(context, "Data sent successfully.", Toast.LENGTH_SHORT).show()
+                    );
+                } else {
+                    Log.e("SendMemberID", "Server returned error: " + response.code());
+                    ((Activity) context).runOnUiThread(() ->
+                            Toast.makeText(context, "Server error. Please try again.", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }
+        });
     }
 
     @Override
@@ -151,8 +239,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
             districtTextView = itemView.findViewById(R.id.district_tv);
             feeTextView = itemView.findViewById(R.id.fee_tv);
             starButton = itemView.findViewById(R.id.star_button);
-            layout = itemView.findViewById(R.id.item_layout);
-
+            layout = itemView.findViewById(R.id.item_layout); // Initialize LinearLayout reference
         }
     }
 }

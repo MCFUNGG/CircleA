@@ -46,21 +46,37 @@
 
                 <RadioGroup
                     android:id="@+id/radio_group"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:background="@null"
+                    android:padding="8dp">
 
                     <RadioButton
                         android:id="@+id/radio_parent"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="I am a parent" />
+                        android:layout_weight="1"
+                        android:text="I am a parent"
+                        android:button="@null"
+                        android:background="@drawable/radio_selector"
+                        android:textColor="@drawable/radio_text_selector"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:layout_marginEnd="4dp"/>
 
                     <RadioButton
                         android:id="@+id/radio_tutor"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="I am a tutor" />
+                        android:layout_weight="1"
+                        android:text="I am a tutor"
+                        android:button="@null"
+                        android:background="@drawable/radio_selector"
+                        android:textColor="@drawable/radio_text_selector"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:layout_marginStart="4dp"/>
                 </RadioGroup>
 
                 <TextView
