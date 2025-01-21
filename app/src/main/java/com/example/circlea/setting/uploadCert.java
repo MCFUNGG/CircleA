@@ -47,7 +47,7 @@ public class uploadCert extends AppCompatActivity {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private static final String[] ALLOWED_FILE_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"};
 
-    private String memberId = "2";
+    private String memberId = "3";
     private Uri selectedFileUri;
     private ImageView imageView;
 
@@ -58,6 +58,8 @@ public class uploadCert extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.upload_cert);
+
+        //memberId = getIntent().getStringExtra("MEMBER_ID");
 
         imageView = findViewById(R.id.imageView);
         Button btnSelectFile = findViewById(R.id.btnSelectFile);
@@ -71,7 +73,6 @@ public class uploadCert extends AppCompatActivity {
                         selectedFileUri = result.getData().getData();
                         if (validateFile(selectedFileUri)) {
                             showFilePreview(selectedFileUri); // 顯示檔案預覽
-                            uploadFileToServer(selectedFileUri);
                         } else {
                             Toast.makeText(this, "Invalid file format or size exceeds 10MB!", Toast.LENGTH_SHORT).show();
                         }
@@ -252,15 +253,17 @@ public class uploadCert extends AppCompatActivity {
 
             String newFileName = generateNewFileName(fileUri);
 
+            Log.d("UploadFile", "memberId: " + memberId); // 確認 memberId 的值
             OkHttpClient client = new OkHttpClient();
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
+                    .addFormDataPart("memberId", memberId) // Add memberId to the request
                     .addFormDataPart("file", newFileName,
                             RequestBody.create(fileBytes, MediaType.parse("application/octet-stream")))
                     .build();
 
             Request request = new Request.Builder()
-                    .url("http://10.0.2.2/FYP/php/uploadCert.php") // 修改為你的伺服器 URL
+                    .url("http://10.0.2.2/FYP/php/uploadCert.php") // Change to your server URL
                     .post(requestBody)
                     .build();
 
