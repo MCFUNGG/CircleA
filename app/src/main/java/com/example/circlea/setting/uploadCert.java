@@ -295,7 +295,7 @@ public class uploadCert extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         String currentTime = sdf.format(new Date());
-        String uniqueId = UUID.randomUUID().toString();
+        //String uniqueId = UUID.randomUUID().toString();
         return memberId + "_" + currentTime + (fileExtension != null ? "." + fileExtension : "");
     }
 }
