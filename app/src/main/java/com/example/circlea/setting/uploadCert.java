@@ -47,7 +47,7 @@ public class uploadCert extends AppCompatActivity {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private static final String[] ALLOWED_FILE_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"};
 
-    private String memberId = "3";
+    private String memberId = "2";
     private Uri selectedFileUri;
     private ImageView imageView;
 
