@@ -28,7 +28,13 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home); // Your activity layout file
+        setContentView(R.layout.home);
+
+        //Local Database print
+        CheckSharedPreferences checkSharedPreferences = new CheckSharedPreferences(this);
+        checkSharedPreferences.printSharedPreferences();
+        //Local Database
+
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);

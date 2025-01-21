@@ -24,7 +24,7 @@ public class CheckSharedPreferences {
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            Log.d("SharedPreferences", key + ": " + value);
+            Log.d("CheckCircleA", key + ": " + value);
         }
     }
 }

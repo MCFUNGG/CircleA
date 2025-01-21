@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,13 +17,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.circlea.R;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,9 +37,6 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
 
     private ArrayList<ApplicationItem> data;
     private Context context;
-    private static final String SERVER_ADDRESS = "localhost";  // Change to your server address
-    private static final int SERVER_PORT = 8080;  // Change to your server port
-
 
     public FindingStudentsAdapter(ArrayList<ApplicationItem> data, Context context) {
         this.data = data;
@@ -60,78 +54,94 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (data != null && position < data.size()) {
             ApplicationItem application = data.get(position);
+
+            // Load the profile icon using Glide
+            String profileUrl = application.getProfileIcon(); // Assuming this method exists in ApplicationItem
+            if (profileUrl != null && !profileUrl.isEmpty()) {
+                String fullProfileUrl = "http://10.0.2.2" + profileUrl;
+                Glide.with(context)
+                        .load(fullProfileUrl)
+                        .placeholder(R.drawable.circle_background) // This is your default image
+                        .into(holder.profileIcon);
+            } else {
+                // Load the default image
+                holder.profileIcon.setImageResource(R.drawable.circle_background); // Use the default drawable
+            }
+
             holder.classLevelTextView.setText("Class level: " + application.getClassLevel());
-            holder.subjectTextView.setText("Subject: " + application.getSubject());
-            holder.districtTextView.setText("District: " + application.getDistrict());
+
+            // Concatenate subjects
+            StringBuilder subjects = new StringBuilder("Subjects: ");
+            for (String subject : application.getSubjects()) {
+                subjects.append(subject).append(", ");
+            }
+            if (subjects.length() > 2) {
+                subjects.setLength(subjects.length() - 2);
+            }
+            holder.subjectTextView.setText(subjects.toString());
+
+            // Concatenate districts
+            StringBuilder districts = new StringBuilder("Districts: ");
+            for (String district : application.getDistricts()) {
+                districts.append(district).append(", ");
+            }
+            if (districts.length() > 2) {
+                districts.setLength(districts.length() - 2);
+            }
+            holder.districtTextView.setText(districts.toString());
+
             holder.feeTextView.setText("Fee: $" + application.getFee() + " /hr");
 
-            // Set up the LinearLayout click listener to navigate to the detail activity
             holder.layout.setOnClickListener(v -> {
-                // Retrieve the member_id from SharedPreferences
                 SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
-                String TutorsMemberID = sharedPreferences.getString("member_id", null);
-                //get application id
-                String UserMemberId = application.getMemberId();
+                String userMemberId = sharedPreferences.getString("member_id", null);
+                String tutorsMemberId = application.getMemberId();
 
-                if (UserMemberId != null) {
-                    // Use the member_id (e.g., for logging or additional operations)
-                    Log.d("RetrieveMemberID", "Retrieved member_id: " + UserMemberId);
-                    Log.d("RetrieveMemberID", "retreived tutor member id: " + TutorsMemberID);
-                    // Send the member_id to the PHP server
-                    sendMemberIdToServerPS(UserMemberId);
-                    sendMemberIdToServerT(TutorsMemberID);
+                if (userMemberId != null && tutorsMemberId != null) {
+                    Log.d("RetrieveMemberID", "UserMemberID: " + userMemberId);
+                    Log.d("RetrieveMemberID", "TutorsMemberID: " + tutorsMemberId);
+                    sendMemberIdsToServer(userMemberId, tutorsMemberId);
                 } else {
-                    // Handle case when member_id is not found
                     Log.d("RetrieveMemberID", "No member_id found in SharedPreferences.");
                     Toast.makeText(context, "User not logged in. Please log in first.", Toast.LENGTH_SHORT).show();
-                    return; // Exit if member_id is required and not found
+                    return;
                 }
 
-                // Continue with navigating to the detail activity
-                // Continue with navigating to the detail activity
+                // Send the entire list of subjects and districts
                 Intent intent = new Intent(context, StudentDetail.class);
                 intent.putExtra("member_id", application.getMemberId());
-                intent.putExtra("subject", application.getSubject());
+                intent.putStringArrayListExtra("subjects", application.getSubjects()); // Send all subjects
                 intent.putExtra("classLevel", application.getClassLevel());
                 intent.putExtra("fee", application.getFee());
-                intent.putExtra("district", application.getDistrict());
+                intent.putStringArrayListExtra("districts", application.getDistricts()); // Send all districts
                 intent.putExtra("appId", application.getAppId());
                 context.startActivity(intent);
             });
 
-
-            // Set up star button click listener to save appId and navigate to the detail activity
-            holder.starButton.setOnClickListener(v -> saveAppIdToPreferences(application.getMemberId()));
+            holder.starButton.setOnClickListener(v -> saveAppIdToPreferences(application.getAppId()));
         }
     }
 
-    // 使用 OkHttp 发送 member_id 到 matching_T.php
-    private void sendMemberIdToServerT(String TutorsMemberID) {
+    private void sendMemberIdsToServer(String userMemberId, String tutorsMemberId) {
         OkHttpClient client = new OkHttpClient();
-
         String url = "http://10.0.2.2/Matching/get_MemberID.php";
 
-        // Create the POST request body with the number
         RequestBody formBody = new FormBody.Builder()
-                .add("TutorsMemberID", String.valueOf(TutorsMemberID))
+                .add("PSMemberID", userMemberId)
+                .add("TutorsMemberID", tutorsMemberId)
                 .build();
 
-        // Create the POST request
         Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)
                 .build();
 
-        Log.d("getNumber", "Number: " + TutorsMemberID);
-
-        // Execute the request
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("SendMemberID", "Request failed: " + e.getMessage());
-                // Notify user of failure
                 ((Activity) context).runOnUiThread(() ->
-                        Toast.makeText(context, "Failed to send member_id. Please try again.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Failed to send member IDs. Please try again.", Toast.LENGTH_SHORT).show()
                 );
             }
 
@@ -140,58 +150,6 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 if (response.isSuccessful()) {
                     String serverResponse = response.body().string();
                     Log.d("SendMemberID", "Server response: " + serverResponse);
-
-                    // Notify user of success
-                    ((Activity) context).runOnUiThread(() ->
-                            Toast.makeText(context, "Data sent successfully.", Toast.LENGTH_SHORT).show()
-                    );
-                } else {
-                    Log.e("SendMemberID", "Server returned error: " + response.code());
-                    ((Activity) context).runOnUiThread(() ->
-                            Toast.makeText(context, "Server error. Please try again.", Toast.LENGTH_SHORT).show()
-                    );
-                }
-            }
-        });
-    }
-
-    private void sendMemberIdToServerPS(String UserMemberId) {
-        OkHttpClient client = new OkHttpClient();
-
-        // Build the URL with the member_id as a GET parameter
-        String url = "http://10.0.2.2/Matching/get_MemberID.php";
-
-        // Create the POST request body with the number
-        RequestBody formBody = new FormBody.Builder()
-                .add("PSMemberID", String.valueOf(UserMemberId))
-                .build();
-
-        // Create the POST request
-        Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-
-        Log.d("getNumber", "Number: " + UserMemberId);
-
-        // Execute the request
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("SendMemberID", "Request failed: " + e.getMessage());
-                // Notify user of failure
-                ((Activity) context).runOnUiThread(() ->
-                        Toast.makeText(context, "Failed to send member_id. Please try again.", Toast.LENGTH_SHORT).show()
-                );
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String serverResponse = response.body().string();
-                    Log.d("SendMemberID", "Server response: " + serverResponse);
-
-                    // Notify user of success
                     ((Activity) context).runOnUiThread(() ->
                             Toast.makeText(context, "Data sent successfully.", Toast.LENGTH_SHORT).show()
                     );
@@ -230,7 +188,8 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
         TextView districtTextView;
         TextView feeTextView;
         Button starButton;
-        LinearLayout layout; // LinearLayout reference
+        LinearLayout layout;
+        ImageView profileIcon;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -239,7 +198,8 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
             districtTextView = itemView.findViewById(R.id.district_tv);
             feeTextView = itemView.findViewById(R.id.fee_tv);
             starButton = itemView.findViewById(R.id.star_button);
-            layout = itemView.findViewById(R.id.item_layout); // Initialize LinearLayout reference
+            layout = itemView.findViewById(R.id.item_layout);
+            profileIcon = itemView.findViewById(R.id.tutor_icon);
         }
     }
 }
