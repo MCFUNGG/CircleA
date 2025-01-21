@@ -72,7 +72,7 @@ public class uploadCert extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK) {
                         selectedFileUri = result.getData().getData();
                         if (validateFile(selectedFileUri)) {
-                            showFilePreview(selectedFileUri); // 顯示檔案預覽
+                            showFilePreview(selectedFileUri);
                         } else {
                             Toast.makeText(this, "Invalid file format or size exceeds 10MB!", Toast.LENGTH_SHORT).show();
                         }
@@ -225,11 +225,11 @@ public class uploadCert extends AppCompatActivity {
         String mimeType = getContentResolver().getType(fileUri);
 
         if (mimeType != null && mimeType.startsWith("image/")) {
-            imageView.setImageURI(fileUri); // 顯示圖片預覽
+            imageView.setImageURI(fileUri);
         } else if (mimeType != null && mimeType.equals("application/pdf")) {
-            imageView.setImageResource(R.drawable.ic_pdf_icon); // 顯示 PDF 圖標
+            imageView.setImageResource(R.drawable.ic_pdf_icon);
         } else {
-            imageView.setImageDrawable(null); // 清空 ImageView
+            imageView.setImageDrawable(null);
         }
     }
 
@@ -253,7 +253,7 @@ public class uploadCert extends AppCompatActivity {
 
             String newFileName = generateNewFileName(fileUri);
 
-            Log.d("UploadFile", "memberId: " + memberId); // 確認 memberId 的值
+            Log.d("UploadFile", "memberId: " + memberId);
             OkHttpClient client = new OkHttpClient();
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
@@ -293,7 +293,7 @@ public class uploadCert extends AppCompatActivity {
     private String generateNewFileName(Uri fileUri) {
         String fileExtension = getFileExtension(fileUri);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+8")); // 設置所需的時區
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         String currentTime = sdf.format(new Date());
         String uniqueId = UUID.randomUUID().toString();
         return memberId + "_" + currentTime + (fileExtension != null ? "." + fileExtension : "");
