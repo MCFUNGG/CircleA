@@ -94,9 +94,10 @@ public class MemberDetail extends AppCompatActivity {
     private void getPastMemberDetails() {
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
+        Toast.makeText(MemberDetail.this, "member_id:"+memberId, Toast.LENGTH_SHORT).show();
 
         if (memberId == null) {
-            return; // If no memberId, return
+            return;
         }
 
         String url = "http://10.0.2.2/FYP/php/get_member_detail.php"; // Update with your URL
@@ -289,7 +290,7 @@ public class MemberDetail extends AppCompatActivity {
     }
 
     private String getMemberIdFromLocalDatabase() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         return sharedPreferences.getString("member_id", ""); // Return empty string if not found
     }
 }

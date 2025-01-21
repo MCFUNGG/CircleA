@@ -19,6 +19,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class StudentDetail extends AppCompatActivity {
 
@@ -39,20 +40,40 @@ public class StudentDetail extends AppCompatActivity {
 
         // Get the appId passed from the previous activity
         String appId = getIntent().getStringExtra("appId");
-        String subject = getIntent().getStringExtra("subject");
+        String memberId = getIntent().getStringExtra("member_id");
         String classLevel = getIntent().getStringExtra("classLevel");
         String fee = getIntent().getStringExtra("fee");
-        String district = getIntent().getStringExtra("district");
-        String memberId = getIntent().getStringExtra("member_id");
 
-        // Display the received data
+        // Retrieve subjects and districts as ArrayList
+        ArrayList<String> subjects = getIntent().getStringArrayListExtra("subjects");
+        ArrayList<String> districts = getIntent().getStringArrayListExtra("districts");
+
+        // Display the received data with null checks
         if (appId != null) {
             appIdTextView.setText("Application ID: " + appId);
-            subjectTextView.setText("Subject: " + subject);
-            classLevelTextView.setText("Class level: " + classLevel);
-            feeTextView.setText("Fee: $" + fee + " /hr");
-            districtTextView.setText("District: " + district);
+        }
+        if (memberId != null) {
             memberIdTextView.setText("Member ID: " + memberId);
+        }
+        if (classLevel != null) {
+            classLevelTextView.setText("Class Level: " + classLevel);
+        }
+        if (fee != null) {
+            feeTextView.setText("Fee: $" + fee + " /hr");
+        }
+
+        // Display subjects
+        if (subjects != null && !subjects.isEmpty()) {
+            subjectTextView.setText("Subjects: " + String.join(", ", subjects));
+        } else {
+            subjectTextView.setText("Subjects: N/A");
+        }
+
+        // Display districts
+        if (districts != null && !districts.isEmpty()) {
+            districtTextView.setText("Districts: " + String.join(", ", districts));
+        } else {
+            districtTextView.setText("Districts: N/A");
         }
 
         // Fetch latest data from get_json.php
@@ -71,9 +92,8 @@ public class StudentDetail extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                // Handle request failure
                 runOnUiThread(() -> {
-                    Toast.makeText(StudentDetail.this, "Failed to fetch data.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StudentDetail.this, "Failed to fetch data. Please check your internet connection.", Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -82,15 +102,13 @@ public class StudentDetail extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     // Parse the JSON response
                     String jsonResponse = response.body().string();
-                    // For example, assume the JSON contains a "matching_score" field
                     runOnUiThread(() -> {
                         // Update the UI with the fetched JSON data
                         updateUIWithJson(jsonResponse);
                     });
                 } else {
-                    // Handle response failure
                     runOnUiThread(() -> {
-                        Toast.makeText(StudentDetail.this, "Server error. Please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentDetail.this, "Server error. Please try again later.", Toast.LENGTH_SHORT).show();
                     });
                 }
             }
@@ -114,7 +132,12 @@ public class StudentDetail extends AppCompatActivity {
             }
 
             // Display the scores in the TextView
-            matchingScoreTextView.setText(scores.toString());
+            if (scores.length() > 0) {
+                matchingScoreTextView.setText(scores.toString());
+            } else {
+                matchingScoreTextView.setText("No matching scores found.");
+            }
+
         } catch (JSONException e) {
             // Handle JSON parsing errors
             e.printStackTrace();

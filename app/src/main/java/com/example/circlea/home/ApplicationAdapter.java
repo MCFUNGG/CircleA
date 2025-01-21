@@ -30,10 +30,31 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (data != null && position < data.size()) {
             ApplicationItem application = data.get(position);
-            holder.classLevelTextView.setText("Class level: "+ application.getClassLevel());
-            holder.subjectTextView.setText("Subject: "+application.getSubject());
-            holder.districtTextView.setText("District: "+application.getDistrict());
-            holder.feeTextView.setText("Fee: $"+application.getFee() + " /hr");
+            holder.classLevelTextView.setText("Class level: " + application.getClassLevel());
+
+            // Concatenate subjects
+            StringBuilder subjects = new StringBuilder("Subjects: ");
+            for (String subject : application.getSubjects()) {
+                subjects.append(subject).append(", ");
+            }
+            // Remove trailing comma and space
+            if (subjects.length() > 2) {
+                subjects.setLength(subjects.length() - 2);
+            }
+            holder.subjectTextView.setText(subjects.toString());
+
+            // Concatenate districts
+            StringBuilder districts = new StringBuilder("Districts: ");
+            for (String district : application.getDistricts()) {
+                districts.append(district).append(", ");
+            }
+            // Remove trailing comma and space
+            if (districts.length() > 2) {
+                districts.setLength(districts.length() - 2);
+            }
+            holder.districtTextView.setText(districts.toString());
+
+            holder.feeTextView.setText("Fee: $" + application.getFee() + " /hr");
         }
     }
 

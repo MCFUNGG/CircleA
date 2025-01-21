@@ -8,14 +8,29 @@
     android:layout_margin="4dp"
     android:background="@drawable/rounded_background">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="20dp">
+
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circleImage"
+        android:id="@+id/tutor_icon"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="20dp"
         android:src="@drawable/circle_background" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            />
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/item_layout"

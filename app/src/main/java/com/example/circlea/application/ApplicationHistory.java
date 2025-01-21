@@ -61,7 +61,7 @@ public class ApplicationHistory extends AppCompatActivity {
     }
 
     private void fetchApplicationData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
         String url = "http://10.0.2.2/FYP/php/get_member_own_application_data.php";
 
