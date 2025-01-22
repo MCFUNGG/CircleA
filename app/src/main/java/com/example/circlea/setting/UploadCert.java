@@ -42,7 +42,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class uploadCert extends AppCompatActivity {
+public class UploadCert extends AppCompatActivity {
 
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private static final String[] ALLOWED_FILE_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"};
@@ -271,16 +271,16 @@ public class uploadCert extends AppCompatActivity {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.e("UploadFile", "Upload failed: " + e.getMessage());
-                    runOnUiThread(() -> Toast.makeText(uploadCert.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(UploadCert.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
-                        runOnUiThread(() -> Toast.makeText(uploadCert.this, "File uploaded successfully!", Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> Toast.makeText(UploadCert.this, "File uploaded successfully!", Toast.LENGTH_SHORT).show());
                     } else {
                         Log.e("UploadFile", "Upload failed with code: " + response.code());
-                        runOnUiThread(() -> Toast.makeText(uploadCert.this, "Upload failed with code: " + response.code(), Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> Toast.makeText(UploadCert.this, "Upload failed with code: " + response.code(), Toast.LENGTH_SHORT).show());
                     }
                 }
             });

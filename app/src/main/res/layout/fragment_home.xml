@@ -1,9 +1,11 @@
-<ScrollView
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".home.HomeFragment">
 
     <LinearLayout
@@ -18,6 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="16dp">
+
             <ImageButton
                 android:id="@+id/menuButton"
                 android:layout_width="40dp"
@@ -26,10 +29,6 @@
                 android:src="@drawable/ic_menu"
                 android:contentDescription="Menu" />
 
-
-
-
-            <!-- Search bar -->
             <EditText
                 android:id="@+id/searchBar"
                 android:layout_width="match_parent"
@@ -58,63 +57,113 @@
             android:background="#CCCCCC"
             android:layout_marginBottom="16dp" />
 
-        <!-- High-rated tutors title -->
-        <TextView
-            android:id="@+id/highRatedTutorsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="High-rated Tutors"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Vertical RecyclerView for high-rated tutors -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/verticalRecyclerView"
+        <!-- Section Buttons -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/item_vertical" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="#CCCCCC" />
+            <Button
+                android:id="@+id/btnHighRated"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="High Rated"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
-        <!-- Finding Tutors Title -->
-        <TextView
-            android:id="@+id/lookingforstudents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tutor Application"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
+            <Button
+                android:id="@+id/btnTutorApp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tutor Apps"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/findingStudentsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/item_finding_students" />
+            <Button
+                android:id="@+id/btnStudentApp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Student Apps"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+        </LinearLayout>
 
-        <!-- Finding Tutors Title -->
-        <TextView
-            android:id="@+id/applicationTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Parent/Student Application"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Vertical RecyclerView for finding tutors -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/findingTutorsRecyclerView"
+        <!-- High Rated Section -->
+        <LinearLayout
+            android:id="@+id/highRatedSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/item_finding_tutors" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/highRatedTutorsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High-rated Tutors"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/verticalRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_vertical" />
+        </LinearLayout>
+
+        <!-- Tutor Application Section -->
+        <LinearLayout
+            android:id="@+id/tutorApplicationSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/lookingforstudents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tutor Application"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/findingStudentsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_finding_students" />
+        </LinearLayout>
+
+        <!-- Student Application Section -->
+        <LinearLayout
+            android:id="@+id/studentApplicationSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/applicationTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Parent/Student Application"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/findingTutorsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_finding_tutors" />
+        </LinearLayout>
+
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

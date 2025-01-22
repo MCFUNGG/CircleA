@@ -1,11 +1,14 @@
 package com.example.circlea.home;
 
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +38,8 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView horizontalRecyclerView, verticalRecyclerView, findingTutorsRecyclerView, findingStudentsRecyclerView;
     private OkHttpClient client;
+    private LinearLayout highRatedSection, tutorApplicationSection, studentApplicationSection;
+    private Button btnHighRated, btnTutorApp, btnStudentApp;
 
     @Nullable
     @Override
@@ -43,19 +48,17 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Initialize views
-        horizontalRecyclerView = view.findViewById(R.id.horizontalRecyclerView);
-        verticalRecyclerView = view.findViewById(R.id.verticalRecyclerView);
-        findingTutorsRecyclerView = view.findViewById(R.id.findingTutorsRecyclerView);
-        findingStudentsRecyclerView = view.findViewById(R.id.findingStudentsRecyclerView);
-        ImageButton menuButton = view.findViewById(R.id.menuButton);
+        initializeViews(view);
+        setupRecyclerViews();
+        setupButtons();
 
+        // Set up menu button
+        ImageButton menuButton = view.findViewById(R.id.menuButton);
         menuButton.setOnClickListener(v -> {
-            ((Home) getActivity()).openDrawer(); // Call method from Home activity
+            ((Home) getActivity()).openDrawer();
         });
 
-        // Set up horizontal RecyclerView
-        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        horizontalRecyclerView.setLayoutManager(horizontalLayoutManager);
+        // Set up horizontal RecyclerView data
         ArrayList<String> horizontalData = new ArrayList<>();
         horizontalData.add("1");
         horizontalData.add("2");
@@ -63,9 +66,7 @@ public class HomeFragment extends Fragment {
         HorizontalAdapter horizontalAdapter = new HorizontalAdapter(horizontalData);
         horizontalRecyclerView.setAdapter(horizontalAdapter);
 
-        // Set up vertical RecyclerView
-        LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(getContext());
-        verticalRecyclerView.setLayoutManager(verticalLayoutManager);
+        // Set up vertical RecyclerView data
         ArrayList<String> verticalData = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             verticalData.add("Tutor " + i);
@@ -73,20 +74,86 @@ public class HomeFragment extends Fragment {
         VerticalAdapter verticalAdapter = new VerticalAdapter(verticalData);
         verticalRecyclerView.setAdapter(verticalAdapter);
 
-        // Set up finding tutors RecyclerView
-        LinearLayoutManager findingTutorsLayoutManager = new LinearLayoutManager(getContext());
-        findingTutorsRecyclerView.setLayoutManager(findingTutorsLayoutManager);
-
-        // Set up finding students RecyclerView
-        LinearLayoutManager findingStudentsLayoutManager = new LinearLayoutManager(getContext());
-        findingStudentsRecyclerView.setLayoutManager(findingStudentsLayoutManager);
-
         // Fetch application data
         fetchTutorsApplicationData();
         fetchStudentsApplicationData();
 
+        // Show high rated section by default
+        showSection(highRatedSection);
+        btnHighRated.setSelected(true);
+
         return view;
     }
+
+    private void initializeViews(View view) {
+        // RecyclerViews
+        horizontalRecyclerView = view.findViewById(R.id.horizontalRecyclerView);
+        verticalRecyclerView = view.findViewById(R.id.verticalRecyclerView);
+        findingTutorsRecyclerView = view.findViewById(R.id.findingTutorsRecyclerView);
+        findingStudentsRecyclerView = view.findViewById(R.id.findingStudentsRecyclerView);
+
+        // Sections
+        highRatedSection = view.findViewById(R.id.highRatedSection);
+        tutorApplicationSection = view.findViewById(R.id.tutorApplicationSection);
+        studentApplicationSection = view.findViewById(R.id.studentApplicationSection);
+
+        // Buttons
+        btnHighRated = view.findViewById(R.id.btnHighRated);
+        btnTutorApp = view.findViewById(R.id.btnTutorApp);
+        btnStudentApp = view.findViewById(R.id.btnStudentApp);
+    }
+
+    private void setupRecyclerViews() {
+        // Layout Managers
+        horizontalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        verticalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        findingTutorsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        findingStudentsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Disable nested scrolling
+        horizontalRecyclerView.setNestedScrollingEnabled(false);
+        verticalRecyclerView.setNestedScrollingEnabled(false);
+        findingTutorsRecyclerView.setNestedScrollingEnabled(false);
+        findingStudentsRecyclerView.setNestedScrollingEnabled(false);
+
+        // Set fixed sizes
+        horizontalRecyclerView.setHasFixedSize(true);
+        verticalRecyclerView.setHasFixedSize(true);
+        findingTutorsRecyclerView.setHasFixedSize(true);
+        findingStudentsRecyclerView.setHasFixedSize(true);
+    }
+
+    private void setupButtons() {
+        btnHighRated.setOnClickListener(v -> {
+            updateButtonStates(btnHighRated);
+            showSection(highRatedSection);
+        });
+
+        btnTutorApp.setOnClickListener(v -> {
+            updateButtonStates(btnTutorApp);
+            showSection(tutorApplicationSection);
+        });
+
+        btnStudentApp.setOnClickListener(v -> {
+            updateButtonStates(btnStudentApp);
+            showSection(studentApplicationSection);
+        });
+    }
+
+    private void updateButtonStates(Button selectedButton) {
+        btnHighRated.setSelected(false);
+        btnTutorApp.setSelected(false);
+        btnStudentApp.setSelected(false);
+        selectedButton.setSelected(true);
+    }
+
+    private void showSection(LinearLayout sectionToShow) {
+        highRatedSection.setVisibility(View.GONE);
+        tutorApplicationSection.setVisibility(View.GONE);
+        studentApplicationSection.setVisibility(View.GONE);
+        sectionToShow.setVisibility(View.VISIBLE);
+    }
+
 
     private void fetchTutorsApplicationData() {
         String url = "http://10.0.2.2/FYP/php/get_T_application_data.php";

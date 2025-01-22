@@ -96,7 +96,7 @@
         </activity>
 
         <activity
-            android:name=".setting.uploadCert"
+            android:name=".setting.UploadCert"
             android:exported="true">
         </activity>
 
