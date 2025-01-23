@@ -9,7 +9,7 @@ public class ApplicationItem {
     private String fee;
     private ArrayList<String> districts; // Changed to ArrayList
     private String memberId;
-    private String profileIcon,username; // New property for profile icon
+    private String profileIcon,username,tutorAppId; // New property for profile icon
 
     public ApplicationItem(String appId, ArrayList<String> subjects, String classLevel, String fee, ArrayList<String> districts, String memberId, String profileIcon, String username) {
         this.appId = appId;
@@ -20,6 +20,7 @@ public class ApplicationItem {
         this.memberId = memberId;
         this.profileIcon = profileIcon;
         this.username = username;// Initialize profile icon
+        this.tutorAppId = tutorAppId;
     }
 
 
@@ -39,6 +40,7 @@ public class ApplicationItem {
     public String getFee() {
         return fee;
     }
+
 
     public ArrayList<String> getDistricts() { // Updated getter
         return districts;

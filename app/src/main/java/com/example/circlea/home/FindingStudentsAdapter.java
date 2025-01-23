@@ -97,14 +97,15 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
                 String userMemberId = sharedPreferences.getString("member_id", null);
                 String tutorsMemberId = application.getMemberId();
+                String AppId = application.getAppId();
 
-                if (userMemberId != null && tutorsMemberId != null) {
+                if (userMemberId != null && tutorsMemberId != null && AppId != null) {
                     Log.d("RetrieveMemberID", "UserMemberID: " + userMemberId);
                     Log.d("RetrieveMemberID", "TutorsMemberID: " + tutorsMemberId);
-                    sendMemberIdsToServer(userMemberId, tutorsMemberId);
+                    sendMemberIdsToServer(userMemberId, tutorsMemberId,AppId);
                 } else {
                     Log.d("RetrieveMemberID", "No member_id found in SharedPreferences.");
-                    Toast.makeText(context, "User not logged in. Please log in first.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "holder.layout.setOnClickListener:error", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -123,13 +124,14 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
         }
     }
 
-    private void sendMemberIdsToServer(String userMemberId, String tutorsMemberId) {
+    private void sendMemberIdsToServer(String userMemberId, String tutorsMemberId, String AppId) {
         OkHttpClient client = new OkHttpClient();
         String url = "http://10.0.2.2/Matching/get_MemberID.php";
 
         RequestBody formBody = new FormBody.Builder()
                 .add("PSMemberID", userMemberId)
                 .add("TutorsMemberID", tutorsMemberId)
+                .add("AppId",AppId)
                 .build();
 
         Request request = new Request.Builder()
