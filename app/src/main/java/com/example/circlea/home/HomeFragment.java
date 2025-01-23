@@ -193,6 +193,7 @@ public class HomeFragment extends Fragment {
                                 String memberId = data.optString("member_id", "N/A");
                                 String classLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
+                                String username = data.optString("username", "N/A");
 
                                 // Fetch subjects
                                 JSONArray subjectsArray = data.optJSONArray("subject_names");
@@ -216,7 +217,7 @@ public class HomeFragment extends Fragment {
                                 String profileIcon = data.optString("profile_icon", ""); // Fetch the profile icon URL
 
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon));
+                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon,username));
                             }
 
                             // Update UI on the main thread using FindingStudentsAdapter
@@ -281,7 +282,7 @@ public class HomeFragment extends Fragment {
                                 String memberId = data.optString("member_id", "N/A");
                                 String classLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
-                                String district = data.optString("district_name", "N/A");
+                                String username = data.optString("username", "N/A");
 
                                 // Fetch subjects
                                 JSONArray subjectsArray = data.optJSONArray("subject_names");
@@ -292,11 +293,20 @@ public class HomeFragment extends Fragment {
                                     }
                                 }
 
-                                // Fetch profile icon (if applicable)
+                                // Fetch districts
+                                JSONArray districtsArray = data.optJSONArray("district_names");
+                                ArrayList<String> districts = new ArrayList<>();
+                                if (districtsArray != null) {
+                                    for (int k = 0; k < districtsArray.length(); k++) {
+                                        districts.add(districtsArray.optString(k, "N/A"));
+                                    }
+                                }
+
+                                // Fetch profile icon
                                 String profileIcon = data.optString("profile_icon", ""); // Fetch the profile icon URL
 
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, new ArrayList<>(List.of(district)), memberId, profileIcon));
+                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon,username));
                             }
 
                             // Update UI on the main thread using ApplicationAdapter

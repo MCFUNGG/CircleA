@@ -68,10 +68,11 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 holder.profileIcon.setImageResource(R.drawable.circle_background); // Use the default drawable
             }
 
-            holder.classLevelTextView.setText("Class level: " + application.getClassLevel());
+            holder.username.setText(application.getUsername());
+            holder.classLevelTextView.setText("aims: "+application.getClassLevel());
 
             // Concatenate subjects
-            StringBuilder subjects = new StringBuilder("Subjects: ");
+            StringBuilder subjects = new StringBuilder("");
             for (String subject : application.getSubjects()) {
                 subjects.append(subject).append(", ");
             }
@@ -81,7 +82,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
             holder.subjectTextView.setText(subjects.toString());
 
             // Concatenate districts
-            StringBuilder districts = new StringBuilder("Districts: ");
+            StringBuilder districts = new StringBuilder("");
             for (String district : application.getDistricts()) {
                 districts.append(district).append(", ");
             }
@@ -90,7 +91,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
             }
             holder.districtTextView.setText(districts.toString());
 
-            holder.feeTextView.setText("Fee: $" + application.getFee() + " /hr");
+            holder.feeTextView.setText("$" + application.getFee());
 
             holder.layout.setOnClickListener(v -> {
                 SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
@@ -186,7 +187,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
         TextView classLevelTextView;
         TextView subjectTextView;
         TextView districtTextView;
-        TextView feeTextView;
+        TextView feeTextView,username;
         Button starButton;
         LinearLayout layout;
         ImageView profileIcon;
@@ -200,6 +201,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
             starButton = itemView.findViewById(R.id.star_button);
             layout = itemView.findViewById(R.id.item_layout);
             profileIcon = itemView.findViewById(R.id.tutor_icon);
+            username = itemView.findViewById(R.id.username);
         }
     }
 }

@@ -8,93 +8,102 @@
     android:layout_margin="4dp"
     android:background="@drawable/rounded_background">
 
+    <!-- Left section with profile image -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="20dp">
+        android:layout_marginEnd="12dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/tutor_icon"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/circle_background" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/tutor_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/circle_background" />
 
         <TextView
             android:id="@+id/username"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            />
-
-
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:text="username"/>
     </LinearLayout>
 
+    <!-- Middle section with details -->
     <LinearLayout
         android:id="@+id/item_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <!-- 文本 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/fee_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="HK$240"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/hr"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/classlevel_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:text="Class level"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:text="Primary 6"/>
 
         <TextView
             android:id="@+id/subject_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:text="Subject"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"
+            android:text="English"/>
 
         <TextView
             android:id="@+id/district_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:text="District"
-            android:textColor="#000000"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/fee_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:text="Fee"
-            android:textColor="#000000"
-            android:textSize="14sp" />
-
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"
+            android:text="Yuen Long"/>
     </LinearLayout>
 
-
+    <!-- Right section with star button -->
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginRight="10dp">
-
-
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom|end">
 
         <Button
             android:id="@+id/star_button"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@drawable/star" />
+            android:background="@drawable/star"/>
+
     </LinearLayout>
 </LinearLayout>

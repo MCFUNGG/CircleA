@@ -11,7 +11,7 @@ public class ApplicationItem {
     private String memberId;
     private String profileIcon,username; // New property for profile icon
 
-    public ApplicationItem(String appId, ArrayList<String> subjects, String classLevel, String fee, ArrayList<String> districts, String memberId, String profileIcon) {
+    public ApplicationItem(String appId, ArrayList<String> subjects, String classLevel, String fee, ArrayList<String> districts, String memberId, String profileIcon, String username) {
         this.appId = appId;
         this.subjects = subjects;
         this.classLevel = classLevel;
@@ -21,6 +21,8 @@ public class ApplicationItem {
         this.profileIcon = profileIcon;
         this.username = username;// Initialize profile icon
     }
+
+
 
     public String getAppId() {
         return appId;
@@ -38,10 +40,6 @@ public class ApplicationItem {
         return fee;
     }
 
-    public String getUsername(){
-        return username;
-    }
-
     public ArrayList<String> getDistricts() { // Updated getter
         return districts;
     }
@@ -52,5 +50,9 @@ public class ApplicationItem {
 
     public String getProfileIcon() { // New getter for profile icon
         return profileIcon;
+    }
+
+    public String getUsername() { // New getter for profile icon
+        return username;
     }
 }

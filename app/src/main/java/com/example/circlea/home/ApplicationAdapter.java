@@ -3,6 +3,9 @@ package com.example.circlea.home;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,7 +70,10 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         TextView classLevelTextView;
         TextView subjectTextView;
         TextView districtTextView;
-        TextView feeTextView;
+        TextView feeTextView,username;
+        Button starButton;
+        LinearLayout layout;
+        ImageView profileIcon;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +81,10 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             subjectTextView = itemView.findViewById(R.id.subject_tv);
             districtTextView = itemView.findViewById(R.id.district_tv);
             feeTextView = itemView.findViewById(R.id.fee_tv);
+            starButton = itemView.findViewById(R.id.star_button);
+            layout = itemView.findViewById(R.id.item_layout);
+            profileIcon = itemView.findViewById(R.id.tutor_icon);
+            username = itemView.findViewById(R.id.username);
         }
     }
 }

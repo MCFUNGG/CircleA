@@ -1,6 +1,8 @@
 package com.example.circlea.home;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 public class StudentDetail extends AppCompatActivity {
 
     private TextView appIdTextView, memberIdTextView, subjectTextView, classLevelTextView, feeTextView, districtTextView, matchingScoreTextView;
-
+    private ImageButton exitBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,9 @@ public class StudentDetail extends AppCompatActivity {
         feeTextView = findViewById(R.id.feeTextView);
         districtTextView = findViewById(R.id.districtTextView);
         matchingScoreTextView = findViewById(R.id.matchingScoreTextView);
+
+        exitBtn = findViewById(R.id.exitButton);
+        exitBtn.setOnClickListener(v -> finish());
 
         // Get the appId passed from the previous activity
         String appId = getIntent().getStringExtra("appId");
