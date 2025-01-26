@@ -1,7 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:title="Home" />
+        android:title="All" />
+
+    <item
+        android:id="@+id/nav_message"
+        android:title="message" />
 
     <item
         android:id="@+id/nav_custom_item_application"
@@ -26,6 +30,11 @@
     <item
         android:id="@+id/nav_history_cv"
         android:title="My CV" />
+
+    <item
+        android:id="@+id/nav_matching"
+        android:title="Matching" />
+
 
     <item
         android:id="@+id/nav_custom_item_view"

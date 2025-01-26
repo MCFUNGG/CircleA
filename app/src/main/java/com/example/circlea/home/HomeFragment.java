@@ -1,6 +1,9 @@
 package com.example.circlea.home;
 
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,8 +33,10 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
@@ -156,13 +161,20 @@ public class HomeFragment extends Fragment {
 
 
     private void fetchTutorsApplicationData() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
+        String memberId = sharedPreferences.getString("member_id", null);
+
         String url = "http://10.0.2.2/FYP/php/get_T_application_data.php";
 
         // Create a GET request
-        Request request = new Request.Builder()
-                .url(url)
+        RequestBody requestBody = new FormBody.Builder()
+                .add("member_id", memberId)
                 .build();
 
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
         // Execute the request
         client.newCall(request).enqueue(new Callback() {
             @Override

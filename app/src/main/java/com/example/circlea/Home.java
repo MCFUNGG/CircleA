@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.example.circlea.matching.Matching;
 import com.example.circlea.application.ApplicationFragment;
 import com.example.circlea.application.ApplicationHistory;
 import com.example.circlea.application.ParentApplicationFillDetail;
@@ -80,6 +81,10 @@ public class Home extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             } else if (item.getItemId() == R.id.nav_create_cv) {
                 Intent intent = new Intent(this, ScanCV.class);
+                startActivity(intent);
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else if (item.getItemId() == R.id.nav_matching) {
+                Intent intent = new Intent(this, Matching.class);
                 startActivity(intent);
                 drawerLayout.closeDrawer(GravityCompat.START);
             } else if (item.getItemId() == R.id.nav_application) {

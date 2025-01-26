@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -31,13 +30,10 @@
         </activity>
         <activity
             android:name=".registration.Registration"
-            android:exported="true"></activity>
-        <activity
-            android:name=".registration.VaildEmail"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Login"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Home"
             android:exported="true">
@@ -49,40 +45,37 @@
         </activity>
         <activity
             android:name=".application.ParentApplicationFillDetail"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".registration.EmailVerification"
-            android:exported="true"></activity>
-        <activity
-            android:name=".Setting"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".application.ApplicationHistory"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".application.ScanCV"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".setting.MemberDetail"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".registration.PhoneNumVerification"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".setting.MemberCart"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".setting.uploadCert"
-            android:exported="true"></activity>
+            android:exported="true" />
+        <activity
+            android:name=".matching.Matching"
+            android:exported="true" />
+        <activity
+            android:name=".matching.RequestDetail"
+            android:exported="true" />
         <activity
             android:name=".home.StudentDetail"
-            android:exported="true">
-        </activity>
-
-        <activity
-            android:name=".setting.uploadCert"
-            android:exported="true">
-        </activity>
+            android:exported="true"/>
 
     </application>
 
