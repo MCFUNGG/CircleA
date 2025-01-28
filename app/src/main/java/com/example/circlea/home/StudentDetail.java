@@ -172,7 +172,7 @@ public class StudentDetail extends AppCompatActivity {
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("member_id", memberId)
-                .add("role", "PS")
+                .add("role", "PS")  // Specifically requesting PS role
                 .build();
 
         Request request = new Request.Builder()
@@ -187,78 +187,101 @@ public class StudentDetail extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(StudentDetail.this, "Failed to fetch data", Toast.LENGTH_SHORT).show());
             }
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        String jsonResponse = response.body().string();
-                        try {
-                            JSONObject jsonObject = new JSONObject(jsonResponse);
-                            if (jsonObject.getBoolean("success")) {
-                                JSONArray dataArray = jsonObject.getJSONArray("data");
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String jsonResponse = response.body().string();
+                    Log.d("PsSendRequestToT", "Server response: " + jsonResponse);
 
-                                // Clear previous views
-                                runOnUiThread(() -> applicationsContainer.removeAllViews());
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonResponse);
+                        if (jsonObject.getBoolean("success")) {
+                            JSONArray dataArray = jsonObject.getJSONArray("data");
 
-                                // Iterate through the application array
-                                for (int i = 0; i < dataArray.length(); i++) {
-                                    JSONObject data = dataArray.getJSONObject(i);
-                                    View applicationView = LayoutInflater.from(StudentDetail.this)
-                                            .inflate(R.layout.history_application_item, applicationsContainer, false);
+                            // Clear previous views
+                            runOnUiThread(() -> applicationsContainer.removeAllViews());
 
-                                    // Safely retrieve values
-                                    final String appId = data.optString("app_id", "N/A");
-                                    String subject = data.optString("subject_name", "N/A");
-                                    String studentLevel = data.optString("class_level_name", "N/A");
-                                    String fee = data.optString("feePerHr", "N/A");
-                                    String district = data.optString("district_name", "N/A");
-                                    String description = data.optString("description", "N/A");
+                            // Iterate through the application array
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                JSONObject data = dataArray.getJSONObject(i);
+                                View applicationView = LayoutInflater.from(StudentDetail.this)
+                                        .inflate(R.layout.history_application_item, applicationsContainer, false);
 
-                                    // Set values with labels
-                                    ((TextView) applicationView.findViewById(R.id.app_id)).setText(appId);
-                                    ((TextView) applicationView.findViewById(R.id.subject_text)).setText(subject);
-                                    ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
-                                    ((TextView) applicationView.findViewById(R.id.fee_text)).setText(fee);
-                                    ((TextView) applicationView.findViewById(R.id.district_text)).setText(district);
-                                    ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
+                                // Get basic info
+                                final String appId = data.optString("app_id", "N/A");
+                                String studentLevel = data.optString("class_level_name", "N/A");
+                                String fee = data.optString("feePerHr", "N/A");
+                                String description = data.optString("description", "N/A");
 
-                                    // Add click listener for selection
-                                    applicationView.setOnClickListener(v -> {
-                                        // Deselect all views
-                                        for (int j = 0; j < applicationsContainer.getChildCount(); j++) {
-                                            applicationsContainer.getChildAt(j)
-                                                    .setBackgroundColor(Color.TRANSPARENT);
-                                        }
-                                        // Select clicked view
-                                        v.setBackgroundColor(Color.parseColor("#E8F5E9"));
-                                        selectedAppId = appId;
-
-                                        // Add logging
-                                        Log.d("PsSendRequestToT", "Selected PS Application ID: " + selectedAppId);
-
-                                        // Optional: Show feedback to user
-                                        Toast.makeText(StudentDetail.this,
-                                                "Selected Application: " + appId,
-                                                Toast.LENGTH_SHORT).show();
-                                    });
-
-                                    // Add to the container
-                                    final View finalView = applicationView;
-                                    runOnUiThread(() -> applicationsContainer.addView(finalView));
+                                // Handle subject names array
+                                JSONArray subjectNames = data.optJSONArray("subject_names");
+                                StringBuilder subjectsStr = new StringBuilder();
+                                if (subjectNames != null && subjectNames.length() > 0) {
+                                    for (int j = 0; j < subjectNames.length(); j++) {
+                                        if (j > 0) subjectsStr.append(", ");
+                                        subjectsStr.append(subjectNames.getString(j));
+                                    }
+                                } else {
+                                    subjectsStr.append("N/A");
                                 }
-                            } else {
-                                String message = jsonObject.optString("message", "Unknown error");
-                                runOnUiThread(() -> Toast.makeText(StudentDetail.this,
-                                        message, Toast.LENGTH_SHORT).show());
+
+                                // Handle district names array
+                                JSONArray districtNames = data.optJSONArray("district_names");
+                                StringBuilder districtsStr = new StringBuilder();
+                                if (districtNames != null && districtNames.length() > 0) {
+                                    for (int j = 0; j < districtNames.length(); j++) {
+                                        if (j > 0) districtsStr.append(", ");
+                                        districtsStr.append(districtNames.getString(j));
+                                    }
+                                } else {
+                                    districtsStr.append("N/A");
+                                }
+
+                                final String subjects = subjectsStr.toString();
+                                final String districts = districtsStr.toString();
+
+                                // Set values
+                                ((TextView) applicationView.findViewById(R.id.app_id)).setText(appId);
+                                ((TextView) applicationView.findViewById(R.id.subject_text)).setText("Subject: " + subjects);
+                                ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
+                                ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
+                                ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
+                                ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
+
+                                // Add click listener for selection
+                                applicationView.setOnClickListener(v -> {
+                                    // Deselect all views
+                                    for (int j = 0; j < applicationsContainer.getChildCount(); j++) {
+                                        applicationsContainer.getChildAt(j)
+                                                .setBackgroundColor(Color.TRANSPARENT);
+                                    }
+                                    // Select clicked view
+                                    v.setBackgroundColor(Color.parseColor("#E8F5E9"));
+                                    selectedAppId = appId;
+
+                                    Log.d("PsSendRequestToT", "Selected PS Application ID: " + selectedAppId);
+                                    Toast.makeText(StudentDetail.this,
+                                            "Selected Application: " + appId,
+                                            Toast.LENGTH_SHORT).show();
+                                });
+
+                                // Add to container
+                                final View finalView = applicationView;
+                                runOnUiThread(() -> applicationsContainer.addView(finalView));
                             }
-                        } catch (JSONException e) {
-                            Log.e("PsSendRequestToT", "JSON parsing error: " + e.getMessage());
+                        } else {
+                            String message = jsonObject.optString("message", "Unknown error");
                             runOnUiThread(() -> Toast.makeText(StudentDetail.this,
-                                    "Error processing data", Toast.LENGTH_SHORT).show());
+                                    message, Toast.LENGTH_SHORT).show());
                         }
+                    } catch (JSONException e) {
+                        Log.e("PsSendRequestToT", "JSON parsing error: " + e.getMessage());
+                        runOnUiThread(() -> Toast.makeText(StudentDetail.this,
+                                "Error processing data", Toast.LENGTH_SHORT).show());
                     }
                 }
-
-            });
+            }
+        });
     }
 
     private void showApplyDialog() {

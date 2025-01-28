@@ -84,8 +84,7 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
                 drawerLayout.closeDrawer(GravityCompat.START);
             } else if (item.getItemId() == R.id.nav_matching) {
-                Intent intent = new Intent(this, Matching.class);
-                startActivity(intent);
+                selectedFragment = new Matching();
                 drawerLayout.closeDrawer(GravityCompat.START);
             } else if (item.getItemId() == R.id.nav_application) {
                 selectedFragment = new ApplicationFragment();

@@ -17,7 +17,7 @@
     import com.example.circlea.R;
     import java.util.List;
 
-    public class MatchingRequestAdapter extends RecyclerView.Adapter<MatchingRequestAdapter.ViewHolder> {
+    public class MatchingRequestReceivedAdapter extends RecyclerView.Adapter<MatchingRequestReceivedAdapter.ViewHolder> {
         private List<MatchingRequest> requests;
         private Context context;
         private OnItemClickListener listener;
@@ -26,7 +26,7 @@
             void onItemClick(MatchingRequest request, int position);
         }
 
-        public MatchingRequestAdapter(Context context, List<MatchingRequest> requests) {
+        public MatchingRequestReceivedAdapter(Context context, List<MatchingRequest> requests) {
             this.context = context;
             this.requests = requests;
         }
@@ -38,7 +38,7 @@
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_matching_request, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_matching_request_received, parent, false);
             return new ViewHolder(view);
         }
 
@@ -79,7 +79,7 @@
                     Log.d("MatchingRequestAdapter", "Match ID: " + request.getMatchId());
 
                     // Create intent to start RequestDetail activity
-                    Intent intent = new Intent(context, RequestDetail.class);
+                    Intent intent = new Intent(context, RequestReceivedDetail.class);
 
                     // Pass all necessary data
                     intent.putExtra("match_id", request.getMatchId());

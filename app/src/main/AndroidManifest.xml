@@ -71,7 +71,7 @@
             android:name=".matching.Matching"
             android:exported="true" />
         <activity
-            android:name=".matching.RequestDetail"
+            android:name=".matching.RequestReceivedDetail"
             android:exported="true" />
         <activity
             android:name=".home.StudentDetail"

@@ -102,24 +102,50 @@ public class ApplicationHistory extends AppCompatActivity {
                                 LayoutInflater inflater = LayoutInflater.from(ApplicationHistory.this);
                                 View applicationView = inflater.inflate(R.layout.history_application_item, applicationsContainer, false);
 
-                                // Safely retrieve values
+                                // Get basic info
                                 String appId = data.optString("app_id", "N/A");
-                                String subject = data.optString("subject_name", "N/A");
                                 String studentLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
-                                String district = data.optString("district_name", "N/A");
                                 String description = data.optString("description", "N/A");
 
-                                // Set values with labels
-                                ((TextView) applicationView.findViewById(R.id.app_id)).setText("App ID: " + appId);
-                                ((TextView) applicationView.findViewById(R.id.subject_text)).setText("Subject: " + subject);
-                                ((TextView) applicationView.findViewById(R.id.student_level_text)).setText("Student Level: " + studentLevel);
-                                ((TextView) applicationView.findViewById(R.id.fee_text)).setText("Fee: " + fee);
-                                ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + district);
-                                ((TextView) applicationView.findViewById(R.id.description_text)).setText("Description: " + description);
+                                // Handle subject names array
+                                JSONArray subjectNames = data.optJSONArray("subject_names");
+                                StringBuilder subjectsStr = new StringBuilder();
+                                if (subjectNames != null && subjectNames.length() > 0) {
+                                    for (int j = 0; j < subjectNames.length(); j++) {
+                                        if (j > 0) subjectsStr.append(", ");
+                                        subjectsStr.append(subjectNames.getString(j));
+                                    }
+                                } else {
+                                    subjectsStr.append("N/A");
+                                }
 
-                                // Add to the container
-                                runOnUiThread(() -> applicationsContainer.addView(applicationView));
+                                // Handle district names array
+                                JSONArray districtNames = data.optJSONArray("district_names");
+                                StringBuilder districtsStr = new StringBuilder();
+                                if (districtNames != null && districtNames.length() > 0) {
+                                    for (int j = 0; j < districtNames.length(); j++) {
+                                        if (j > 0) districtsStr.append(", ");
+                                        districtsStr.append(districtNames.getString(j));
+                                    }
+                                } else {
+                                    districtsStr.append("N/A");
+                                }
+
+                                // Set values
+                                final String subjects = subjectsStr.toString();
+                                final String districts = districtsStr.toString();
+
+                                runOnUiThread(() -> {
+                                    ((TextView) applicationView.findViewById(R.id.app_id)).setText("App ID: " + appId);
+                                    ((TextView) applicationView.findViewById(R.id.subject_text)).setText("Subject: " + subjects);
+                                    ((TextView) applicationView.findViewById(R.id.student_level_text)).setText("" + studentLevel);
+                                    ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
+                                    ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
+                                    //((TextView) applicationView.findViewById(R.id.description_text)).setText("Description: " + description);
+
+                                    applicationsContainer.addView(applicationView);
+                                });
                             }
                         } else {
                             String message = jsonObject.optString("message", "Unknown error");

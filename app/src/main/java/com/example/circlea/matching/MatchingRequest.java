@@ -11,8 +11,8 @@ public class MatchingRequest {
     private String matchMark;
     private String profileIcon;
 
-    // Constructor remains the same
-    public MatchingRequest(String matchId, String psAppId, String psUsername,String fee, String classLevel,
+    // Constructor
+    public MatchingRequest(String matchId, String psAppId, String psUsername, String fee, String classLevel,
                            String subjects, String districts, String matchMark, String profileIcon) {
         this.matchId = matchId;
         this.psUsername = psUsername;
@@ -25,9 +25,9 @@ public class MatchingRequest {
         this.profileIcon = profileIcon;
     }
 
-    // Add this method to match what the adapter is looking for
-    public String getRequestId() { return matchId; }  // This is the new method
-    public String getPsUsername(){return psUsername;}
+    // Getters
+    public String getRequestId() { return matchId; }
+    public String getPsUsername() { return psUsername; }
     public String getMatchId() { return matchId; }
     public String getPsAppId() { return psAppId; }
     public String getFee() { return fee; }

@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select the application you are applying for: "
+            android:text="Select the application you are applying from: "
             android:layout_marginBottom="24dp"/>
 
         <ScrollView
