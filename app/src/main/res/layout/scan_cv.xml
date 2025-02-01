@@ -1,41 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <Button
-        android:id="@+id/exitButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/exit" />
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- 显示图片的 ImageView -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:scaleType="centerCrop" />
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- 选择图片的按钮 -->
     <Button
         android:id="@+id/selectImageBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="选择图片"
+        android:text="Select CV Image"
         android:layout_marginBottom="16dp"/>
 
-    <!-- 使用 ScrollView 显示识别的文本 -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-        <TextView
-            android:id="@+id/textView"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:lineSpacingExtra="4dp"/>
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/contactEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Contact Information"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/skillsEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Skills"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/educationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Education"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/languageEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Languages"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/otherEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Other Information"
+                android:layout_marginBottom="16dp"/>
+
+        </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save CV"/>
 
 </LinearLayout>

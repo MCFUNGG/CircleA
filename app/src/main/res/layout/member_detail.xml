@@ -107,6 +107,7 @@
         android:maxLength="50"
         android:inputType="text"
         android:layout_marginBottom="8dp"
+        android:visibility="invisible"
         android:backgroundTint="#DDDDDD" />
 
     <EditText
