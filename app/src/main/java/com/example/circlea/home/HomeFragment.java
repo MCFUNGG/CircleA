@@ -257,11 +257,19 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchStudentsApplicationData() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
+        String memberId = sharedPreferences.getString("member_id", null);
+
         String url = "http://10.0.2.2/FYP/php/get_PS_application_data.php";
 
-        // Create a GET request
+        // Create a POST request with member_id
+        RequestBody requestBody = new FormBody.Builder()
+                .add("member_id", memberId)
+                .build();
+
         Request request = new Request.Builder()
                 .url(url)
+                .post(requestBody)
                 .build();
 
         // Execute the request
@@ -315,15 +323,15 @@ public class HomeFragment extends Fragment {
                                 }
 
                                 // Fetch profile icon
-                                String profileIcon = data.optString("profile_icon", ""); // Fetch the profile icon URL
+                                String profileIcon = data.optString("profile_icon", "");
 
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon,username));
+                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon, username));
                             }
 
                             // Update UI on the main thread using ApplicationAdapter
                             requireActivity().runOnUiThread(() -> {
-                                ApplicationAdapter findingTutorsAdapter = new ApplicationAdapter(applicationsList);
+                                ApplicationAdapter findingTutorsAdapter = new ApplicationAdapter(applicationsList, getContext());
                                 findingTutorsRecyclerView.setAdapter(findingTutorsAdapter);
                             });
                         } else {

@@ -76,7 +76,10 @@
             android:name=".matching.RequestReceivedDetail"
             android:exported="true" />
         <activity
-            android:name=".home.StudentDetail"
+            android:name=".home.TutorAppDetail"
+            android:exported="true"/>
+        <activity
+            android:name=".home.PSAppDetail"
             android:exported="true"/>
 
     </application>

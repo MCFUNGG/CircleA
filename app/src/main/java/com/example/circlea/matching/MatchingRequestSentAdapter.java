@@ -21,6 +21,7 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
     private List<MatchingRequest> requests;
     private Context context;
     private OnItemClickListener listener;
+    private String currentUsername;
 
     public interface OnItemClickListener {
         void onItemClick(MatchingRequest request, int position);
@@ -29,6 +30,8 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
     public MatchingRequestSentAdapter(Context context, List<MatchingRequest> requests) {
         this.context = context;
         this.requests = requests;
+        SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
+        this.currentUsername = sharedPreferences.getString("username", "");
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -38,7 +41,6 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Use the sent request layout
         View view = LayoutInflater.from(context).inflate(R.layout.item_matching_request_sent, parent, false);
         return new ViewHolder(view);
     }
@@ -47,19 +49,24 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MatchingRequest request = requests.get(position);
 
-        Log.d("MatchingRequestSentAdapter", "Setting username: " + request.getPsUsername());
-        holder.username.setText(request.getPsUsername());
-        holder.fee.setText("HK$" + request.getFee());
+        // Set username based on the recipient (opposite of the current user's role)
+        String displayUsername = request.getDisplayName(false, currentUsername);
+        holder.username.setText(displayUsername);
+
+        // Set other details
+        holder.fee.setText("HK$" + request.getFee() + "/hr");
         holder.classLevel.setText(request.getClassLevel());
         holder.subject.setText(request.getSubjects());
         holder.district.setText(request.getDistricts());
 
+        // Handle profile icon
         String profileUrl = request.getProfileIcon();
         if (profileUrl != null && !profileUrl.isEmpty()) {
             String fullProfileUrl = "http://10.0.2.2" + profileUrl;
             Glide.with(context)
                     .load(fullProfileUrl)
                     .placeholder(R.drawable.circle_background)
+                    .error(R.drawable.circle_background)
                     .into(holder.profileIcon);
         } else {
             holder.profileIcon.setImageResource(R.drawable.circle_background);
@@ -70,27 +77,36 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
             String userMemberId = sharedPreferences.getString("member_id", null);
 
             if (userMemberId != null) {
-                Log.d("MatchingRequestSentAdapter", "UserMemberID: " + userMemberId);
-                Log.d("MatchingRequestSentAdapter", "PS App ID: " + request.getPsAppId());
-                Log.d("MatchingRequestSentAdapter", "Match ID: " + request.getMatchId());
-
-                // Create intent to start RequestSentDetail activity
                 Intent intent = new Intent(context, RequestSentDetail.class);
 
-                // Pass all necessary data
+                // Common data
                 intent.putExtra("match_id", request.getMatchId());
-                intent.putExtra("ps_app_id", request.getPsAppId());
-                intent.putExtra("psUsername", request.getPsUsername());
                 intent.putExtra("fee", request.getFee());
                 intent.putExtra("class_level", request.getClassLevel());
                 intent.putExtra("subjects", request.getSubjects());
                 intent.putExtra("districts", request.getDistricts());
                 intent.putExtra("match_mark", request.getMatchMark());
                 intent.putExtra("profile_icon", request.getProfileIcon());
+                intent.putExtra("match_creator", request.getMatchCreator());
+
+                // Add sender role information
+                boolean isSentAsPS = request.getPsUsername().equals(currentUsername);
+                intent.putExtra("sent_as_ps", isSentAsPS);
+
+                // Add role-specific data
+                if (isSentAsPS) {
+                    intent.putExtra("ps_app_id", request.getPsAppId());
+                    intent.putExtra("recipient_username", request.getTutorUsername());
+                } else {
+                    intent.putExtra("tutor_app_id", request.getTutorAppId());
+                    intent.putExtra("recipient_username", request.getPsUsername());
+                }
 
                 context.startActivity(intent);
+
+                Log.d("MatchingRequestSentAdapter", "Opening sent request detail: " + request.getMatchId());
             } else {
-                Log.d("MatchingRequestSentAdapter", "No member_id found in SharedPreferences.");
+                Log.e("MatchingRequestSentAdapter", "No member_id found in SharedPreferences.");
                 Toast.makeText(context, "Error: User information not found", Toast.LENGTH_SHORT).show();
             }
 
@@ -118,5 +134,10 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
             district = itemView.findViewById(R.id.district_tv);
             profileIcon = itemView.findViewById(R.id.profileIcon);
         }
+    }
+
+    public void updateData(List<MatchingRequest> newRequests) {
+        this.requests = newRequests;
+        notifyDataSetChanged();
     }
 }

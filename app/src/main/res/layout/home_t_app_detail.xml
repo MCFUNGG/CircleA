@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:fillViewport="true">
+
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/exitButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/exit"
+            android:layout_gravity="center_vertical"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+    <!-- Profile Card -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="#1E3F71">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/circle_background"/>
+
+            <!-- Name and Details -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:id="@+id/nameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jason"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/experienceText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10 Years Experience"
+                    android:textColor="#FFD700"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/educationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HKU BSc Computer Science"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- About Me Card -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="#F5F5F5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="About Me"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/aboutMeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I was graduated from HKU Computer Science major since 2022..."
+                android:textColor="#666666"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thank You."
+                android:textColor="#666666"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Single Card for All Details -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/appIdTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Application ID"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/memberIdTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Member ID"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/subjectTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Subjects"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/classLevelTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Class Level"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/feeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fee"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/districtTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Districts"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/matchingScoreTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Matching Score"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Send Request Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/applyButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Send Request"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#4CAF50"/>
+    </LinearLayout>
+</LinearLayout>
+
+</ScrollView>

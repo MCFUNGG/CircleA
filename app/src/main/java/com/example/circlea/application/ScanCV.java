@@ -33,13 +33,23 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import com.google.mlkit.vision.text.Text;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.android.volley.DefaultRetryPolicy;
+import android.os.Environment;
+import android.util.Base64;
 
 public class ScanCV extends AppCompatActivity {
 
@@ -49,6 +59,7 @@ public class ScanCV extends AppCompatActivity {
     private EditText contactEditText, skillsEditText, educationEditText,
             languageEditText, otherEditText;
     private TextRecognizer textRecognizer;
+    private Uri savedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +95,7 @@ public class ScanCV extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             Uri imageUri = data.getData();
+            savedImageUri = imageUri;
             imageView.setImageURI(imageUri);
             processImage(imageUri);
         }
@@ -139,45 +151,63 @@ public class ScanCV extends AppCompatActivity {
         // Define keywords for each section
         String[] contactKeywords = { "contact", "phone", "email", "address" };
         String[] skillsKeywords = { "skills", "expertise", "competencies" };
-        String[] educationKeywords = { "education", "qualification", "degree" };
+        String[] educationKeywords = { "education", "qualification", "degree", "higher diploma", "school",
+                "university" };
         String[] languageKeywords = { "language", "languages", "linguistic" };
+        String[] otherKeywords = { "projects", "school projects", "hackathon", "school hackathon" };
 
         // Split text into lines
         String[] lines = fullText.split("\n");
 
         StringBuilder currentSection = new StringBuilder();
         String currentCategory = "other";
+        boolean isRightSection = false;
 
         for (String line : lines) {
             String lowerLine = line.toLowerCase();
 
-            // Determine section based on keywords
-            if (containsKeywords(lowerLine, contactKeywords)) {
+            // Check if we're entering a right-hand section (projects or hackathon)
+            if (containsKeywords(lowerLine, otherKeywords)) {
                 if (currentSection.length() > 0) {
                     sections.put(currentCategory, currentSection.toString().trim());
                 }
-                currentCategory = "contact";
+                isRightSection = true;
+                currentCategory = "other";
                 currentSection = new StringBuilder();
-            } else if (containsKeywords(lowerLine, skillsKeywords)) {
-                if (currentSection.length() > 0) {
-                    sections.put(currentCategory, currentSection.toString().trim());
-                }
-                currentCategory = "skills";
-                currentSection = new StringBuilder();
-            } else if (containsKeywords(lowerLine, educationKeywords)) {
-                if (currentSection.length() > 0) {
-                    sections.put(currentCategory, currentSection.toString().trim());
-                }
-                currentCategory = "education";
-                currentSection = new StringBuilder();
-            } else if (containsKeywords(lowerLine, languageKeywords)) {
-                if (currentSection.length() > 0) {
-                    sections.put(currentCategory, currentSection.toString().trim());
-                }
-                currentCategory = "language";
-                currentSection = new StringBuilder();
+                currentSection.append(line).append("\n");
+                continue;
             }
 
+            // Process left-hand sections only if not in right section
+            if (!isRightSection) {
+                if (containsKeywords(lowerLine, contactKeywords)) {
+                    if (currentSection.length() > 0) {
+                        sections.put(currentCategory, currentSection.toString().trim());
+                    }
+                    currentCategory = "contact";
+                    currentSection = new StringBuilder();
+                } else if (containsKeywords(lowerLine, skillsKeywords)) {
+                    if (currentSection.length() > 0) {
+                        sections.put(currentCategory, currentSection.toString().trim());
+                    }
+                    currentCategory = "skills";
+                    currentSection = new StringBuilder();
+                } else if (containsKeywords(lowerLine, educationKeywords)) {
+                    if (currentSection.length() > 0) {
+                        sections.put(currentCategory, currentSection.toString().trim());
+                    }
+                    currentCategory = "education";
+                    currentSection = new StringBuilder();
+                } else if (containsKeywords(lowerLine, languageKeywords)) {
+                    if (currentSection.length() > 0) {
+                        sections.put(currentCategory, currentSection.toString().trim());
+                    }
+                    currentCategory = "language";
+                    currentSection = new StringBuilder();
+                }
+            }
+
+            // Append the current line to the appropriate section
             currentSection.append(line).append("\n");
         }
 
@@ -209,9 +239,22 @@ public class ScanCV extends AppCompatActivity {
     private void saveCV() {
         String url = BASE_URL;
 
+        // If no image was selected
+        if (savedImageUri == null) {
+            Toast.makeText(this, "Please select a CV image first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // Get member_id from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", "");
+
+        // Convert image to base64
+        String base64Image = convertImageToBase64(savedImageUri);
+        if (base64Image.isEmpty()) {
+            Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -239,17 +282,37 @@ public class ScanCV extends AppCompatActivity {
                 params.put("education", educationEditText.getText().toString().trim());
                 params.put("language", languageEditText.getText().toString().trim());
                 params.put("other", otherEditText.getText().toString().trim());
+                params.put("image", base64Image);
                 return params;
             }
         };
 
-        // Add retry policy to handle timeouts
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                30000, // 30 seconds timeout
+                60000, // Increased timeout to 60 seconds for image upload
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(stringRequest);
+    }
+
+    private String convertImageToBase64(Uri imageUri) {
+        try {
+            Bitmap bitmap;
+            if (Build.VERSION.SDK_INT < 28) {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+            } else {
+                ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), imageUri);
+                bitmap = ImageDecoder.decodeBitmap(source);
+            }
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

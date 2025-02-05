@@ -110,7 +110,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 }
 
                 // Send the entire list of subjects and districts
-                Intent intent = new Intent(context, StudentDetail.class);
+                Intent intent = new Intent(context, TutorAppDetail.class);
                 intent.putExtra("tutor_id", application.getMemberId());
                 intent.putStringArrayListExtra("subjects", application.getSubjects()); // Send all subjects
                 intent.putExtra("classLevel", application.getClassLevel());

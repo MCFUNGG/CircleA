@@ -27,89 +27,142 @@
             android:textColor="#FFFFFF"
             android:textSize="24sp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="You currently have no cases"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:layout_marginTop="8dp"/>
-
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:layout_below="@id/headerLayout"
-        android:padding="20dp">
+        android:fillViewport="true">
 
-        <!-- Main Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <Button
-                android:id="@+id/btnRequest"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Request"
-                android:textColor="#FF9966"
-                android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
 
-            <Button
-                android:id="@+id/btnCase"
-                android:layout_width="0dp"
+                <Button
+                    android:id="@+id/btnRequest"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Request"
+                    android:textColor="#FF9966"
+                    android:layout_marginEnd="4dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                    android:id="@+id/btnCase"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Case"
+                    android:textColor="#CCCCCC"
+                    android:layout_marginEnd="4dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/requestSubButtonsLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Case"
-                android:textColor="#CCCCCC"
-                android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btnRequestReceived"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Request Received"
+                    android:textColor="#FF9966"
+                    android:layout_marginEnd="4dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                    android:id="@+id/btnRequestSent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Request Sent"
+                    android:textColor="#CCCCCC"
+                    android:layout_marginEnd="4dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/matchingRequestByTutorLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvRequestFromPs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Request from Parent/Student"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#1E3F71"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <View
+                    android:id="@+id/dividerPs"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#CCCCCC"
+                    android:layout_marginBottom="16dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/matchingRequestByTutorRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    tools:listitem="@layout/item_matching_request_received" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/matchingRequestByPsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvRequestFromTutor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Request from Tutor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#1E3F71"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <View
+                    android:id="@+id/dividerT"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#CCCCCC"
+                    android:layout_marginBottom="16dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/matchingRequestByPsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    tools:listitem="@layout/item_matching_request_received" />
+
+            </LinearLayout>
         </LinearLayout>
-
-        <!-- Request Sub-buttons (Initially Hidden) -->
-        <LinearLayout
-            android:id="@+id/requestSubButtonsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/btnRequestReceived"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Request Received"
-                android:textColor="#FF9966"
-                android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-            <Button
-                android:id="@+id/btnRequestSent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Request Sent"
-                android:textColor="#CCCCCC"
-                android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/matchingRequestRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:visibility="gone"
-            android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/item_matching_request_received" />
-
-    </LinearLayout>
-
+    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

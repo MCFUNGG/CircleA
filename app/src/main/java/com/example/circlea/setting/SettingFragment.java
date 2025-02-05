@@ -138,6 +138,7 @@ public class SettingFragment extends Fragment {
     private void fetchSettingData() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
+        Toast.makeText(getActivity(), "Member ID : "+memberId, Toast.LENGTH_SHORT).show();
 
         if (memberId == null) {
             Toast.makeText(getActivity(), "Member ID not found", Toast.LENGTH_SHORT).show();

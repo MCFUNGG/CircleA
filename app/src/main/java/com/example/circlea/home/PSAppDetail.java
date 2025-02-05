@@ -1,7 +1,5 @@
 package com.example.circlea.home;
 
-import static android.app.PendingIntent.getActivity;
-
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,11 +18,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circlea.R;
-import com.example.circlea.application.ApplicationHistory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -34,45 +34,35 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-public class StudentDetail extends AppCompatActivity {
-
+public class PSAppDetail extends AppCompatActivity {
     private TextView appIdTextView, memberIdTextView, subjectTextView, classLevelTextView,
             feeTextView, districtTextView, matchingScoreTextView;
     private ImageButton exitBtn;
     private Button applyButton;
     private Dialog applyDialog;
-    private String psId ="";
+    private String tutorId;
     private OkHttpClient client;
     private LinearLayout applicationsContainer;
     private String selectedAppId = "";
-    private String tutorAppId = "";
-    String tutorId = "";
-
-
+    private String psAppId = "";
+    private String psId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.student_detail);
+        setContentView(R.layout.home_ps_app_detail);
 
+        client = new OkHttpClient();
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
-        psId = sharedPreferences.getString("member_id", null);
+        tutorId = sharedPreferences.getString("member_id", null);
 
-        tutorAppId = getIntent().getStringExtra("tutotAppId");
-        tutorId = getIntent().getStringExtra("tutor_id");
+        psAppId = getIntent().getStringExtra("psAppId");
+        psId = getIntent().getStringExtra("ps_id");
 
-        // Initialize views
         initializeViews();
         initializeApplyDialog();
         setClickListeners();
-
-        // Get and display intent data
         displayIntentData();
-
-        // Fetch latest data from get_json.php
         fetchJsonData();
     }
 
@@ -90,73 +80,54 @@ public class StudentDetail extends AppCompatActivity {
 
     private void initializeApplyDialog() {
         applyDialog = new Dialog(this);
-        applyDialog.setContentView(R.layout.dialog_matching_details);  // Use the correct layout
+        applyDialog.setContentView(R.layout.dialog_matching_details);
 
-        // Make dialog background transparent
         applyDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        // Set dialog width to 90% of screen width
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(applyDialog.getWindow().getAttributes());
         lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
         applyDialog.getWindow().setAttributes(lp);
 
         applicationsContainer = applyDialog.findViewById(R.id.applicationsContainer);
-        // Find dialog buttons
+
         Button cancelButton = applyDialog.findViewById(R.id.dialogCancelButton);
         Button confirmButton = applyDialog.findViewById(R.id.dialogConfirmButton);
 
-        // Set click listeners for dialog buttons
         cancelButton.setOnClickListener(v -> applyDialog.dismiss());
         confirmButton.setOnClickListener(v -> {
             checkIfMatchExist();
-
             applyDialog.dismiss();
         });
     }
 
     private void setClickListeners() {
         exitBtn.setOnClickListener(v -> finish());
-        applyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fetchPsApplicationData();
-                showApplyDialog();
-            }
+        applyButton.setOnClickListener(v -> {
+            fetchTutorApplicationData();
+            showApplyDialog();
         });
     }
-// show tutor application detail
+
     private void displayIntentData() {
-        // Get data from intent
-        String tutotAppId = getIntent().getStringExtra("tutotAppId");
-        String memberId = getIntent().getStringExtra("member_id");
+        String psAppId = getIntent().getStringExtra("psAppId");
+        String memberId = getIntent().getStringExtra("ps_id");
         String classLevel = getIntent().getStringExtra("classLevel");
         String fee = getIntent().getStringExtra("fee");
         ArrayList<String> subjects = getIntent().getStringArrayListExtra("subjects");
         ArrayList<String> districts = getIntent().getStringArrayListExtra("districts");
 
-        // Display the data with null checks
-        if (tutotAppId != null) {
-            appIdTextView.setText("Application ID: " + tutotAppId);
-        }
-        if (memberId != null) {
-            memberIdTextView.setText("Member ID: " + memberId);
-        }
-        if (classLevel != null) {
-            classLevelTextView.setText("Class Level: " + classLevel);
-        }
-        if (fee != null) {
-            feeTextView.setText("Fee: $" + fee + " /hr");
-        }
+        if (psAppId != null) appIdTextView.setText("Application ID: " + psAppId);
+        if (memberId != null) memberIdTextView.setText("Member ID: " + memberId);
+        if (classLevel != null) classLevelTextView.setText("Class Level: " + classLevel);
+        if (fee != null) feeTextView.setText("Fee: $" + fee + " /hr");
 
-        // Display subjects
         if (subjects != null && !subjects.isEmpty()) {
             subjectTextView.setText("Subjects: " + String.join(", ", subjects));
         } else {
             subjectTextView.setText("Subjects: N/A");
         }
 
-        // Display districts
         if (districts != null && !districts.isEmpty()) {
             districtTextView.setText("Districts: " + String.join(", ", districts));
         } else {
@@ -164,15 +135,12 @@ public class StudentDetail extends AppCompatActivity {
         }
     }
 
-    private void fetchPsApplicationData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
-        String memberId = sharedPreferences.getString("member_id", null);
+    private void fetchTutorApplicationData() {
         String url = "http://10.0.2.2/FYP/php/get_member_own_application_data.php";
-        client = new OkHttpClient();
 
         RequestBody requestBody = new FormBody.Builder()
-                .add("member_id", memberId)
-                .add("role", "PS")  // Specifically requesting PS role
+                .add("member_id", tutorId)
+                .add("role", "Tutor")
                 .build();
 
         Request request = new Request.Builder()
@@ -183,37 +151,33 @@ public class StudentDetail extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("PsSendRequestToT", "Request failed: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(StudentDetail.this, "Failed to fetch data", Toast.LENGTH_SHORT).show());
+                Log.e("TutorSendRequestToPS", "Request failed: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(PSAppDetail.this, "Failed to fetch data", Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String jsonResponse = response.body().string();
-                    Log.d("PsSendRequestToT", "Server response: " + jsonResponse);
+                    Log.d("TutorSendRequestToPS", "Server response: " + jsonResponse);
 
                     try {
                         JSONObject jsonObject = new JSONObject(jsonResponse);
                         if (jsonObject.getBoolean("success")) {
                             JSONArray dataArray = jsonObject.getJSONArray("data");
 
-                            // Clear previous views
                             runOnUiThread(() -> applicationsContainer.removeAllViews());
 
-                            // Iterate through the application array
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject data = dataArray.getJSONObject(i);
-                                View applicationView = LayoutInflater.from(StudentDetail.this)
+                                View applicationView = LayoutInflater.from(PSAppDetail.this)
                                         .inflate(R.layout.history_application_item, applicationsContainer, false);
 
-                                // Get basic info
                                 final String appId = data.optString("app_id", "N/A");
                                 String studentLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
                                 String description = data.optString("description", "N/A");
 
-                                // Handle subject names array
                                 JSONArray subjectNames = data.optJSONArray("subject_names");
                                 StringBuilder subjectsStr = new StringBuilder();
                                 if (subjectNames != null && subjectNames.length() > 0) {
@@ -225,7 +189,6 @@ public class StudentDetail extends AppCompatActivity {
                                     subjectsStr.append("N/A");
                                 }
 
-                                // Handle district names array
                                 JSONArray districtNames = data.optJSONArray("district_names");
                                 StringBuilder districtsStr = new StringBuilder();
                                 if (districtNames != null && districtNames.length() > 0) {
@@ -240,7 +203,6 @@ public class StudentDetail extends AppCompatActivity {
                                 final String subjects = subjectsStr.toString();
                                 final String districts = districtsStr.toString();
 
-                                // Set values
                                 ((TextView) applicationView.findViewById(R.id.app_id)).setText(appId);
                                 ((TextView) applicationView.findViewById(R.id.subject_text)).setText("Subject: " + subjects);
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
@@ -248,35 +210,30 @@ public class StudentDetail extends AppCompatActivity {
                                 ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
                                 ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
 
-                                // Add click listener for selection
                                 applicationView.setOnClickListener(v -> {
-                                    // Deselect all views
                                     for (int j = 0; j < applicationsContainer.getChildCount(); j++) {
-                                        applicationsContainer.getChildAt(j)
-                                                .setBackgroundColor(Color.TRANSPARENT);
+                                        applicationsContainer.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
                                     }
-                                    // Select clicked view
                                     v.setBackgroundColor(Color.parseColor("#E8F5E9"));
                                     selectedAppId = appId;
 
-                                    Log.d("PsSendRequestToT", "Selected PS Application ID: " + selectedAppId);
-                                    Toast.makeText(StudentDetail.this,
+                                    Log.d("TutorSendRequestToPS", "Selected Tutor Application ID: " + selectedAppId);
+                                    Toast.makeText(PSAppDetail.this,
                                             "Selected Application: " + appId,
                                             Toast.LENGTH_SHORT).show();
                                 });
 
-                                // Add to container
                                 final View finalView = applicationView;
                                 runOnUiThread(() -> applicationsContainer.addView(finalView));
                             }
                         } else {
                             String message = jsonObject.optString("message", "Unknown error");
-                            runOnUiThread(() -> Toast.makeText(StudentDetail.this,
+                            runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
                                     message, Toast.LENGTH_SHORT).show());
                         }
                     } catch (JSONException e) {
-                        Log.e("PsSendRequestToT", "JSON parsing error: " + e.getMessage());
-                        runOnUiThread(() -> Toast.makeText(StudentDetail.this,
+                        Log.e("TutorSendRequestToPS", "JSON parsing error: " + e.getMessage());
+                        runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
                                 "Error processing data", Toast.LENGTH_SHORT).show());
                     }
                 }
@@ -286,111 +243,85 @@ public class StudentDetail extends AppCompatActivity {
 
     private void showApplyDialog() {
         if (applyDialog != null) {
-            // Update dialog message with current details
             TextView messageText = applyDialog.findViewById(R.id.dialogMessageText);
-            messageText.setText("Are you sure you want to apply for this tutor?\n\n" +
-                     classLevelTextView.getText() + "\n" +
+            messageText.setText("Are you sure you want to send request to this student?\n\n" +
+                    classLevelTextView.getText() + "\n" +
                     subjectTextView.getText() + "\n" +
                     feeTextView.getText());
-
 
             applyDialog.show();
         }
     }
-    private void checkIfMatchExist() {
-        String tutorId = getIntent().getStringExtra("member_id");
 
-        if (selectedAppId == null || tutorAppId == null) {  // Changed condition to check actual app IDs
-            Log.e("PsSendRequestToT", "Missing app IDs - PS App ID: " + selectedAppId + ", Tutor App ID: " + tutorAppId);
+    private void checkIfMatchExist() {
+        if (selectedAppId == null || psAppId == null) {
+            Log.e("TutorSendRequestToPS", "Missing app IDs - Tutor App ID: " + selectedAppId + ", PS App ID: " + psAppId);
             Toast.makeText(this, "Error: Please select an application first", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Create OkHttpClient for the request
-        OkHttpClient client = new OkHttpClient();
-
-        // Create the request body with the required parameters
         RequestBody formBody = new FormBody.Builder()
-                .add("ps_app_id", selectedAppId)
-                .add("tutor_app_id", tutorAppId)
+                .add("ps_app_id", psAppId)
+                .add("tutor_app_id", selectedAppId)
                 .build();
 
-        // Log the request parameters
-        Log.d("PsSendRequestToT", "Sending request - PS App ID: " + selectedAppId + ", Tutor App ID: " + tutorAppId);
+        Log.d("TutorSendRequestToPS", "Sending request - PS App ID: " + psAppId + ", Tutor App ID: " + selectedAppId);
 
-        // Create the request
         Request request = new Request.Builder()
                 .url("http://10.0.2.2/FYP/php/check_if_match_exist.php")
                 .post(formBody)
                 .build();
 
-        // Execute the request asynchronously
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("PsSendRequestToT", "Network request failed: " + e.getMessage());
-                runOnUiThread(() -> {
-                    Toast.makeText(StudentDetail.this,
-                            "Failed to check match existence. Please try again.",
-                            Toast.LENGTH_SHORT).show();
-                });
+                Log.e("TutorSendRequestToPS", "Network request failed: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
+                        "Failed to check match existence. Please try again.",
+                        Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.d("PsSendRequestToT", "Raw server response: " + responseData);
+                Log.d("TutorSendRequestToPS", "Raw server response: " + responseData);
 
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
                     final boolean success = jsonResponse.getBoolean("success");
                     final String message = jsonResponse.getString("message");
 
-                    Log.d("PsSendRequestToT", "Parsed response - Success: " + success +
-                            ", Message: " + message +
-                            ", PS App ID: " + selectedAppId +
-                            ", Tutor App ID: " + tutorAppId);
-
                     runOnUiThread(() -> {
-                        Toast.makeText(StudentDetail.this, message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PSAppDetail.this, message, Toast.LENGTH_SHORT).show();
                         if (success) {
-                            Log.d("PsSendRequestToT", "Match exists - dismissing dialog");
+                            Log.d("TutorSendRequestToPS", "Match exists - dismissing dialog");
                             applyDialog.dismiss();
                         } else {
-                            Log.d("PsSendRequestToT", "No match exists - proceeding with confirmation");
+                            Log.d("TutorSendRequestToPS", "No match exists - proceeding with confirmation");
                             handleApplyConfirmation();
                         }
                     });
                 } catch (JSONException e) {
-                    Log.e("PsSendRequestToT", "JSON parsing error: " + e.getMessage() +
-                            "\nResponse data: " + responseData);
-                    e.printStackTrace();
-                    runOnUiThread(() -> {
-                        Toast.makeText(StudentDetail.this,
-                                "Error processing server response",
-                                Toast.LENGTH_SHORT).show();
-                    });
+                    Log.e("TutorSendRequestToPS", "JSON parsing error: " + e.getMessage());
+                    runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
+                            "Error processing server response",
+                            Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
 
-//post match request from PS
     private void handleApplyConfirmation() {
-
-
-        // Get the matching score
         String scoreText = matchingScoreTextView.getText().toString();
         String matchMark = extractScore(scoreText);
 
-        // Check if we have all required information
         if (selectedAppId == null) {
             Toast.makeText(this, "Please select your application first", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (tutorAppId == null) {
-            Toast.makeText(this, "Error: Tutor application information is missing", Toast.LENGTH_SHORT).show();
+        if (psAppId == null) {
+            Toast.makeText(this, "Error: PS application information is missing", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -399,39 +330,30 @@ public class StudentDetail extends AppCompatActivity {
             return;
         }
 
-        // Log the values for debugging
-        Log.d("PsSendRequestToT", "PS App ID: " + selectedAppId);
-        Log.d("PsSendRequestToT", "Tutor App ID: " + tutorAppId);
-        Log.d("PsSendRequestToT", "Match Mark: " + matchMark);
+        Log.d("TutorSendRequestToPS", "Tutor App ID: " + selectedAppId);
+        Log.d("TutorSendRequestToPS", "PS App ID: " + psAppId);
+        Log.d("TutorSendRequestToPS", "Match Mark: " + matchMark);
 
-        // Create OkHttpClient for the request
-        OkHttpClient client = new OkHttpClient();
-
-        // Create the request body with the required parameters
         RequestBody formBody = new FormBody.Builder()
-                .add("ps_app_id", selectedAppId)
-                .add("tutor_app_id", tutorAppId)
+                .add("ps_app_id", psAppId)
+                .add("tutor_app_id", selectedAppId)
                 .add("ps_id", psId)
                 .add("tutor_id", tutorId)
                 .add("match_mark", matchMark)
                 .build();
 
-        // Create the request
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/post_match_request_from_PS.php")
+                .url("http://10.0.2.2/FYP/php/post_match_request_from_T.php")
                 .post(formBody)
                 .build();
 
-        // Execute the request asynchronously
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("PsSendRequestToT", "Request failed: " + e.getMessage());
-                runOnUiThread(() -> {
-                    Toast.makeText(StudentDetail.this,
-                            "Failed to submit application. Please try again.",
-                            Toast.LENGTH_SHORT).show();
-                });
+                Log.e("TutorSendRequestToPS", "Request failed: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
+                        "Failed to submit request. Please try again.",
+                        Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -443,29 +365,23 @@ public class StudentDetail extends AppCompatActivity {
                     final String message = jsonResponse.getString("message");
 
                     runOnUiThread(() -> {
-                        Toast.makeText(StudentDetail.this, message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PSAppDetail.this, message, Toast.LENGTH_SHORT).show();
                         if (success) {
-                            // Close the dialog and possibly finish the activity
                             applyDialog.dismiss();
-                            finish(); // Optional: finish the activity if you want to return to previous screen
+                            finish();
                         }
                     });
                 } catch (JSONException e) {
-                    Log.e("PsSendRequestToT", "JSON parsing error: " + e.getMessage());
-                    runOnUiThread(() -> {
-                        Toast.makeText(StudentDetail.this,
-                                "Error processing server response",
-                                Toast.LENGTH_SHORT).show();
-                    });
+                    Log.e("TutorSendRequestToPS", "JSON parsing error: " + e.getMessage());
+                    runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
+                            "Error processing server response",
+                            Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
 
-    //score part
     private void fetchJsonData() {
-        OkHttpClient client = new OkHttpClient();
-
         Request request = new Request.Builder()
                 .url("http://10.0.2.2/Matching/get_json.php")
                 .build();
@@ -473,11 +389,9 @@ public class StudentDetail extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> {
-                    Toast.makeText(StudentDetail.this,
-                            "Failed to fetch data. Please check your internet connection.",
-                            Toast.LENGTH_SHORT).show();
-                });
+                runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
+                        "Failed to fetch data. Please check your internet connection.",
+                        Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -486,11 +400,9 @@ public class StudentDetail extends AppCompatActivity {
                     String jsonResponse = response.body().string();
                     runOnUiThread(() -> updateUIWithJson(jsonResponse));
                 } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(StudentDetail.this,
-                                "Server error. Please try again later.",
-                                Toast.LENGTH_SHORT).show();
-                    });
+                    runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
+                            "Server error. Please try again later.",
+                            Toast.LENGTH_SHORT).show());
                 }
             }
         });
@@ -499,10 +411,9 @@ public class StudentDetail extends AppCompatActivity {
     private String extractScore(String scoreText) {
         String[] parts = scoreText.split(":");
         if (parts.length > 1) {
-            String scorePart = parts[1].trim(); // Get the part after the colon
-            return scorePart; // Remove the '%' and trim whitespace
+            return parts[1].trim();
         }
-        return null; // Return null if the format is unexpected
+        return null;
     }
 
     private void updateUIWithJson(String jsonResponse) {
@@ -523,11 +434,9 @@ public class StudentDetail extends AppCompatActivity {
             } else {
                 matchingScoreTextView.setText("No matching scores found.");
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
             matchingScoreTextView.setText("Error parsing matching scores.");
         }
     }
-
 }

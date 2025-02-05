@@ -31,7 +31,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
     private ImageView profileIcon;
     private TextView psAppIdTextView, psSubjectTextView, psClassLevelTextView,
             psFeeTextView, psDistrictTextView, psMemberIdTextView,
-            tutorAppIdTextView, tutorSubjectTextView, tutorClassLevelTextView,
+            tutorAppIdTextView, tutorSubjectTextView, tutorClassLevelTextView,requestMessageTextView,
             tutorFeeTextView, tutorDistrictTextView, tutorMemberIdTextView;
     private  String matchId = "";
 
@@ -60,7 +60,8 @@ public class RequestReceivedDetail extends AppCompatActivity {
         exitButton = findViewById(R.id.exitButton);
         acceptButton = findViewById(R.id.accept_Button);
         rejectButton = findViewById(R.id.reject_Button);
-        profileIcon = findViewById(R.id.profileIcon);
+
+        requestMessageTextView = findViewById(R.id.requestMessageTextView);
 
         // PS Details
         psAppIdTextView = findViewById(R.id.psAppIdTextView);
@@ -76,7 +77,6 @@ public class RequestReceivedDetail extends AppCompatActivity {
         tutorClassLevelTextView = findViewById(R.id.tutorClassLevelTextView);
         tutorFeeTextView = findViewById(R.id.tutorFeeTextView);
         tutorDistrictTextView = findViewById(R.id.tutorDistrictTextView);
-        tutorMemberIdTextView = findViewById(R.id.tutorMemberIdTextView);
     }
 
     private void setupClickListeners() {
@@ -104,6 +104,9 @@ public class RequestReceivedDetail extends AppCompatActivity {
                 psFeeTextView.setText("Fee: HK$" + fee);
                 psDistrictTextView.setText("Districts: " + districts);
                 psMemberIdTextView.setText("Username: " + psUsername);
+
+                String requestMessage = psUsername + " sent you a request";
+                requestMessageTextView.setText(requestMessage);
 
                 // Load profile image if available
                 if (!profileIconUrl.isEmpty() && profileIcon != null) {

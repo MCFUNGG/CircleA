@@ -2,10 +2,10 @@
     <item
         android:id="@+id/nav_home"
         android:title="All" />
-
     <item
-        android:id="@+id/nav_message"
-        android:title="message" />
+        android:id="@+id/nav_matching"
+        android:title="Matching" />
+
 
     <item
         android:id="@+id/nav_custom_item_application"
@@ -31,15 +31,15 @@
         android:id="@+id/nav_history_cv"
         android:title="My CV" />
 
-    <item
-        android:id="@+id/nav_matching"
-        android:title="Matching" />
+
 
 
     <item
         android:id="@+id/nav_custom_item_view"
         android:title="" />
-
+    <item
+        android:id="@+id/nav_message"
+        android:title="message" />
     <item
         android:id="@+id/nav_application"
         android:title="Applications" />
