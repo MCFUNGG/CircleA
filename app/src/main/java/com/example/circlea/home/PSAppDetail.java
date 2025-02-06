@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import org.json.JSONArray;
@@ -136,7 +137,7 @@ public class PSAppDetail extends AppCompatActivity {
     }
 
     private void fetchTutorApplicationData() {
-        String url = "http://10.0.2.2/FYP/php/get_member_own_application_data.php";
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_application_data.php";
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("member_id", tutorId)
@@ -268,7 +269,7 @@ public class PSAppDetail extends AppCompatActivity {
         Log.d("TutorSendRequestToPS", "Sending request - PS App ID: " + psAppId + ", Tutor App ID: " + selectedAppId);
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/check_if_match_exist.php")
+                .url("http://"+IPConfig.getIP()+"/FYP/php/check_if_match_exist.php")
                 .post(formBody)
                 .build();
 
@@ -343,7 +344,7 @@ public class PSAppDetail extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/post_match_request_from_T.php")
+                .url("http://"+IPConfig.getIP()+"/FYP/php/post_match_request_from_T.php")
                 .post(formBody)
                 .build();
 
@@ -383,7 +384,7 @@ public class PSAppDetail extends AppCompatActivity {
 
     private void fetchJsonData() {
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/Matching/get_json.php")
+                .url("http://"+IPConfig.getIP()+"/Matching/get_json.php")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

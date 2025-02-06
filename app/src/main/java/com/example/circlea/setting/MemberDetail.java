@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import org.json.JSONArray;
@@ -100,7 +101,7 @@ public class MemberDetail extends AppCompatActivity {
             return;
         }
 
-        String url = "http://10.0.2.2/FYP/php/get_member_detail.php"; // Update with your URL
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_detail.php"; // Update with your URL
 
         // Create the request body
         RequestBody requestBody = new FormBody.Builder()
@@ -251,7 +252,7 @@ public class MemberDetail extends AppCompatActivity {
 
         // Create the request
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/post_member_detail.php") // Ensure this is the correct server address
+                .url("http://"+IPConfig.getIP()+"/FYP/php/post_member_detail.php") // Ensure this is the correct server address
                 .post(formBody)
                 .build();
 

@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 public class MemberCart extends AppCompatActivity {
@@ -51,7 +52,7 @@ public class MemberCart extends AppCompatActivity {
     private void fetchApplicationData() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         Set<String> appIds = sharedPreferences.getStringSet("selected_app_ids", new HashSet<>());
-        String url = "http://10.0.2.2/FYP/php/get_member_cart.php";
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_cart.php";
 
         if (appIds.isEmpty()) {
             Toast.makeText(this, "No applications saved", Toast.LENGTH_SHORT).show();

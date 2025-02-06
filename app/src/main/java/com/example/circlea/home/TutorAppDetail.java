@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import org.json.JSONArray;
@@ -166,7 +167,7 @@ public class TutorAppDetail extends AppCompatActivity {
     private void fetchPsApplicationData() {
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
-        String url = "http://10.0.2.2/FYP/php/get_member_own_application_data.php";
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_application_data.php";
         client = new OkHttpClient();
 
         RequestBody requestBody = new FormBody.Builder()

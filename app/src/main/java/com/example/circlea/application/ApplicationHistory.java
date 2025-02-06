@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 public class ApplicationHistory extends AppCompatActivity {
@@ -63,7 +64,7 @@ public class ApplicationHistory extends AppCompatActivity {
     private void fetchApplicationData() {
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
-        String url = "http://10.0.2.2/FYP/php/get_member_own_application_data.php";
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_application_data.php";
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("member_id", memberId)

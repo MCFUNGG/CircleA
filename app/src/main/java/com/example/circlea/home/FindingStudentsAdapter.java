@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
             // Load the profile icon using Glide
             String profileUrl = application.getProfileIcon(); // Assuming this method exists in ApplicationItem
             if (profileUrl != null && !profileUrl.isEmpty()) {
-                String fullProfileUrl = "http://10.0.2.2" + profileUrl;
+                String fullProfileUrl = "http://"+ IPConfig.getIP() + profileUrl;
                 Glide.with(context)
                         .load(fullProfileUrl)
                         .placeholder(R.drawable.circle_background) // This is your default image
@@ -126,7 +127,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
 
     private void sendMemberIdsToServer(String userMemberId, String tutorsMemberId, String AppId) {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2/Matching/get_MemberID.php";
+        String url = "http://"+ IPConfig.getIP()+"/Matching/get_MemberID.php";
 
         RequestBody formBody = new FormBody.Builder()
                 .add("PSMemberID", userMemberId)

@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.circlea.CheckSharedPreferences;
 import com.example.circlea.Home;
+import com.example.circlea.IPConfig;
 import com.example.circlea.Login;
 import com.example.circlea.R;
 
@@ -145,10 +146,11 @@ public class SettingFragment extends Fragment {
             return;
         }
 
-        String url = "http://10.0.2.2/FYP/php/get_member_own_profile.php"; // 更新为您的 URL
-
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_profile.php"; // 更新为您的 URL
+        String ip = "";
         RequestBody requestBody = new FormBody.Builder()
                 .add("member_id", memberId)
+                .add("ip",ip)
                 .build();
 
         Request request = new Request.Builder()
@@ -191,7 +193,7 @@ public class SettingFragment extends Fragment {
                                     usernameTextView.setText(username);
 
                                     if (!profileUrl.isEmpty()) {
-                                        String fullProfileUrl = "http://10.0.2.2"+profileUrl;
+                                        String fullProfileUrl = "http://" +IPConfig.getIP()+profileUrl;
                                         Glide.with(getActivity())
                                                 .load(fullProfileUrl)
                                                 .into(userIcon);
@@ -219,7 +221,7 @@ public class SettingFragment extends Fragment {
             return;
         }
 
-        String url = "http://10.0.2.2/FYP/php/update_member_icon.php";
+        String url = "http://"+IPConfig.getIP()+"/FYP/php/update_member_icon.php";
 
         // 创建 MultipartBody
         MultipartBody.Builder builder = new MultipartBody.Builder()

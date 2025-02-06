@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_finding_students, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_finding_tutors, parent, false);
         return new ViewHolder(view);
     }
 
@@ -58,7 +59,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             // Load profile icon using Glide
             String profileUrl = application.getProfileIcon();
             if (profileUrl != null && !profileUrl.isEmpty()) {
-                String fullProfileUrl = "http://10.0.2.2" + profileUrl;
+                String fullProfileUrl = "http://"+ IPConfig.getIP() + profileUrl;
                 Glide.with(context)
                         .load(fullProfileUrl)
                         .placeholder(R.drawable.circle_background)
@@ -125,7 +126,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
     private void sendMemberIdsToServer(String tutorId, String psId, String psAppId) {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2/Matching/get_MemberID.php";
+        String url = "http://"+ IPConfig.getIP()+"/Matching/get_MemberID.php";
 
         RequestBody formBody = new FormBody.Builder()
                 .add("TutorID", tutorId)

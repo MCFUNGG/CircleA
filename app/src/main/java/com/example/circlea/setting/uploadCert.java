@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import java.io.ByteArrayOutputStream;
@@ -263,7 +264,7 @@ public class uploadCert extends AppCompatActivity {
                     .build();
 
             Request request = new Request.Builder()
-                    .url("http://10.0.2.2/FYP/php/uploadCert.php") // Change to your server URL
+                    .url("http://"+ IPConfig.getIP()+"/FYP/php/uploadCert.php") // Change to your server URL
                     .post(requestBody)
                     .build();
 

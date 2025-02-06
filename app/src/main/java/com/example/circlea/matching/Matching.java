@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.circlea.Home;
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -248,8 +249,8 @@ public class Matching extends Fragment {
 
         // Use different URLs for received and sent requests
         String url = isReceived ?
-                "http://10.0.2.2/FYP/php/get_match_request_received.php" :
-                "http://10.0.2.2/FYP/php/get_match_request_sent.php";
+                "http://"+ IPConfig.getIP()+"/FYP/php/get_match_request_received.php" :
+                "http://"+IPConfig.getIP()+"/FYP/php/get_match_request_sent.php";
 
         Request request = new Request.Builder()
                 .url(url)

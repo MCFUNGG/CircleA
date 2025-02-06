@@ -1,6 +1,5 @@
-package com.example.circlea.application;
+package com.example.circlea.setting;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -9,11 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -22,10 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -34,26 +28,19 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import com.google.mlkit.vision.text.Text;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.android.volley.DefaultRetryPolicy;
-import android.os.Environment;
+
 import android.util.Base64;
 
 public class ScanCV extends AppCompatActivity {
 
-    private static final String BASE_URL = "http://10.0.2.2/FYP/php/save_cv_data.php";
+    private static final String BASE_URL = "http://"+ IPConfig.getIP()+"/FYP/php/save_cv_data.php";
     private static final int PICK_IMAGE = 100;
     private ImageView imageView;
     private EditText contactEditText, skillsEditText, educationEditText,
@@ -246,7 +233,7 @@ public class ScanCV extends AppCompatActivity {
         }
 
         // Get member_id from SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", "");
 
         // Convert image to base64

@@ -19,6 +19,7 @@ import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import org.json.JSONArray;
@@ -119,7 +120,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
     private void loadStudentLevelsAndSubjects() {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2/FYP/php/get_studentLevels&Subject&District.php"; // Your PHP URL
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_studentLevels&Subject&District.php"; // Your PHP URL
 
         Request request = new Request.Builder().url(url).build();
 
@@ -362,7 +363,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/post_application.php")
+                .url("http://"+ IPConfig.getIP()+"/FYP/php/post_application.php")
                 .post(formBody)
                 .build();
 

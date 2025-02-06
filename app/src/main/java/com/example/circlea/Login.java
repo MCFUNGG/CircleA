@@ -87,7 +87,7 @@ public class Login extends AppCompatActivity {
 
         // Create the request
         Request request = new Request.Builder()
-                    .url("http://10.0.2.2/FYP/php/login.php")
+                    .url("http://"+IPConfig.getIP()+"/FYP/php/login.php")
                 .post(formBody)
                 .build();
 

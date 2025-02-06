@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circlea.Home;
+import com.example.circlea.IPConfig;
 import com.example.circlea.Login;
 import com.example.circlea.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -139,7 +140,7 @@ public class EmailVerification extends AppCompatActivity {
 
         // Create the request
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/create_account.php") // 確保這裡是正確的伺服器地址
+                .url("http://"+ IPConfig.getIP()+"/FYP/php/create_account.php") // 確保這裡是正確的伺服器地址
                 .post(formBody)
                 .build();
 

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 import com.google.android.material.button.MaterialButton;
 import org.json.JSONArray;
@@ -138,7 +139,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/get_tutor_application_by_match_id.php")
+                .url("http://"+ IPConfig.getIP()+"/FYP/php/get_tutor_application_by_match_id.php")
                 .post(formBody)
                 .build();
 
@@ -247,7 +248,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/update_match_status_to_Pending.php")
+                .url("http://"+IPConfig.getIP()+"/FYP/php/update_match_status_to_Pending.php")
                 .post(formBody)
                 .build();
 
@@ -289,7 +290,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/update_match_status_to_Reject.php")
+                .url("http://"+IPConfig.getIP()+"/FYP/php/update_match_status_to_Reject.php")
                 .post(formBody)
                 .build();
 

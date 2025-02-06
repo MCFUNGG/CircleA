@@ -55,7 +55,7 @@
             android:name=".application.ApplicationHistory"
             android:exported="true" />
         <activity
-            android:name=".application.ScanCV"
+            android:name=".setting.ScanCV"
             android:exported="true" />
         <activity
             android:name=".setting.MemberDetail"

@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 
 import com.example.circlea.Home;
 import com.example.circlea.R;
+import com.example.circlea.setting.ScanCV;
 
 public class ApplicationFragment extends Fragment {
     private Button btnpost, btnhistory, createCvButton;

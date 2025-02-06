@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.circlea.Home;
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import org.json.JSONArray;
@@ -164,7 +165,7 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
 
-        String url = "http://10.0.2.2/FYP/php/get_T_application_data.php";
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_T_application_data.php";
 
         // Create a GET request
         RequestBody requestBody = new FormBody.Builder()
@@ -260,7 +261,7 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
 
-        String url = "http://10.0.2.2/FYP/php/get_PS_application_data.php";
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_PS_application_data.php";
 
         // Create a POST request with member_id
         RequestBody requestBody = new FormBody.Builder()

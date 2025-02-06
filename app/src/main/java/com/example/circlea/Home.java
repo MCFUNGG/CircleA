@@ -14,12 +14,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.bumptech.glide.Glide;
 import com.example.circlea.matching.Matching;
 import com.example.circlea.application.ApplicationFragment;
 import com.example.circlea.application.ApplicationHistory;
 import com.example.circlea.application.ParentApplicationFillDetail;
-import com.example.circlea.application.ScanCV;
+import com.example.circlea.setting.ScanCV;
 import com.example.circlea.home.HomeFragment;
 import com.example.circlea.setting.SettingFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -135,8 +134,7 @@ public class Home extends AppCompatActivity {
             Toast.makeText(this, "Member ID not found", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        String url = "http://10.0.2.2/FYP/php/get_member_own_profile.php"; // 更新为您的 URL
+        String url = "http://"+IPConfig.getIP()+"/FYP/php/get_member_own_profile.php"; // 更新为您的 URL
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("member_id", memberId)
