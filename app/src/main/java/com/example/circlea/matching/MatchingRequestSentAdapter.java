@@ -53,6 +53,9 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
         String displayUsername = request.getDisplayName(false, currentUsername);
         holder.username.setText(displayUsername);
 
+        // Determine if the request was sent as PS
+        boolean isSentAsPS = request.getPsUsername().equals(currentUsername);
+
         // Set other details
         holder.fee.setText("HK$" + request.getFee() + "/hr");
         holder.classLevel.setText(request.getClassLevel());
@@ -89,11 +92,8 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
                 intent.putExtra("profile_icon", request.getProfileIcon());
                 intent.putExtra("match_creator", request.getMatchCreator());
 
-                // Add sender role information
-                boolean isSentAsPS = request.getPsUsername().equals(currentUsername);
+                // Add sender role information and role-specific data
                 intent.putExtra("sent_as_ps", isSentAsPS);
-
-                // Add role-specific data
                 if (isSentAsPS) {
                     intent.putExtra("ps_app_id", request.getPsAppId());
                     intent.putExtra("recipient_username", request.getTutorUsername());
@@ -122,7 +122,7 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView username, fee, classLevel, subject, district;
+        TextView username, fee, classLevel, subject, district, statusText;
         ImageView profileIcon;
 
         public ViewHolder(@NonNull View itemView) {
@@ -133,6 +133,7 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
             subject = itemView.findViewById(R.id.subject_tv);
             district = itemView.findViewById(R.id.district_tv);
             profileIcon = itemView.findViewById(R.id.profileIcon);
+            statusText = itemView.findViewById(R.id.status_text);
         }
     }
 

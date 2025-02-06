@@ -2,6 +2,8 @@ package com.example.circlea.matching;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.button.MaterialButton;
 
 import com.example.circlea.Home;
 import com.example.circlea.IPConfig;
@@ -33,7 +36,8 @@ public class Matching extends Fragment {
     private MatchingRequestSentAdapter sentAdapter, sentPsAdapter;
     private List<MatchingRequest> receivedPSList, receivedTutorList;
     private List<MatchingRequest> sentPSList, sentTutorList;
-    private Button btnRequest, btnCase, btnRequestReceived, btnRequestSent;
+    private Button btnRequest, btnCase;
+    private MaterialButton btnRequestReceived, btnRequestSent;
     private View requestSubButtonsLayout;
     private String selectedRequestId = null;
     private String memberId = "";
@@ -85,48 +89,6 @@ public class Matching extends Fragment {
         sentPSList = new ArrayList<>();
         sentTutorList = new ArrayList<>();
     }
-
-    private void setupRecyclerViews() {
-        receivedAdapter = new MatchingRequestReceivedAdapter(requireContext(), receivedPSList, "PS");
-        sentAdapter = new MatchingRequestSentAdapter(requireContext(), sentPSList);
-        matchingRequestByTutorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        receivedPsAdapter = new MatchingRequestReceivedAdapter(requireContext(), receivedTutorList, "TUTOR");
-        sentPsAdapter = new MatchingRequestSentAdapter(requireContext(), sentTutorList);
-        matchingRequestByPsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        setupClickListeners();
-        updateAdapters(true);
-    }
-    private void setupClickListeners() {
-        MatchingRequestReceivedAdapter.OnItemClickListener receivedClickListener =
-                (request, position) -> {
-                    selectedRequestId = request.getRequestId();
-                    Toast.makeText(requireContext(), "Selected received request: " + selectedRequestId, Toast.LENGTH_SHORT).show();
-                };
-
-        MatchingRequestSentAdapter.OnItemClickListener sentClickListener =
-                (request, position) -> {
-                    selectedRequestId = request.getRequestId();
-                    Toast.makeText(requireContext(), "Selected sent request: " + selectedRequestId, Toast.LENGTH_SHORT).show();
-                };
-
-        receivedAdapter.setOnItemClickListener(receivedClickListener);
-        sentAdapter.setOnItemClickListener(sentClickListener);
-        receivedPsAdapter.setOnItemClickListener(receivedClickListener);
-        sentPsAdapter.setOnItemClickListener(sentClickListener);
-    }
-
-    private void updateRequestHeaderTexts(boolean isReceived) {
-        if (isReceived) {
-            tvRequestFromPs.setText("Request From Parent/Student");
-            tvRequestFromTutor.setText("Request From Tutor");
-        } else {
-            tvRequestFromPs.setText("Request Sent As Parent/Student");
-            tvRequestFromTutor.setText("Request Sent As Tutor");
-        }
-    }
-
     private void setupButtons() {
         btnRequest.setOnClickListener(v -> {
             requestSubButtonsLayout.setVisibility(View.VISIBLE);
@@ -159,6 +121,27 @@ public class Matching extends Fragment {
         });
     }
 
+    private void updateMainButtonStyles(boolean isRequestSelected) {
+        btnRequest.setTextColor(getResources().getColor(
+                isRequestSelected ? R.color.orange : R.color.text_secondary));
+        btnCase.setTextColor(getResources().getColor(
+                isRequestSelected ? R.color.text_secondary : R.color.orange));
+    }
+
+    private void updateSubButtonStyles(boolean isReceivedSelected) {
+        if (isReceivedSelected) {
+            btnRequestReceived.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_500)));
+            btnRequestReceived.setTextColor(Color.WHITE);
+            btnRequestSent.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
+            btnRequestSent.setTextColor(Color.parseColor("#80FFFFFF"));
+        } else {
+            btnRequestSent.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_500)));
+            btnRequestSent.setTextColor(Color.WHITE);
+            btnRequestReceived.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
+            btnRequestReceived.setTextColor(Color.parseColor("#80FFFFFF"));
+        }
+    }
+
     private void hideAllRequestLayouts() {
         matchingRequestByTutorLayout.setVisibility(View.GONE);
         matchingRequestByPsLayout.setVisibility(View.GONE);
@@ -177,20 +160,87 @@ public class Matching extends Fragment {
         dividerTutor.setVisibility(View.VISIBLE);
     }
 
+    private void setDefaultState() {
+        // Show the request sub buttons layout
+        requestSubButtonsLayout.setVisibility(View.VISIBLE);
+
+        // Set Request tab as selected
+        updateMainButtonStyles(true);
+
+        // Set Received button as selected and update its style
+        isReceivedMode = true;
+        updateSubButtonStyles(true);
+
+        // Show the layouts
+        showRequestLayouts();
+
+        // Update the header texts for received mode
+        updateRequestHeaderTexts(true);
+
+        // Set initial button colors
+        btnRequestReceived.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.purple_500)));
+        btnRequestReceived.setTextColor(Color.WHITE);
+        btnRequestSent.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
+        btnRequestSent.setTextColor(Color.parseColor("#80FFFFFF"));
+
+        // Load the received data
+        loadRequestData(true);
+    }
+
+    private void updateRequestHeaderTexts(boolean isReceived) {
+        if (isReceived) {
+            tvRequestFromPs.setText("Request From Parent/Student");
+            tvRequestFromTutor.setText("Request From Tutor");
+        } else {
+            tvRequestFromPs.setText("Request Sent As Parent/Student");
+            tvRequestFromTutor.setText("Request Sent As Tutor");
+        }
+    }
+    private void setupRecyclerViews() {
+        receivedAdapter = new MatchingRequestReceivedAdapter(requireContext(), receivedPSList, "PS");
+        sentAdapter = new MatchingRequestSentAdapter(requireContext(), sentPSList);
+        matchingRequestByTutorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        receivedPsAdapter = new MatchingRequestReceivedAdapter(requireContext(), receivedTutorList, "TUTOR");
+        sentPsAdapter = new MatchingRequestSentAdapter(requireContext(), sentTutorList);
+        matchingRequestByPsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        setupClickListeners();
+        updateAdapters(true);
+    }
+
+    private void setupClickListeners() {
+        MatchingRequestReceivedAdapter.OnItemClickListener receivedClickListener =
+                (request, position) -> {
+                    selectedRequestId = request.getRequestId();
+                    Toast.makeText(requireContext(), "Selected received request: " + selectedRequestId, Toast.LENGTH_SHORT).show();
+                };
+
+        MatchingRequestSentAdapter.OnItemClickListener sentClickListener =
+                (request, position) -> {
+                    selectedRequestId = request.getRequestId();
+                    Toast.makeText(requireContext(), "Selected sent request: " + selectedRequestId, Toast.LENGTH_SHORT).show();
+                };
+
+        receivedAdapter.setOnItemClickListener(receivedClickListener);
+        sentAdapter.setOnItemClickListener(sentClickListener);
+        receivedPsAdapter.setOnItemClickListener(receivedClickListener);
+        sentPsAdapter.setOnItemClickListener(sentClickListener);
+    }
+
     private void updateAdapters(boolean isReceived) {
         if (isReceived) {
             matchingRequestByPsRecyclerView.setAdapter(receivedPsAdapter);    // From PS
             matchingRequestByTutorRecyclerView.setAdapter(receivedAdapter);   // From Tutor
         } else {
-            matchingRequestByPsRecyclerView.setAdapter(sentAdapter);     // Sent as Tutor
-            matchingRequestByTutorRecyclerView.setAdapter(sentPsAdapter);     // Sent as PS
+            // Fix: Swap these two lines for sent requests
+            matchingRequestByPsRecyclerView.setAdapter(sentPsAdapter);     // Sent as PS
+            matchingRequestByTutorRecyclerView.setAdapter(sentAdapter);    // Sent as Tutor
         }
 
-        // Make sure RecyclerViews are visible
         matchingRequestByPsRecyclerView.setVisibility(View.VISIBLE);
         matchingRequestByTutorRecyclerView.setVisibility(View.VISIBLE);
 
-        // Set layout managers if not already set
         if (matchingRequestByPsRecyclerView.getLayoutManager() == null) {
             matchingRequestByPsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         }
@@ -199,39 +249,13 @@ public class Matching extends Fragment {
         }
     }
 
-    private void setDefaultState() {
-        requestSubButtonsLayout.setVisibility(View.VISIBLE);
-        hideAllRequestLayouts();
-        updateMainButtonStyles(true);
-        updateSubButtonStyles(true);
-        updateRequestHeaderTexts(true);
-        loadRequestData(true);
-    }
 
-    private void updateMainButtonStyles(boolean isRequestSelected) {
-        btnRequest.setTextColor(getResources().getColor(
-                isRequestSelected ? android.R.color.holo_orange_light : android.R.color.darker_gray));
-        btnCase.setTextColor(getResources().getColor(
-                isRequestSelected ? android.R.color.darker_gray : android.R.color.holo_orange_light));
-    }
-
-    private void updateSubButtonStyles(boolean isReceivedSelected) {
-        btnRequestReceived.setTextColor(getResources().getColor(
-                isReceivedSelected ? android.R.color.holo_orange_light : android.R.color.darker_gray));
-        btnRequestSent.setTextColor(getResources().getColor(
-                isReceivedSelected ? android.R.color.darker_gray : android.R.color.holo_orange_light));
-    }
     private void loadRequestData(boolean isReceived) {
         if (memberId == null) {
             Toast.makeText(requireContext(), "Error: Missing user information", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Get username from SharedPreferences
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("CircleA", Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString("username", "");
-
-        // Clear appropriate lists based on mode
         if (isReceived) {
             receivedPSList.clear();
             receivedTutorList.clear();
@@ -247,7 +271,6 @@ public class Matching extends Fragment {
                 .add("is_received", String.valueOf(isReceived))
                 .build();
 
-        // Use different URLs for received and sent requests
         String url = isReceived ?
                 "http://"+ IPConfig.getIP()+"/FYP/php/get_match_request_received.php" :
                 "http://"+IPConfig.getIP()+"/FYP/php/get_match_request_sent.php";
@@ -286,11 +309,9 @@ public class Matching extends Fragment {
             }
         });
     }
-
     private void processMatchRequests(JSONArray dataArray, boolean isReceived) {
         requireActivity().runOnUiThread(() -> {
             try {
-                // Clear appropriate lists based on mode
                 if (isReceived) {
                     receivedPSList.clear();
                     receivedTutorList.clear();
@@ -304,77 +325,50 @@ public class Matching extends Fragment {
                 Log.d("Matching", "Total requests received from server: " + dataArray.length());
 
                 for (int i = 0; i < dataArray.length(); i++) {
-                    try {
-                        JSONObject item = dataArray.getJSONObject(i);
-                        String senderRole = item.optString("sender_role", "");
-                        String matchId = item.optString("match_id", "");
-                        String creator = item.optString("match_creator", "");
+                    JSONObject item = dataArray.getJSONObject(i);
+                    String senderRole = item.optString("sender_role", "");
+                    String matchId = item.optString("match_id", "");
+                    String creator = item.optString("match_creator", "");
 
-                        Log.d("Matching", String.format("Processing request %d: match_id=%s, sender_role=%s, creator=%s",
-                                i, matchId, senderRole, creator));
+                    Log.d("Matching", String.format("Processing request %d: match_id=%s, sender_role=%s, creator=%s",
+                            i, matchId, senderRole, creator));
 
-                        MatchingRequest request = processRequest(item, isReceived);
+                    MatchingRequest request = processRequest(item, isReceived);
 
-                        if (isReceived) {
-                            // For received requests, sort by who created the request
-                            if (creator.equals("PS")) {
-                                receivedPSList.add(request);
-                                Log.d("Matching", "Added to receivedPSList: " + matchId);
-                            } else if (creator.equals("T")) {
-                                receivedTutorList.add(request);
-                                Log.d("Matching", "Added to receivedTutorList: " + matchId);
-                            }
-                        } else {
-                            // For sent requests, sort by sender_role
-                            if (senderRole.equals("T")) {
-                                sentTutorList.add(request);
-                                Log.d("Matching", "Added to sentTutorList: " + matchId);
-                            } else if (senderRole.equals("PS")) {
-                                sentPSList.add(request);
-                                Log.d("Matching", "Added to sentPSList: " + matchId);
-                            }
+                    if (isReceived) {
+                        if (creator.equals("PS")) {
+                            receivedPSList.add(request);
+                            Log.d("Matching", "Added to receivedPSList: " + matchId);
+                        } else if (creator.equals("T")) {
+                            receivedTutorList.add(request);
+                            Log.d("Matching", "Added to receivedTutorList: " + matchId);
                         }
-                    } catch (JSONException e) {
-                        Log.e("Matching", "Error processing request: " + e.getMessage());
+                    } else {
+                        if (senderRole.equals("T")) {
+                            sentTutorList.add(request);
+                            Log.d("Matching", "Added to sentTutorList: " + matchId);
+                        } else if (senderRole.equals("PS")) {
+                            sentPSList.add(request);
+                            Log.d("Matching", "Added to sentPSList: " + matchId);
+                        }
                     }
                 }
-
-                Log.d("Matching", String.format("Final list sizes - Received(PS: %d, Tutor: %d), Sent(PS: %d, Tutor: %d)",
-                        receivedPSList.size(), receivedTutorList.size(), sentPSList.size(), sentTutorList.size()));
 
                 // Update adapters
                 if (isReceived) {
                     receivedAdapter.notifyDataSetChanged();
                     receivedPsAdapter.notifyDataSetChanged();
-                    Log.d("Matching", "Updated received adapters");
                 } else {
                     sentAdapter.notifyDataSetChanged();
                     sentPsAdapter.notifyDataSetChanged();
-                    Log.d("Matching", "Updated sent adapters");
                 }
 
                 // Get current lists based on mode
                 List<MatchingRequest> currentPSList = isReceived ? receivedPSList : sentPSList;
                 List<MatchingRequest> currentTutorList = isReceived ? receivedTutorList : sentTutorList;
 
-                // Update visibility of layouts
-                matchingRequestByTutorRecyclerView.setVisibility(currentPSList.isEmpty() ? View.GONE : View.VISIBLE);
-                tvRequestFromPs.setVisibility(currentPSList.isEmpty() ? View.GONE : View.VISIBLE);
-                dividerPs.setVisibility(currentPSList.isEmpty() ? View.GONE : View.VISIBLE);
-
-                matchingRequestByPsRecyclerView.setVisibility(currentTutorList.isEmpty() ? View.GONE : View.VISIBLE);
-                tvRequestFromTutor.setVisibility(currentTutorList.isEmpty() ? View.GONE : View.VISIBLE);
-                dividerTutor.setVisibility(currentTutorList.isEmpty() ? View.GONE : View.VISIBLE);
-
-                Log.d("Matching", String.format("Visibility updated - PS Layout: %s, Tutor Layout: %s",
-                        currentPSList.isEmpty() ? "GONE" : "VISIBLE",
-                        currentTutorList.isEmpty() ? "GONE" : "VISIBLE"));
-
-                // If both lists are empty, hide all layouts
-                if (currentPSList.isEmpty() && currentTutorList.isEmpty()) {
-                    hideAllRequestLayouts();
-                    Log.d("Matching", "Both lists empty, hiding all layouts");
-                }
+                // Update visibility
+                updateLayoutVisibility(currentPSList, currentTutorList);
 
             } catch (Exception e) {
                 Log.e("Matching", "Error in processMatchRequests: " + e.getMessage());
@@ -382,6 +376,21 @@ public class Matching extends Fragment {
             }
         });
     }
+
+    private void updateLayoutVisibility(List<MatchingRequest> psList, List<MatchingRequest> tutorList) {
+        matchingRequestByTutorRecyclerView.setVisibility(psList.isEmpty() ? View.GONE : View.VISIBLE);
+        tvRequestFromPs.setVisibility(psList.isEmpty() ? View.GONE : View.VISIBLE);
+        dividerPs.setVisibility(psList.isEmpty() ? View.GONE : View.VISIBLE);
+
+        matchingRequestByPsRecyclerView.setVisibility(tutorList.isEmpty() ? View.GONE : View.VISIBLE);
+        tvRequestFromTutor.setVisibility(tutorList.isEmpty() ? View.GONE : View.VISIBLE);
+        dividerTutor.setVisibility(tutorList.isEmpty() ? View.GONE : View.VISIBLE);
+
+        if (psList.isEmpty() && tutorList.isEmpty()) {
+            hideAllRequestLayouts();
+        }
+    }
+
     private MatchingRequest processRequest(JSONObject item, boolean isReceived) throws JSONException {
         JSONObject appDetails = item.getJSONObject("application_details");
         String creator = item.optString("match_creator", "");
@@ -398,10 +407,6 @@ public class Matching extends Fragment {
         String fee = appDetails.optString("feePerHr", "N/A");
         String subjects = processArray(appDetails.getJSONArray("subject_names"));
         String districts = processArray(appDetails.getJSONArray("district_names"));
-
-        // Log the request details for debugging
-        Log.d("Matching", String.format("Processing request: ID=%s, Creator=%s, PS=%s, Tutor=%s",
-                matchId, creator, psUsername, tutorUsername));
 
         return new MatchingRequest(
                 matchId, psAppId, tutorAppId, psUsername, tutorUsername,
@@ -424,8 +429,8 @@ public class Matching extends Fragment {
     }
 
     private void showToast(String message) {
-        requireActivity().runOnUiThread(() -> {
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-        });
+        requireActivity().runOnUiThread(() ->
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        );
     }
 }

@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="purple_500">#6B4EE0</color>
+    <color name="purple_700">#5B3ED0</color>
+    <color name="white">#FFFFFF</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#757575</color>
+    <color name="light_gray">#EEEEEE</color>
+    <color name="transparent">#00000000</color>
+    <color name="star_color">#FFD700</color>
+    <color name="background_color">#FFFFFF</color>
+    <color name="text_primary">#212121</color>
+    <color name="green_500">#4CAF50</color>
+    <color name="green_700">#388E3C</color>
+    <color name="green_200">#A5D6A7</color>
+    <color name="primary_dark">#1e4072</color>
+    <color name="accent_color">#FF9966</color>
+    <color name="text_secondary">#CCCCCC</color>
+    <color name="divider_color">#E0E0E0</color>
+    <color name="light_purple">#F8F7FF</color>
+    <color name="orange">#FF9966</color>
+        <color name="divider">#E0E0E0</color>
+        <color name="error_red">#FF5252</color>
+
 </resources>

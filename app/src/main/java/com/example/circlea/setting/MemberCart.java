@@ -1,128 +1,138 @@
 package com.example.circlea.setting;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.FormBody;
-
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
-import com.example.circlea.IPConfig;
+import com.example.circlea.DatabaseHelper;
 import com.example.circlea.R;
+import com.example.circlea.home.ApplicationItem;
+
+import java.util.ArrayList;
 
 public class MemberCart extends AppCompatActivity {
-
     private LinearLayout applicationsContainer;
-    private OkHttpClient client;
+    private DatabaseHelper dbHelper;
+    private Button tutorAppsButton, studentAppsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.member_cart);
 
+        // Initialize views
         applicationsContainer = findViewById(R.id.history_application_container);
-        client = new OkHttpClient();
+        tutorAppsButton = findViewById(R.id.tutorAppsButton);
+        studentAppsButton = findViewById(R.id.studentAppsButton);
+        dbHelper = new DatabaseHelper(this);
 
-        // Fetch application data
-        fetchApplicationData();
+        // Set up button listeners
+        tutorAppsButton.setOnClickListener(v -> {
+            updateButtonStates(tutorAppsButton);
+            loadApplications("tutor");
+        });
 
-        Button exitButton = findViewById(R.id.exitButton);
+        studentAppsButton.setOnClickListener(v -> {
+            updateButtonStates(studentAppsButton);
+            loadApplications("student");
+        });
+
+        ImageButton exitButton = findViewById(R.id.exitButton);
         exitButton.setOnClickListener(v -> finish());
+
+        // Load tutor applications by default
+        updateButtonStates(tutorAppsButton);
+        loadApplications("tutor");
     }
 
-    private void fetchApplicationData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        Set<String> appIds = sharedPreferences.getStringSet("selected_app_ids", new HashSet<>());
-        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_cart.php";
+    private void updateButtonStates(Button selectedButton) {
+        tutorAppsButton.setSelected(false);
+        studentAppsButton.setSelected(false);
+        selectedButton.setSelected(true);
 
-        if (appIds.isEmpty()) {
-            Toast.makeText(this, "No applications saved", Toast.LENGTH_SHORT).show();
+        // Update visual states
+        int selectedColor = ContextCompat.getColor(this, R.color.purple_500);
+        int defaultColor = ContextCompat.getColor(this, R.color.gray);
+
+        tutorAppsButton.setTextColor(tutorAppsButton.isSelected() ? selectedColor : defaultColor);
+        studentAppsButton.setTextColor(studentAppsButton.isSelected() ? selectedColor : defaultColor);
+    }
+
+    private void loadApplications(String type) {
+        ArrayList<ApplicationItem> savedApps = dbHelper.getSavedApplicationsByType(type);
+
+        if (savedApps.isEmpty()) {
+            showEmptyMessage(type);
             return;
         }
 
-        // Convert Set to a comma-separated string to send to PHP
-        String appIdString = TextUtils.join(",", appIds);
+        displayApplications(savedApps);
+    }
 
-        RequestBody requestBody = new FormBody.Builder()
-                .add("app_ids", appIdString) // Send all application IDs
-                .build();
+    private void displayApplications(ArrayList<ApplicationItem> applications) {
+        applicationsContainer.removeAllViews();
 
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
+        for (ApplicationItem app : applications) {
+            View itemView = LayoutInflater.from(this)
+                    .inflate(R.layout.item_saved_application, applicationsContainer, false);
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("CartFetchApplicationData", "Request failed: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(MemberCart.this, "Failed to fetch data", Toast.LENGTH_SHORT).show());
-            }
+            // Initialize views
+            TextView usernameView = itemView.findViewById(R.id.username);
+            TextView classLevelView = itemView.findViewById(R.id.classlevel_tv);
+            TextView subjectsView = itemView.findViewById(R.id.subject_tv);
+            TextView districtsView = itemView.findViewById(R.id.district_tv);
+            TextView feeView = itemView.findViewById(R.id.fee_tv);
+            ImageButton removeButton = itemView.findViewById(R.id.remove_button);
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String jsonResponse = response.body().string();
-                    Log.d("CartFetchApplicationData", "Server response: " + jsonResponse);
+            // Set data
+            usernameView.setText(app.getUsername());
+            classLevelView.setText("Class Level: " + app.getClassLevel());
+            subjectsView.setText("Subjects: " + TextUtils.join(", ", app.getSubjects()));
+            districtsView.setText("Districts: " + TextUtils.join(", ", app.getDistricts()));
+            feeView.setText("Fee: $" + app.getFee());
 
-                    try {
-                        JSONObject jsonObject = new JSONObject(jsonResponse);
-                        if (jsonObject.getBoolean("success")) {
-                            JSONArray dataArray = jsonObject.getJSONArray("data");
+            // Set up remove button
+            removeButton.setOnClickListener(v -> {
+                dbHelper.removeApplication(app.getAppId());
+                applicationsContainer.removeView(itemView);
 
-                            runOnUiThread(() -> applicationsContainer.removeAllViews());
-
-                            for (int i = 0; i < dataArray.length(); i++) {
-                                JSONObject data = dataArray.getJSONObject(i);
-                                LayoutInflater inflater = LayoutInflater.from(MemberCart.this);
-                                View applicationView = inflater.inflate(R.layout.application_item, applicationsContainer, false);
-
-                                // Safely retrieve values
-                                String subject = data.optString("subject_name", "N/A");
-                                String studentLevel = data.optString("class_level_name", "N/A");
-                                String fee = data.optString("fee_per_hour", "N/A");
-                                String district = data.optString("district_name", "N/A");
-
-                                // Set values
-                                ((TextView) applicationView.findViewById(R.id.subject_text)).setText(subject);
-                                ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
-                                ((TextView) applicationView.findViewById(R.id.fee_text)).setText(fee);
-                                ((TextView) applicationView.findViewById(R.id.district_text)).setText(district);
-
-                                runOnUiThread(() -> applicationsContainer.addView(applicationView));
-                            }
-                        } else {
-                            String message = jsonObject.optString("message", "Unknown error");
-                            runOnUiThread(() -> Toast.makeText(MemberCart.this, message, Toast.LENGTH_SHORT).show());
-                        }
-                    } catch (JSONException e) {
-                        Log.e("CartFetchApplicationData", "JSON parsing error: " + e.getMessage());
-                        runOnUiThread(() -> Toast.makeText(MemberCart.this, "Error processing data", Toast.LENGTH_SHORT).show());
-                    }
-                } else {
-                    Log.e("CartFetchApplicationData", "Request failed, response code: " + response.code());
-                    runOnUiThread(() -> Toast.makeText(MemberCart.this, "Failed to fetch application data", Toast.LENGTH_SHORT).show());
+                if (applicationsContainer.getChildCount() == 0) {
+                    showEmptyMessage(app.getApplicationType());
                 }
-            }
-        });
+
+                Toast.makeText(this, "Application removed", Toast.LENGTH_SHORT).show();
+            });
+
+            applicationsContainer.addView(itemView);
+        }
+    }
+
+    private void showEmptyMessage(String type) {
+        applicationsContainer.removeAllViews();
+
+        TextView emptyMessage = new TextView(this);
+        emptyMessage.setText("No saved " + type + " applications");
+        emptyMessage.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        emptyMessage.setPadding(0, 50, 0, 0);
+        emptyMessage.setTextSize(16);
+        emptyMessage.setTextColor(ContextCompat.getColor(this, R.color.black));
+
+        applicationsContainer.addView(emptyMessage);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload current application type
+        String currentType = tutorAppsButton.isSelected() ? "tutor" : "student";
+        loadApplications(currentType);
     }
 }

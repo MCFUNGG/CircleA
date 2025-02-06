@@ -130,27 +130,39 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupButtons() {
-        btnHighRated.setOnClickListener(v -> {
-            updateButtonStates(btnHighRated);
-            showSection(highRatedSection);
-        });
+        View.OnClickListener buttonClickListener = v -> {
+            Button clickedButton = (Button) v;
+            updateButtonStates(clickedButton);
 
-        btnTutorApp.setOnClickListener(v -> {
-            updateButtonStates(btnTutorApp);
-            showSection(tutorApplicationSection);
-        });
+            if (v.getId() == R.id.btnHighRated) {
+                showSection(highRatedSection);
+            } else if (v.getId() == R.id.btnTutorApp) {
+                showSection(tutorApplicationSection);
+            } else if (v.getId() == R.id.btnStudentApp) {
+                showSection(studentApplicationSection);
+            }
+        };
 
-        btnStudentApp.setOnClickListener(v -> {
-            updateButtonStates(btnStudentApp);
-            showSection(studentApplicationSection);
-        });
+        btnHighRated.setOnClickListener(buttonClickListener);
+        btnTutorApp.setOnClickListener(buttonClickListener);
+        btnStudentApp.setOnClickListener(buttonClickListener);
+
+        // Set initial state
+        updateButtonStates(btnHighRated);
     }
 
     private void updateButtonStates(Button selectedButton) {
-        btnHighRated.setSelected(false);
-        btnTutorApp.setSelected(false);
-        btnStudentApp.setSelected(false);
-        selectedButton.setSelected(true);
+        // Reset all buttons to default state
+        btnHighRated.setBackgroundResource(android.R.color.transparent);
+        btnHighRated.setTextColor(getResources().getColor(R.color.text_secondary));
+        btnTutorApp.setBackgroundResource(android.R.color.transparent);
+        btnTutorApp.setTextColor(getResources().getColor(R.color.text_secondary));
+        btnStudentApp.setBackgroundResource(android.R.color.transparent);
+        btnStudentApp.setTextColor(getResources().getColor(R.color.text_secondary));
+
+        // Set selected button colors
+        selectedButton.setBackgroundResource(R.drawable.selected_tab_background);
+        selectedButton.setTextColor(getResources().getColor(R.color.orange));
     }
 
     private void showSection(LinearLayout sectionToShow) {
@@ -230,7 +242,7 @@ public class HomeFragment extends Fragment {
                                 String profileIcon = data.optString("profile_icon", ""); // Fetch the profile icon URL
 
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon,username));
+                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon,username,"tutor"));
                             }
 
                             // Update UI on the main thread using FindingStudentsAdapter
@@ -327,7 +339,7 @@ public class HomeFragment extends Fragment {
                                 String profileIcon = data.optString("profile_icon", "");
 
                                 // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon, username));
+                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon, username,"student" ));
                             }
 
                             // Update UI on the main thread using ApplicationAdapter

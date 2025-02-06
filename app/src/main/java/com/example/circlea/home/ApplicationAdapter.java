@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,13 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.circlea.DatabaseHelper;
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,10 +37,13 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
     private ArrayList<ApplicationItem> data;
     private Context context;
+    private DatabaseHelper dbHelper;
+    private RecyclerView recyclerView;
 
     public ApplicationAdapter(ArrayList<ApplicationItem> data, Context context) {
         this.data = data;
         this.context = context;
+        this.dbHelper = new DatabaseHelper(context);
     }
 
     @NonNull
@@ -56,10 +58,17 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         if (data != null && position < data.size()) {
             ApplicationItem application = data.get(position);
 
+            // Check if application is saved and set the correct star icon
+            if (dbHelper.isApplicationSaved(application.getAppId())) {
+                holder.starButton.setImageResource(R.drawable.ic_star);
+            } else {
+                holder.starButton.setImageResource(R.drawable.ic_star_border);
+            }
+
             // Load profile icon using Glide
             String profileUrl = application.getProfileIcon();
             if (profileUrl != null && !profileUrl.isEmpty()) {
-                String fullProfileUrl = "http://"+ IPConfig.getIP() + profileUrl;
+                String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl;
                 Glide.with(context)
                         .load(fullProfileUrl)
                         .placeholder(R.drawable.circle_background)
@@ -69,10 +78,10 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             }
 
             holder.username.setText(application.getUsername());
-            holder.classLevelTextView.setText("aims: " + application.getClassLevel());
+            holder.classLevelTextView.setText(application.getClassLevel());
 
             // Concatenate subjects
-            StringBuilder subjects = new StringBuilder("");
+            StringBuilder subjects = new StringBuilder();
             for (String subject : application.getSubjects()) {
                 subjects.append(subject).append(", ");
             }
@@ -82,7 +91,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             holder.subjectTextView.setText(subjects.toString());
 
             // Concatenate districts
-            StringBuilder districts = new StringBuilder("");
+            StringBuilder districts = new StringBuilder();
             for (String district : application.getDistricts()) {
                 districts.append(district).append(", ");
             }
@@ -126,7 +135,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
     private void sendMemberIdsToServer(String tutorId, String psId, String psAppId) {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ IPConfig.getIP()+"/Matching/get_MemberID.php";
+        String url = "http://" + IPConfig.getIP() + "/Matching/get_MemberID.php";
 
         RequestBody formBody = new FormBody.Builder()
                 .add("TutorID", tutorId)
@@ -164,16 +173,39 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     }
 
     private void saveAppIdToPreferences(String appId) {
-        Log.d("PSApplicationAdapter", "Saving appId: " + appId);
-        SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        int position = -1;
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getAppId().equals(appId)) {
+                position = i;
+                break;
+            }
+        }
 
-        Set<String> appIds = sharedPreferences.getStringSet("selected_ps_app_ids", new HashSet<>());
-        appIds.add(appId);
+        if (position != -1) {
+            ApplicationItem app = data.get(position);
+            ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
 
-        editor.putStringSet("selected_ps_app_ids", appIds);
-        editor.apply();
-        Log.d("Preference", "Saved PS app IDs: " + appIds);
+            if (dbHelper.isApplicationSaved(appId)) {
+                dbHelper.removeApplication(appId);
+                if (holder != null) {
+                    holder.starButton.setImageResource(R.drawable.ic_star_border);
+                }
+                Toast.makeText(context, "Removed from favorites", Toast.LENGTH_SHORT).show();
+            } else {
+                dbHelper.saveApplication(app);
+                if (holder != null) {
+                    holder.starButton.setImageResource(R.drawable.ic_star);
+                }
+                Toast.makeText(context, "Added to favorites", Toast.LENGTH_SHORT).show();
+            }
+            notifyItemChanged(position);
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
     }
 
     @Override
@@ -181,12 +213,12 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         return data != null ? data.size() : 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         TextView classLevelTextView;
         TextView subjectTextView;
         TextView districtTextView;
         TextView feeTextView, username;
-        Button starButton;
+        ImageButton starButton;
         LinearLayout layout;
         ImageView profileIcon;
 

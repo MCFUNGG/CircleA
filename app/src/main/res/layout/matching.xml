@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primary_dark"
         android:orientation="vertical"
-        android:background="#1e4072"
-        android:padding="20dp">
+        android:padding="16dp">
 
         <ImageButton
             android:id="@+id/menuButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@null"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_menu"
-            android:contentDescription="Menu" />
+            android:contentDescription="Menu"
+            app:tint="@color/white"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Case Center"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"/>
-
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"/>
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -39,63 +43,77 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="16dp">
 
+            <!-- First row toggle buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
+                android:layout_height="40dp"
+                android:background="@drawable/toggle_background"
+                android:padding="2dp">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRequest"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Request"
-                    android:textColor="#FF9966"
-                    android:layout_marginEnd="4dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:text="REQUEST"
+                    android:textSize="14sp"
+                    android:textColor="@color/orange"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:background="@drawable/selected_tab_background"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCase"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Case"
-                    android:textColor="#CCCCCC"
-                    android:layout_marginEnd="4dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:text="CASE"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"/>
             </LinearLayout>
 
+            <!-- Second row buttons -->
             <LinearLayout
                 android:id="@+id/requestSubButtonsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="visible">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRequestReceived"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
                     android:text="Request Received"
-                    android:textColor="#FF9966"
-                    android:layout_marginEnd="4dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:textSize="12sp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="8dp"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRequestSent"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
                     android:text="Request Sent"
-                    android:textColor="#CCCCCC"
-                    android:layout_marginEnd="4dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:textSize="12sp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="8dp"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
             </LinearLayout>
-
+            <!-- Parent/Student Requests Section -->
             <LinearLayout
                 android:id="@+id/matchingRequestByTutorLinearLayout"
                 android:layout_width="match_parent"
@@ -108,33 +126,33 @@
                     android:layout_height="wrap_content"
                     android:text="Request from Parent/Student"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#1E3F71"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/primary_dark"
+                    android:textStyle="bold"/>
 
                 <View
                     android:id="@+id/dividerPs"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#CCCCCC"
+                    android:background="@color/divider_color"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/matchingRequestByTutorRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:visibility="gone"
-                    tools:listitem="@layout/item_matching_request_received" />
-
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_matching_request_received"/>
             </LinearLayout>
 
+            <!-- Tutor Requests Section -->
             <LinearLayout
                 android:id="@+id/matchingRequestByPsLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginTop="24dp">
 
                 <TextView
                     android:id="@+id/tvRequestFromTutor"
@@ -142,26 +160,25 @@
                     android:layout_height="wrap_content"
                     android:text="Request from Tutor"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#1E3F71"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/primary_dark"
+                    android:textStyle="bold"/>
 
                 <View
                     android:id="@+id/dividerT"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#CCCCCC"
+                    android:background="@color/divider_color"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"/>
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/matchingRequestByPsRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:visibility="gone"
-                    tools:listitem="@layout/item_matching_request_received" />
-
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_matching_request_received"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

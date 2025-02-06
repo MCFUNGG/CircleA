@@ -1,78 +1,93 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="3dp">
+    android:background="@color/background_color">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/white"
-        android:elevation="4dp"
-        android:padding="16dp"
-        android:layout_margin="8dp"
-        android:clipToPadding="false">
+        android:padding="16dp">
 
-        <Button
-            android:id="@+id/exitButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/exit"
-            android:layout_gravity="start"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Application Details"
-            android:textSize="24sp"
-            android:textColor="@color/black"
-            android:fontFamily="sans-serif-medium"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp" />
-
-        <LinearLayout
+        <!-- Header Section -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:elevation="2dp"
-            android:padding="8dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="24dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_tutor"
-                android:layout_width="0dp"
+            <ImageButton
+                android:id="@+id/exitButton"
+                android:layout_width="42dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/exit"
+                app:tint="@color/text_primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                app:backgroundTint="#29B314"
-                app:cornerRadius="20dp"
-                android:text="Show Tutor Applications"
-                android:textColor="#FFFFFF"
-                android:layout_marginLeft="8dp"/>
+                android:text="Application Details"
+                android:textSize="24sp"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
 
+        <!-- Toggle Buttons Container -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:background="@drawable/toggle_background">
 
-            <Button
-                android:id="@+id/button_ps"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Show Parent/Student Applications"
-                android:textColor="@color/white"
-                android:padding="12dp" />
-        </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_tutor"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Show Tutor\nApplications"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="20dp"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_ps"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Show Parent/Student\nApplications"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="20dp"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Applications Container -->
         <LinearLayout
             android:id="@+id/history_application_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="16dp"
-            android:elevation="2dp"
-            android:padding="8dp">
-            <!-- Dynamically added application items will go here -->
-        </LinearLayout>
+            android:layout_marginTop="8dp"/>
+
     </LinearLayout>
 </ScrollView>

@@ -60,35 +60,47 @@
         <!-- Section Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_height="40dp"
+            android:background="@drawable/toggle_background"
+            android:padding="2dp"
             android:layout_marginBottom="16dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnHighRated"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="High Rated"
-                android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:text="HIGH RATED"
+                android:textSize="14sp"
+                android:textColor="@color/orange"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:background="@drawable/selected_tab_background"
+                style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTutorApp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Tutor Apps"
-                android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:text="TUTOR APPS"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStudentApp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Student Apps"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:text="STUDENT APPS"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"/>
         </LinearLayout>
 
         <!-- High Rated Section -->
