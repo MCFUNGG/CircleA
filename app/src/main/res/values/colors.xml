@@ -21,5 +21,6 @@
     <color name="orange">#FF9966</color>
         <color name="divider">#E0E0E0</color>
         <color name="error_red">#FF5252</color>
-
+    <color name="status_pending">#FF6B6B</color>
+    <color name="status_approved">#4CAF50</color>
 </resources>

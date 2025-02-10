@@ -48,6 +48,11 @@ public class Matching extends Fragment {
     private TextView tvRequestFromPs, tvRequestFromTutor;
     private View dividerPs, dividerTutor;
 
+    private RecyclerView caseRecyclerView;
+    private MatchingCaseAdapter caseAdapter;
+    private List<MatchingCase> caseList;
+    private View caseSectionLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.matching, container, false);
@@ -84,6 +89,14 @@ public class Matching extends Fragment {
         dividerTutor = rootView.findViewById(R.id.dividerT);
         menuButton = rootView.findViewById(R.id.menuButton);
 
+
+        caseSectionLayout = rootView.findViewById(R.id.caseSectionLayout);
+        caseRecyclerView = rootView.findViewById(R.id.caseRecyclerView);
+        caseList = new ArrayList<>();
+        caseAdapter = new MatchingCaseAdapter(requireContext(), caseList);
+        caseRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        caseRecyclerView.setAdapter(caseAdapter);
+
         receivedPSList = new ArrayList<>();
         receivedTutorList = new ArrayList<>();
         sentPSList = new ArrayList<>();
@@ -93,6 +106,7 @@ public class Matching extends Fragment {
         btnRequest.setOnClickListener(v -> {
             requestSubButtonsLayout.setVisibility(View.VISIBLE);
             hideAllRequestLayouts();
+            caseSectionLayout.setVisibility(View.GONE);
             showRequestLayouts();
             updateMainButtonStyles(true);
         });
@@ -101,6 +115,8 @@ public class Matching extends Fragment {
             requestSubButtonsLayout.setVisibility(View.GONE);
             hideAllRequestLayouts();
             updateMainButtonStyles(false);
+            caseSectionLayout.setVisibility(View.VISIBLE);
+            loadCaseData(); // New method to load cases
         });
 
         btnRequestReceived.setOnClickListener(v -> {
@@ -150,6 +166,7 @@ public class Matching extends Fragment {
         tvRequestFromTutor.setVisibility(View.GONE);
         dividerPs.setVisibility(View.GONE);
         dividerTutor.setVisibility(View.GONE);
+        caseSectionLayout.setVisibility(View.GONE);
     }
 
     private void showRequestLayouts() {
@@ -223,6 +240,18 @@ public class Matching extends Fragment {
                     Toast.makeText(requireContext(), "Selected sent request: " + selectedRequestId, Toast.LENGTH_SHORT).show();
                 };
 
+        caseAdapter.setOnItemClickListener((matchingCase, position) -> {
+            String caseId = matchingCase.getMatchId();
+            String status = matchingCase.getStatus();
+
+            if (status.equalsIgnoreCase("P")) {
+                Toast.makeText(requireContext(), "Waiting for admin approve", Toast.LENGTH_SHORT).show();
+            } else if (status.equalsIgnoreCase("A")) {
+                Toast.makeText(requireContext(), "Selected case: " + caseId, Toast.LENGTH_SHORT).show();
+                // Add navigation to case details here if needed
+            }
+        });
+
         receivedAdapter.setOnItemClickListener(receivedClickListener);
         sentAdapter.setOnItemClickListener(sentClickListener);
         receivedPsAdapter.setOnItemClickListener(receivedClickListener);
@@ -248,6 +277,93 @@ public class Matching extends Fragment {
         if (matchingRequestByTutorRecyclerView.getLayoutManager() == null) {
             matchingRequestByTutorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         }
+    }
+
+    private void loadCaseData() {
+        if (memberId == null) {
+            Toast.makeText(requireContext(), "Error: Missing user information", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("member_id", memberId)
+                .build();
+
+        Request request = new Request.Builder()
+                    .url("http://" + IPConfig.getIP() + "/FYP/php/get_match_cases.php")
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("Matching", "Failed to load cases: " + e.getMessage());
+                showToast("Failed to load cases. Please try again.");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                try {
+                    JSONObject jsonResponse = new JSONObject(responseData);
+                    if (jsonResponse.getBoolean("success")) {
+                        JSONArray dataArray = jsonResponse.getJSONArray("data");
+                        processCases(dataArray);
+                    } else {
+                        String message = jsonResponse.optString("message", "No cases found");
+                        showToast(message);
+                    }
+                } catch (JSONException e) {
+                    Log.e("Matching", "JSON parsing error: " + e.getMessage());
+                    showToast("Error processing server response");
+                }
+            }
+        });
+    }
+    private void processCases(JSONArray dataArray) {
+        requireActivity().runOnUiThread(() -> {
+            try {
+                caseList.clear();
+                Log.d("Matching", "Processing " + dataArray.length() + " cases");
+
+                for (int i = 0; i < dataArray.length(); i++) {
+                    JSONObject item = dataArray.getJSONObject(i);
+                    JSONObject appDetails = item.getJSONObject("application_details");
+
+                    String matchId = item.optString("match_id", "N/A");
+                    String psAppId = item.optString("ps_app_id", "N/A");
+                    String tutorAppId = item.optString("tutor_app_id", "N/A");
+                    String psUsername = item.optString("ps_username", "N/A");
+                    String tutorUsername = item.optString("tutor_username", "N/A");
+                    String status = item.optString("status", "Pending");
+                    String profileIcon = item.optString("profile_icon", "N/A");
+                    String matchCreator = item.optString("match_creator", "");
+
+                    String classLevel = appDetails.optString("class_level_name", "N/A");
+                    String fee = appDetails.optString("feePerHr", "N/A");
+                    String subjects = processArray(appDetails.getJSONArray("subject_names"));
+                    String districts = processArray(appDetails.getJSONArray("district_names"));
+
+                    MatchingCase matchingCase = new MatchingCase(
+                            matchId, psAppId, tutorAppId, psUsername, tutorUsername,
+                            fee, classLevel, subjects, districts, status,
+                            profileIcon, matchCreator
+                    );
+
+                    caseList.add(matchingCase);
+                    Log.d("Matching", "Added case: " + matchId);
+                }
+
+                caseAdapter.notifyDataSetChanged();
+
+            } catch (Exception e) {
+                Log.e("Matching", "Error processing cases: " + e.getMessage());
+                e.printStackTrace();
+                showToast("Error processing cases");
+            }
+        });
     }
 
 
@@ -428,6 +544,8 @@ public class Matching extends Fragment {
         }
         return result.toString();
     }
+
+
 
     private void showToast(String message) {
         requireActivity().runOnUiThread(() ->

@@ -1,201 +1,218 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <Button
-        android:id="@+id/exit_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/exit" />
-
-
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:max="3"
-        android:progress="1"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <ViewFlipper
-        android:id="@+id/view_flipper"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        <Button
+            android:id="@+id/exit_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/exit" />
 
-        <!-- First Part: Radio and Subject -->
-        <ScrollView
+
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="3"
+            android:progress="1"
+            android:layout_marginBottom="16dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select your role"
-                    android:textSize="24sp"
-                    android:layout_marginBottom="16dp" />
-
-                <RadioGroup
-                    android:id="@+id/radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@null"
-                    android:padding="8dp">
-
-                    <RadioButton
-                        android:id="@+id/radio_parent"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I am a parent"
-                        android:button="@null"
-                        android:background="@drawable/radio_selector"
-                        android:textColor="@drawable/radio_text_selector"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:layout_marginEnd="4dp"/>
-
-                    <RadioButton
-                        android:id="@+id/radio_tutor"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I am a tutor"
-                        android:button="@null"
-                        android:background="@drawable/radio_selector"
-                        android:textColor="@drawable/radio_text_selector"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:layout_marginStart="4dp"/>
-                </RadioGroup>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Subject" />
-
-                <LinearLayout
-                    android:id="@+id/subject_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-            </LinearLayout>
-        </ScrollView>
-
-        <!-- Second Part: Student Level and Lesson Time -->
-        <ScrollView
+        <ViewFlipper
+            android:id="@+id/view_flipper"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <LinearLayout
+            <!-- First Part: Radio and Subject -->
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Student Level" />
-
-                <Spinner
-                    android:id="@+id/student_level_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Lesson Time" />
-
-                <LinearLayout
-                    android:id="@+id/date_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-            </LinearLayout>
-        </ScrollView>
-
-        <!-- Third Part: Fee, District, and Description -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Expected Fee per Hour" />
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="~ $"
-                        android:layout_gravity="center_vertical"
-                        android:paddingHorizontal="8dp" />
+                        android:text="Select your role"
+                        android:textSize="24sp"
+                        android:layout_marginBottom="16dp" />
 
-                    <EditText
-                        android:id="@+id/fee_input"
+                    <RadioGroup
+                        android:id="@+id/radio_group"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Fee"
-                        android:inputType="numberDecimal" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:background="@null"
+                        android:padding="8dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="District" />
+                        <RadioButton
+                            android:id="@+id/radio_parent"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="I am a parent"
+                            android:button="@null"
+                            android:background="@drawable/radio_selector"
+                            android:textColor="@drawable/radio_text_selector"
+                            android:gravity="center"
+                            android:padding="12dp"
+                            android:layout_marginEnd="4dp"/>
+
+                        <RadioButton
+                            android:id="@+id/radio_tutor"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="I am a tutor"
+                            android:button="@null"
+                            android:background="@drawable/radio_selector"
+                            android:textColor="@drawable/radio_text_selector"
+                            android:gravity="center"
+                            android:padding="12dp"
+                            android:layout_marginStart="4dp"/>
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Subject" />
+
+                    <LinearLayout
+                        android:id="@+id/subject_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Second Part: Student Level and Lesson Time -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:id="@+id/district_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Description (please do not enter any personal details)" />
+                    <TextView
+                        android:id="@+id/student_level_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Student Level" />
 
-                <EditText
-                    android:id="@+id/description_input"
+                    <Spinner
+                        android:id="@+id/student_level_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lesson Time"
+                        android:layout_marginTop="16dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/date_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lessons Per Week"
+                        android:layout_marginTop="16dp"/>
+
+                    <TextView
+                        android:id="@+id/lessons_per_week_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:padding="8dp"/>
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Third Part: Fee, District, and Description -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine" />
-            </LinearLayout>
-        </ScrollView>
-    </ViewFlipper>
+                    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/next_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Next" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Expected Fee per Hour" />
 
-    <Button
-        android:id="@+id/back_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Back" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="~ $"
+                            android:layout_gravity="center_vertical"
+                            android:paddingHorizontal="8dp" />
+
+                        <EditText
+                            android:id="@+id/fee_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Fee"
+                            android:inputType="numberDecimal" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="District" />
+
+                    <LinearLayout
+                        android:id="@+id/district_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Description (please do not enter any personal details)" />
+
+                    <EditText
+                        android:id="@+id/description_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine" />
+                </LinearLayout>
+            </ScrollView>
+        </ViewFlipper>
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Next" />
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back" />
 
 
-</LinearLayout>
+    </LinearLayout>

@@ -180,6 +180,42 @@
                     android:nestedScrollingEnabled="false"
                     tools:listitem="@layout/item_matching_request_received"/>
             </LinearLayout>
+
+            <!-- Case Section -->
+            <LinearLayout
+                android:id="@+id/caseSectionLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvCaseTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Cases"
+                    android:textSize="16sp"
+                    android:textColor="@color/primary_dark"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"/>
+
+                <View
+                    android:id="@+id/dividerCase"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/caseRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_matching_case"/>
+
+            </LinearLayout>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

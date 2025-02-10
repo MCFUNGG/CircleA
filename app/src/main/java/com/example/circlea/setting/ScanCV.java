@@ -15,10 +15,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 import com.google.mlkit.vision.common.InputImage;
@@ -31,10 +27,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import com.android.volley.DefaultRetryPolicy;
 
 import android.util.Base64;
 
@@ -224,82 +216,55 @@ public class ScanCV extends AppCompatActivity {
     }
 
     private void saveCV() {
-        String url = BASE_URL;
-
-        // If no image was selected
-        if (savedImageUri == null) {
-            Toast.makeText(this, "Please select a CV image first", Toast.LENGTH_SHORT).show();
+        // 檢查表單資料
+        if (!validateFormData()) {
             return;
         }
 
-        // Get member_id from SharedPreferences
+        // 嘗試轉換圖片，允許圖片為空
+        String base64Image = convertImageToBase64(savedImageUri);
+
+        // 創建Intent並傳遞所有資料到uploadCert
+        Intent intent = new Intent(this, uploadCert.class);
+        intent.putExtra("contact", contactEditText.getText().toString().trim());
+        intent.putExtra("skills", skillsEditText.getText().toString().trim());
+        intent.putExtra("education", educationEditText.getText().toString().trim());
+        intent.putExtra("language", languageEditText.getText().toString().trim());
+        intent.putExtra("other", otherEditText.getText().toString().trim());
+
+        // 獲取member_id並傳遞
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", "");
+        intent.putExtra("member_id", memberId);
 
-        // Convert image to base64
-        String base64Image = convertImageToBase64(savedImageUri);
-        if (base64Image.isEmpty()) {
-            Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        boolean success = jsonResponse.getBoolean("success");
-                        String message = jsonResponse.getString("message");
-
-                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
-                        if (success) {
-                            finish(); // Close activity on success
-                        }
-                    } catch (JSONException e) {
-                        Toast.makeText(this, "Error processing response", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("member_id", memberId);
-                params.put("contact", contactEditText.getText().toString().trim());
-                params.put("skills", skillsEditText.getText().toString().trim());
-                params.put("education", educationEditText.getText().toString().trim());
-                params.put("language", languageEditText.getText().toString().trim());
-                params.put("other", otherEditText.getText().toString().trim());
-                params.put("image", base64Image);
-                return params;
-            }
-        };
-
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                60000, // Increased timeout to 60 seconds for image upload
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(stringRequest);
+        startActivity(intent);
     }
 
-    private String convertImageToBase64(Uri imageUri) {
-        try {
-            Bitmap bitmap;
-            if (Build.VERSION.SDK_INT < 28) {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-            } else {
-                ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), imageUri);
-                bitmap = ImageDecoder.decodeBitmap(source);
-            }
-
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-            return Base64.encodeToString(byteArray, Base64.DEFAULT);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
+    private String convertImageToBase64(Uri uri) {
+        if (uri == null) {
+            return null; // 如果沒有圖片，返回null
         }
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+            return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
+        } catch (IOException | SecurityException e) {
+            showToast("圖片轉換失敗: " + e.getMessage());
+            return null; // 返回null以表示轉換失敗
+        }
+    }
+
+    // 表單資料驗證
+    private boolean validateFormData() {
+        if (contactEditText.getText().toString().trim().isEmpty()) {
+            showToast("請填寫聯絡資訊");
+            return false;
+        }
+        return true;
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

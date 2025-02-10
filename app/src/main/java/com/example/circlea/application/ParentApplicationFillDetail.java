@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -51,6 +52,10 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
     private EditText descriptionInput;
     private LinearLayout districtContainer, subjectContainer;
     private LinearLayout dateContainer;
+    private TextView studentLevelLabel;
+    private boolean isParent = true;
+    private TextView lessonsPerWeekText;
+    private int selectedDaysCount = 0;
 
     private int currentStep = 0;
     private final ArrayList<String> selectedDates = new ArrayList<>();
@@ -72,12 +77,32 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         exitButton = findViewById(R.id.exit_button);
         Button backButton = findViewById(R.id.back_button);
 
+
         studentLevelSpinner = findViewById(R.id.student_level_spinner);
         feePerHr = findViewById(R.id.fee_input);
         radioGroup = findViewById(R.id.radio_group);
         descriptionInput = findViewById(R.id.description_input);
         districtContainer = findViewById(R.id.district_container);
         dateContainer = findViewById(R.id.date_container);
+        studentLevelLabel = findViewById(R.id.student_level_label);
+
+        lessonsPerWeekText = findViewById(R.id.lessons_per_week_text);
+        updateLessonsPerWeekText(0);
+
+
+
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            isParent = (checkedId == R.id.radio_parent);
+            if (isParent) {
+                studentLevelLabel.setText("Student Level");
+                dateContainer.setVisibility(View.VISIBLE);
+                lessonsPerWeekText.setVisibility(View.VISIBLE);
+            } else {
+                studentLevelLabel.setText("Target Student Level");
+                dateContainer.setVisibility(View.GONE);
+                lessonsPerWeekText.setVisibility(View.GONE);
+            }
+        });
 
         // Load data
         loadStudentLevelsAndSubjects();
@@ -186,7 +211,6 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         });
     }
 
-    // ... existing code ...
     private void setupSubjectCheckBoxes(ArrayList<String> subjects) {
         LinearLayout subjectContainer = findViewById(R.id.subject_container);
         subjectContainer.removeAllViews();
@@ -237,7 +261,6 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
         subjectContainer.addView(gridLayout);
     }
-// ... existing code ...
 
     private void setupDistrictCheckBoxes(ArrayList<String> districts) {
         districtContainer.removeAllViews();
@@ -289,24 +312,31 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(day);
-            checkBox.setChecked(selectedDates.stream().anyMatch(date -> date.startsWith(day))); // Restore selection state
+            checkBox.setChecked(selectedDates.stream().anyMatch(date -> date.startsWith(day)));
 
             EditText timeInput = new EditText(this);
             timeInput.setHint("1400-1630");
             timeInput.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             timeInput.setEnabled(checkBox.isChecked());
 
+            // Restore previously entered time if any
             selectedDates.stream()
                     .filter(date -> date.startsWith(day))
                     .findFirst()
-                    .ifPresent(date -> timeInput.setText(date.split(": ")[1])); // Restore time value
+                    .ifPresent(date -> timeInput.setText(date.split(": ")[1]));
 
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 timeInput.setEnabled(isChecked);
                 if (!isChecked) {
                     timeInput.setText("");
                     selectedDates.removeIf(date -> date.startsWith(day));
+                    selectedDaysCount--;
                 } else {
+                    selectedDaysCount++;
+                }
+                updateLessonsPerWeekText(selectedDaysCount);
+
+                if (isChecked) {
                     timeInput.setOnFocusChangeListener((v, hasFocus) -> {
                         if (!hasFocus) {
                             String time = timeInput.getText().toString();
@@ -321,7 +351,16 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             dayLayout.addView(checkBox);
             dayLayout.addView(timeInput);
             dateContainer.addView(dayLayout);
+
+            // Update initial count for checked boxes
+            if (checkBox.isChecked()) {
+                selectedDaysCount++;
+                updateLessonsPerWeekText(selectedDaysCount);
+            }
         }
+    }
+    private void updateLessonsPerWeekText(int count) {
+        lessonsPerWeekText.setText(count + " day" + (count != 1 ? "s" : "") + " per week");
     }
 
     private void submitData() {
@@ -351,21 +390,27 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         }
 
         OkHttpClient client = new OkHttpClient();
-        RequestBody formBody = new FormBody.Builder()
+        FormBody.Builder formBodyBuilder = new FormBody.Builder()
                 .add("member_id", memberId)
-                .add("app_creator", appCreator)
+                .add("app_creator", isParent ? "PS" : "T")
                 .add("subject_ids", new JSONArray(selectedSubjectIds).toString())
                 .add("class_level_id", classLevelId)
                 .add("district_ids", new JSONArray(selectedDistrictIds).toString())
                 .add("description", description)
                 .add("fee_per_hr", fee)
-                .add("selected_dates", new JSONArray(selectedDates).toString())
-                .build();
+                .add("selected_dates", new JSONArray(selectedDates).toString());
+
+        if (isParent) {
+            formBodyBuilder.add("lessons_per_week", String.valueOf(selectedDaysCount));
+        }
+
+        RequestBody formBody = formBodyBuilder.build();
 
         Request request = new Request.Builder()
                 .url("http://"+ IPConfig.getIP()+"/FYP/php/post_application.php")
                 .post(formBody)
                 .build();
+
 
         client.newCall(request).enqueue(new Callback() {
             @Override

@@ -97,9 +97,10 @@ public class RequestReceivedDetail extends AppCompatActivity {
                 String subjects = extras.getString("subjects", "N/A");
                 String districts = extras.getString("districts", "N/A");
                 String profileIconUrl = extras.getString("profile_icon", "");
+                String lessonPerWeek = extras.getString("lesson_per_week", "N/A");
 
                 // Set PS details
-                psAppIdTextView.setText("PS Application ID: " + psAppId);
+                psAppIdTextView.setText("Application ID: " + psAppId);
                 psSubjectTextView.setText("Subjects: " + subjects);
                 psClassLevelTextView.setText("Class Level: " + classLevel);
                 psFeeTextView.setText("Fee: HK$" + fee);

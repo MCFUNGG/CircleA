@@ -18,16 +18,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -63,7 +66,7 @@ public class uploadCert extends AppCompatActivity {
 
         // Initialize RecyclerView for file previews with individual description input
         recyclerViewFiles = findViewById(R.id.recyclerViewFiles);
-        recyclerViewFiles.setLayoutManager(new GridLayoutManager(this, 3)); // 3 columns
+        recyclerViewFiles.setLayoutManager(new GridLayoutManager(this, 1));
         fileAdapter = new FileAdapter(this, selectedFileItems);
         recyclerViewFiles.setAdapter(fileAdapter);
 
@@ -76,11 +79,31 @@ public class uploadCert extends AppCompatActivity {
                         if (result.getData().getClipData() != null) {
                             ClipData clipData = result.getData().getClipData();
                             for (int i = 0; i < clipData.getItemCount(); i++) {
-                                selectedFileItems.add(new FileItem(clipData.getItemAt(i).getUri()));
+                                Uri selectedImageUri = clipData.getItemAt(i).getUri();
+                                String selectedMimeType = getContentResolver().getType(selectedImageUri);
+                                if (selectedMimeType != null &&
+                                        (selectedMimeType.equals("application/pdf") ||
+                                                selectedMimeType.equals("image/jpeg") ||
+                                                selectedMimeType.equals("image/png") ||
+                                                selectedMimeType.equals("image/jpg"))) {
+                                    selectedFileItems.add(new FileItem(selectedImageUri));
+                                } else {
+                                    Toast.makeText(this, "Selected file type is not supported", Toast.LENGTH_SHORT).show();
+                                }
                             }
                             Toast.makeText(this, "Selected " + clipData.getItemCount() + " files", Toast.LENGTH_SHORT).show();
                         } else if (result.getData().getData() != null) {
-                            selectedFileItems.add(new FileItem(result.getData().getData()));
+                            Uri selectedImageUri = result.getData().getData();
+                            String selectedMimeType = getContentResolver().getType(selectedImageUri);
+                            if (selectedMimeType != null &&
+                                    (selectedMimeType.equals("application/pdf") ||
+                                            selectedMimeType.equals("image/jpeg") ||
+                                            selectedMimeType.equals("image/png") ||
+                                            selectedMimeType.equals("image/jpg"))) {
+                                selectedFileItems.add(new FileItem(selectedImageUri));
+                            } else {
+                                Toast.makeText(this, "Selected file type is not supported", Toast.LENGTH_SHORT).show();
+                            }
                             Toast.makeText(this, "Selected 1 file", Toast.LENGTH_SHORT).show();
                         }
                         // Refresh RecyclerView to show newly added files
@@ -91,13 +114,20 @@ public class uploadCert extends AppCompatActivity {
         // 點選「選取檔案」按鈕時，不清除原有選擇，直接追加新檔案
         btnSelectFiles.setOnClickListener(v -> openFilePicker());
 
-        btnUpload.setOnClickListener(v -> {
-            if (!selectedFileItems.isEmpty()) {
-                uploadAllFiles();
-            } else {
-                Toast.makeText(this, "Please select files first!", Toast.LENGTH_SHORT).show();
+        // 當上傳按鈕被點擊時，先呼叫 deleteOldCertificates()，待刪除成功後再上傳新檔案
+        btnUpload.setOnClickListener(v -> deleteOldCertificates(new DeleteCallback() {
+            @Override
+            public void onDeleteSuccess() {
+                // 刪除成功後上傳新檔案
+                uploadNewFiles();
             }
-        });
+
+            @Override
+            public void onDeleteFailure(String errorMessage) {
+                runOnUiThread(() -> Toast.makeText(uploadCert.this,
+                        "Delete old certificates failed: " + errorMessage, Toast.LENGTH_SHORT).show());
+            }
+        }));
     }
 
     private void openFilePicker() {
@@ -115,112 +145,120 @@ public class uploadCert extends AppCompatActivity {
         filePickerLauncher.launch(Intent.createChooser(intent, "Select Files"));
     }
 
-    private void uploadAllFiles() {
-        final int totalFiles = selectedFileItems.size();
-        final AtomicInteger successCount = new AtomicInteger(0);
-        final AtomicInteger failCount = new AtomicInteger(0);
+    private void deleteOldCertificates(DeleteCallback callback) {
+        FormBody formBody = new FormBody.Builder()
+                .add("memberId", memberId)
+                .build();
+
+        Request request = new Request.Builder()
+                .url("http://" + IPConfig.getIP() + "/FYP/php/delete_cert.php")
+                .post(formBody)
+                .build();
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onDeleteFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseStr = response.body().string();
+                    try {
+                        JSONObject json = new JSONObject(responseStr);
+                        if (json.getString("status").equals("success")) {
+                            callback.onDeleteSuccess();
+                        } else {
+                            callback.onDeleteFailure(json.getString("message"));
+                        }
+                    } catch (JSONException e) {
+                        callback.onDeleteFailure(e.getMessage());
+                    }
+                } else {
+                    callback.onDeleteFailure("Response code: " + response.code());
+                }
+            }
+        });
+    }
+
+    private void uploadNewFiles() {
+        MultipartBody.Builder multipartBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        // 加入表單參數
+        multipartBuilder.addFormDataPart("memberId", memberId);
+        multipartBuilder.addFormDataPart("description", "");
+        multipartBuilder.addFormDataPart("contact", contact);
+        multipartBuilder.addFormDataPart("skills", skills);
+        multipartBuilder.addFormDataPart("education", education);
+        multipartBuilder.addFormDataPart("language", language);
+        multipartBuilder.addFormDataPart("other", other);
 
         for (FileItem fileItem : selectedFileItems) {
-            uploadFileToServer(fileItem, new UploadCallback() {
-                @Override
-                public void onSuccess() {
-                    int completed = successCount.incrementAndGet();
-                    checkUploadCompletion(completed, failCount.get(), totalFiles);
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(fileItem.getFileUri());
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    baos.write(buffer, 0, bytesRead);
                 }
-                @Override
-                public void onFailure() {
-                    int failed = failCount.incrementAndGet();
-                    checkUploadCompletion(successCount.get(), failed, totalFiles);
-                }
-            });
+                inputStream.close();
+                byte[] fileBytes = baos.toByteArray();
+
+                // 產生唯一的檔案名稱
+                String fileName = "CERT_" + memberId + "_" + System.currentTimeMillis() + ".jpeg";
+                multipartBuilder.addFormDataPart("file[]", fileName,
+                        RequestBody.create(MediaType.parse("application/octet-stream"), fileBytes));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
-    private void checkUploadCompletion(int successCount, int failCount, int totalFiles) {
-        if (successCount + failCount == totalFiles) {
-            runOnUiThread(() -> {
-                String message = String.format("Upload completed. Success: %d, Failed: %d",
-                        successCount, failCount);
-                Toast.makeText(uploadCert.this, message, Toast.LENGTH_LONG).show();
-                if (successCount == totalFiles) {
-                    finish();
-                }
-            });
-        }
-    }
+        RequestBody requestBody = multipartBuilder.build();
 
-    interface UploadCallback {
-        void onSuccess();
-        void onFailure();
-    }
+        Request request = new Request.Builder()
+                .url("http://" + IPConfig.getIP() + "/FYP/php/upload_cv.php")
+                .post(requestBody)
+                .build();
 
-    private void uploadFileToServer(FileItem fileItem, UploadCallback callback) {
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(fileItem.getFileUri());
-            if (inputStream == null) {
-                Toast.makeText(this, "Failed to open file", Toast.LENGTH_SHORT).show();
-                callback.onFailure();
-                return;
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(uploadCert.this,
+                        "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                byteArrayOutputStream.write(buffer, 0, bytesRead);
-            }
-            byte[] fileBytes = byteArrayOutputStream.toByteArray();
-            inputStream.close();
-
-            String fileName = getFileName(fileItem.getFileUri());
-            String description = fileItem.getDescription();
-
-            OkHttpClient client = new OkHttpClient.Builder()
-                    .connectTimeout(30, TimeUnit.SECONDS)
-                    .writeTimeout(30, TimeUnit.SECONDS)
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .build();
-
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("memberId", memberId)
-                    .addFormDataPart("file", fileName,
-                            RequestBody.create(MediaType.parse("application/octet-stream"), fileBytes))
-                    .addFormDataPart("description", description)
-                    .addFormDataPart("contact", contact)
-                    .addFormDataPart("skills", skills)
-                    .addFormDataPart("education", education)
-                    .addFormDataPart("language", language)
-                    .addFormDataPart("other", other)
-                    .build();
-
-            Request request = new Request.Builder()
-                    .url("http://" + IPConfig.getIP() + "/FYP/php/uploadCV.php")
-                    .post(requestBody)
-                    .build();
-
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(uploadCert.this, "Upload successful!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+                } else {
                     runOnUiThread(() -> Toast.makeText(uploadCert.this,
-                            "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                    callback.onFailure();
+                            "Upload failed: " + response.message(), Toast.LENGTH_SHORT).show());
                 }
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        callback.onSuccess();
-                    } else {
-                        callback.onFailure();
-                    }
-                }
-            });
+            }
+        });
+    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error reading file", Toast.LENGTH_SHORT).show();
-            callback.onFailure();
-        }
+    // DeleteCallback interface to handle deleteCert.php response
+    private interface DeleteCallback {
+        void onDeleteSuccess();
+        void onDeleteFailure(String errorMessage);
     }
 
     private String getFileName(Uri uri) {

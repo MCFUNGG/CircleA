@@ -188,7 +188,11 @@
                                 android:text="Application ID: "
                                 android:textSize="14sp"
                                 android:textColor="#666666"/>
+
+
                         </LinearLayout>
+
+
 
                         <TextView
                             android:id="@+id/psFeeTextView"
@@ -198,6 +202,8 @@
                             android:textSize="18sp"
                             android:textColor="#1E3F71"
                             android:textStyle="bold"/>
+
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -227,6 +233,8 @@
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp"/>
 
+
+
                     <TextView
                         android:id="@+id/psDistrictTextView"
                         android:layout_width="match_parent"
@@ -235,6 +243,7 @@
                         android:drawablePadding="8dp"
                         android:text="Districts"
                         android:textSize="14sp"/>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
