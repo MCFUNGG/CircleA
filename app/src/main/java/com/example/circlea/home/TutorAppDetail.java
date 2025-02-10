@@ -86,33 +86,51 @@ public class TutorAppDetail extends AppCompatActivity {
         matchingScoreTextView = findViewById(R.id.matchingScoreTextView);
         exitBtn = findViewById(R.id.exitButton);
         applyButton = findViewById(R.id.applyButton);
+        if (matchingScoreTextView == null) {
+            Log.e("TutorAppDetail", "Failed to initialize matchingScoreTextView");
+        }
     }
 
     private void initializeApplyDialog() {
-        applyDialog = new Dialog(this);
-        applyDialog.setContentView(R.layout.dialog_matching_details);  // Use the correct layout
+        if (!isFinishing()) {  // Check if activity is not finishing
+            applyDialog = new Dialog(this);
+            applyDialog.setContentView(R.layout.dialog_matching_details);
 
-        // Make dialog background transparent
-        applyDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            // Make dialog background transparent
+            if (applyDialog.getWindow() != null) {
+                applyDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        // Set dialog width to 90% of screen width
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(applyDialog.getWindow().getAttributes());
-        lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
-        applyDialog.getWindow().setAttributes(lp);
+                // Set dialog width to 90% of screen width
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(applyDialog.getWindow().getAttributes());
+                lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
+                applyDialog.getWindow().setAttributes(lp);
+            }
+            applyDialog = new Dialog(this);
+            applyDialog.setContentView(R.layout.dialog_matching_details);  // Use the correct layout
 
-        applicationsContainer = applyDialog.findViewById(R.id.applicationsContainer);
-        // Find dialog buttons
-        Button cancelButton = applyDialog.findViewById(R.id.dialogCancelButton);
-        Button confirmButton = applyDialog.findViewById(R.id.dialogConfirmButton);
+            // Make dialog background transparent
+            applyDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        // Set click listeners for dialog buttons
-        cancelButton.setOnClickListener(v -> applyDialog.dismiss());
-        confirmButton.setOnClickListener(v -> {
-            checkIfMatchExist();
+            // Set dialog width to 90% of screen width
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(applyDialog.getWindow().getAttributes());
+            lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
+            applyDialog.getWindow().setAttributes(lp);
 
-            applyDialog.dismiss();
-        });
+            applicationsContainer = applyDialog.findViewById(R.id.applicationsContainer);
+            // Find dialog buttons
+            Button cancelButton = applyDialog.findViewById(R.id.dialogCancelButton);
+            Button confirmButton = applyDialog.findViewById(R.id.dialogConfirmButton);
+
+            // Set click listeners for dialog buttons
+            cancelButton.setOnClickListener(v -> applyDialog.dismiss());
+            confirmButton.setOnClickListener(v -> {
+                checkIfMatchExist();
+
+                applyDialog.dismiss();
+            });
+        }
     }
 
     private void setClickListeners() {
@@ -167,7 +185,7 @@ public class TutorAppDetail extends AppCompatActivity {
     private void fetchPsApplicationData() {
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", null);
-        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_application_data.php";
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_PS_application_data.php";
         client = new OkHttpClient();
 
         RequestBody requestBody = new FormBody.Builder()
@@ -246,7 +264,7 @@ public class TutorAppDetail extends AppCompatActivity {
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
                                 ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
                                 ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
-                                ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
+                               // ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
 
                                 // Add click listener for selection
                                 applicationView.setOnClickListener(v -> {
@@ -284,15 +302,33 @@ public class TutorAppDetail extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Dismiss dialog if it's showing
+        if (applyDialog != null && applyDialog.isShowing()) {
+            applyDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Dismiss dialog if it's showing
+        if (applyDialog != null && applyDialog.isShowing()) {
+            applyDialog.dismiss();
+        }
+    }
+
     private void showApplyDialog() {
-        if (applyDialog != null) {
+        if (applyDialog != null && !isFinishing()) {  // Check if activity is not finishing
             // Update dialog message with current details
             TextView messageText = applyDialog.findViewById(R.id.dialogMessageText);
             messageText.setText("Are you sure you want to apply for this tutor?\n\n" +
-                     classLevelTextView.getText() + "\n" +
+                    classLevelTextView.getText() + "\n" +
                     subjectTextView.getText() + "\n" +
                     feeTextView.getText());
-
 
             applyDialog.show();
         }
@@ -463,7 +499,55 @@ public class TutorAppDetail extends AppCompatActivity {
     }
 
     //score part
+
+
+    private void updateUIWithJson(String jsonResponse) {
+        if (isFinishing()) {
+            Log.e("TutorAppDetail", "Activity is finishing");
+            return;
+        }
+
+        runOnUiThread(() -> {
+            // Check if view is still valid
+            if (matchingScoreTextView == null) {
+                Log.e("TutorAppDetail", "matchingScoreTextView is null");
+                return;
+            }
+
+            try {
+                JSONArray jsonArray = new JSONArray(jsonResponse);
+                StringBuilder scores = new StringBuilder();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if (jsonObject.has("score")) {
+                        String score = jsonObject.getString("score");
+                        scores.append("Score ").append(i + 1).append(": ").append(score).append("\n");
+                    }
+                }
+
+                final String finalScore = scores.length() > 0 ?
+                        scores.toString() : "No matching scores found.";
+
+                // Final null check before setting text
+                if (matchingScoreTextView != null) {
+                    matchingScoreTextView.setText(finalScore);
+                }
+
+            } catch (JSONException e) {
+                Log.e("TutorAppDetail", "JSON parsing error: " + e.getMessage());
+                // Final null check before setting error text
+                if (matchingScoreTextView != null) {
+                    matchingScoreTextView.setText("Error parsing matching scores.");
+                }
+            }
+        });
+    }
+
+    // Also update the fetchJsonData method to include additional checks
     private void fetchJsonData() {
+        if (isFinishing()) return;
+
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -473,23 +557,35 @@ public class TutorAppDetail extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (isFinishing()) return;
+
                 runOnUiThread(() -> {
-                    Toast.makeText(TutorAppDetail.this,
-                            "Failed to fetch data. Please check your internet connection.",
-                            Toast.LENGTH_SHORT).show();
+                    if (!isFinishing() && matchingScoreTextView != null) {
+                        matchingScoreTextView.setText("Failed to fetch data");
+                        Toast.makeText(TutorAppDetail.this,
+                                "Failed to fetch data. Please check your internet connection.",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (isFinishing()) return;
+
                 if (response.isSuccessful()) {
-                    String jsonResponse = response.body().string();
-                    runOnUiThread(() -> updateUIWithJson(jsonResponse));
+                    final String jsonResponse = response.body().string();
+                    if (!isFinishing()) {
+                        updateUIWithJson(jsonResponse);
+                    }
                 } else {
                     runOnUiThread(() -> {
-                        Toast.makeText(TutorAppDetail.this,
-                                "Server error. Please try again later.",
-                                Toast.LENGTH_SHORT).show();
+                        if (!isFinishing() && matchingScoreTextView != null) {
+                            matchingScoreTextView.setText("Server error");
+                            Toast.makeText(TutorAppDetail.this,
+                                    "Server error. Please try again later.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
             }
@@ -497,37 +593,17 @@ public class TutorAppDetail extends AppCompatActivity {
     }
 
     private String extractScore(String scoreText) {
+        if (scoreText == null) {
+            Log.e("TutorAppDetail", "scoreText is null");
+            return null;
+        }
+
         String[] parts = scoreText.split(":");
         if (parts.length > 1) {
             String scorePart = parts[1].trim(); // Get the part after the colon
             return scorePart; // Remove the '%' and trim whitespace
         }
         return null; // Return null if the format is unexpected
-    }
-
-    private void updateUIWithJson(String jsonResponse) {
-        try {
-            JSONArray jsonArray = new JSONArray(jsonResponse);
-            StringBuilder scores = new StringBuilder();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (jsonObject.has("score")) {
-                    String score = jsonObject.getString("score");
-                    scores.append("Score ").append(i + 1).append(": ").append(score).append("\n");
-                }
-            }
-
-            if (scores.length() > 0) {
-                matchingScoreTextView.setText(scores.toString());
-            } else {
-                matchingScoreTextView.setText("No matching scores found.");
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            matchingScoreTextView.setText("Error parsing matching scores.");
-        }
     }
 
 }

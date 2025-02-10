@@ -4,7 +4,7 @@
         android:title="All" />
     <item
         android:id="@+id/nav_matching"
-        android:title="Case Center" />
+        android:title="Matching" />
 
 
     <item

@@ -1,6 +1,5 @@
 package com.example.circlea.home;
 
-
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.SharedPreferences;
@@ -30,7 +29,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,26 +40,32 @@ import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
 
-    private RecyclerView horizontalRecyclerView, verticalRecyclerView, findingTutorsRecyclerView, findingStudentsRecyclerView;
+    private RecyclerView horizontalRecyclerView, verticalRecyclerView,
+            findingTutorsRecyclerView, findingStudentsRecyclerView;
     private OkHttpClient client;
     private LinearLayout highRatedSection, tutorApplicationSection, studentApplicationSection;
     private Button btnHighRated, btnTutorApp, btnStudentApp;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        if (!isAdded()) {
+            return null;
+        }
+
         client = new OkHttpClient();
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Initialize views
         initializeViews(view);
         setupRecyclerViews();
         setupButtons();
 
-        // Set up menu button
         ImageButton menuButton = view.findViewById(R.id.menuButton);
         menuButton.setOnClickListener(v -> {
-            ((Home) getActivity()).openDrawer();
+            if (isAdded() && getActivity() instanceof Home) {
+                ((Home) getActivity()).openDrawer();
+            }
         });
 
         // Set up horizontal RecyclerView data
@@ -92,37 +96,39 @@ public class HomeFragment extends Fragment {
     }
 
     private void initializeViews(View view) {
-        // RecyclerViews
         horizontalRecyclerView = view.findViewById(R.id.horizontalRecyclerView);
         verticalRecyclerView = view.findViewById(R.id.verticalRecyclerView);
         findingTutorsRecyclerView = view.findViewById(R.id.findingTutorsRecyclerView);
         findingStudentsRecyclerView = view.findViewById(R.id.findingStudentsRecyclerView);
 
-        // Sections
         highRatedSection = view.findViewById(R.id.highRatedSection);
         tutorApplicationSection = view.findViewById(R.id.tutorApplicationSection);
         studentApplicationSection = view.findViewById(R.id.studentApplicationSection);
 
-        // Buttons
         btnHighRated = view.findViewById(R.id.btnHighRated);
         btnTutorApp = view.findViewById(R.id.btnTutorApp);
         btnStudentApp = view.findViewById(R.id.btnStudentApp);
     }
 
     private void setupRecyclerViews() {
-        // Layout Managers
-        horizontalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        verticalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        findingTutorsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        findingStudentsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        if (!isAdded()) return;
 
-        // Disable nested scrolling
+        LinearLayoutManager horizontalLayout = new LinearLayoutManager(requireContext(),
+                LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager verticalLayout = new LinearLayoutManager(requireContext());
+        LinearLayoutManager tutorsLayout = new LinearLayoutManager(requireContext());
+        LinearLayoutManager studentsLayout = new LinearLayoutManager(requireContext());
+
+        horizontalRecyclerView.setLayoutManager(horizontalLayout);
+        verticalRecyclerView.setLayoutManager(verticalLayout);
+        findingTutorsRecyclerView.setLayoutManager(tutorsLayout);
+        findingStudentsRecyclerView.setLayoutManager(studentsLayout);
+
         horizontalRecyclerView.setNestedScrollingEnabled(false);
         verticalRecyclerView.setNestedScrollingEnabled(false);
         findingTutorsRecyclerView.setNestedScrollingEnabled(false);
         findingStudentsRecyclerView.setNestedScrollingEnabled(false);
 
-        // Set fixed sizes
         horizontalRecyclerView.setHasFixedSize(true);
         verticalRecyclerView.setHasFixedSize(true);
         findingTutorsRecyclerView.setHasFixedSize(true);
@@ -131,6 +137,8 @@ public class HomeFragment extends Fragment {
 
     private void setupButtons() {
         View.OnClickListener buttonClickListener = v -> {
+            if (!isAdded()) return;
+
             Button clickedButton = (Button) v;
             updateButtonStates(clickedButton);
 
@@ -147,222 +155,248 @@ public class HomeFragment extends Fragment {
         btnTutorApp.setOnClickListener(buttonClickListener);
         btnStudentApp.setOnClickListener(buttonClickListener);
 
-        // Set initial state
         updateButtonStates(btnHighRated);
     }
 
     private void updateButtonStates(Button selectedButton) {
-        // Reset all buttons to default state
-        btnHighRated.setBackgroundResource(android.R.color.transparent);
-        btnHighRated.setTextColor(getResources().getColor(R.color.text_secondary));
-        btnTutorApp.setBackgroundResource(android.R.color.transparent);
-        btnTutorApp.setTextColor(getResources().getColor(R.color.text_secondary));
-        btnStudentApp.setBackgroundResource(android.R.color.transparent);
-        btnStudentApp.setTextColor(getResources().getColor(R.color.text_secondary));
+        if (!isAdded()) return;
 
-        // Set selected button colors
+        btnHighRated.setBackgroundResource(android.R.color.transparent);
+        btnHighRated.setTextColor(requireContext().getResources().getColor(R.color.text_secondary));
+        btnTutorApp.setBackgroundResource(android.R.color.transparent);
+        btnTutorApp.setTextColor(requireContext().getResources().getColor(R.color.text_secondary));
+        btnStudentApp.setBackgroundResource(android.R.color.transparent);
+        btnStudentApp.setTextColor(requireContext().getResources().getColor(R.color.text_secondary));
+
         selectedButton.setBackgroundResource(R.drawable.selected_tab_background);
-        selectedButton.setTextColor(getResources().getColor(R.color.orange));
+        selectedButton.setTextColor(requireContext().getResources().getColor(R.color.orange));
     }
 
     private void showSection(LinearLayout sectionToShow) {
+        if (!isAdded()) return;
+
         highRatedSection.setVisibility(View.GONE);
         tutorApplicationSection.setVisibility(View.GONE);
         studentApplicationSection.setVisibility(View.GONE);
         sectionToShow.setVisibility(View.VISIBLE);
     }
-
-
     private void fetchTutorsApplicationData() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
-        String memberId = sharedPreferences.getString("member_id", null);
+        if (!isAdded()) {
+            Log.e("HomeFragment", "Fragment not attached to activity");
+            return;
+        }
 
-        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_T_application_data.php";
+        try {
+            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
+            String memberId = sharedPreferences.getString("member_id", null);
+            String url = "http://" + IPConfig.getIP() + "/FYP/php/get_T_application_data.php";
 
-        // Create a GET request
-        RequestBody requestBody = new FormBody.Builder()
-                .add("member_id", memberId)
-                .build();
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("member_id", memberId)
+                    .build();
 
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
-        // Execute the request
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("FetchApplicationData", "Request failed: " + e.getMessage());
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show());
-            }
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build();
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String jsonResponse = response.body().string();
-                    Log.d("FetchApplicationData", "Server response: " + jsonResponse);
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(jsonResponse);
-                        if (jsonObject.getBoolean("success")) {
-                            JSONArray dataArray = jsonObject.getJSONArray("data");
-
-                            // Create a list to hold the application data
-                            ArrayList<ApplicationItem> applicationsList = new ArrayList<>();
-
-                            // Iterate through the application array
-                            for (int i = 0; i < dataArray.length(); i++) {
-                                JSONObject data = dataArray.getJSONObject(i);
-                                String appId = data.optString("app_id", "N/A");
-                                String memberId = data.optString("member_id", "N/A");
-                                String classLevel = data.optString("class_level_name", "N/A");
-                                String fee = data.optString("feePerHr", "N/A");
-                                String username = data.optString("username", "N/A");
-
-                                // Fetch subjects
-                                JSONArray subjectsArray = data.optJSONArray("subject_names");
-                                ArrayList<String> subjects = new ArrayList<>();
-                                if (subjectsArray != null) {
-                                    for (int j = 0; j < subjectsArray.length(); j++) {
-                                        subjects.add(subjectsArray.optString(j, "N/A"));
-                                    }
-                                }
-
-                                // Fetch districts
-                                JSONArray districtsArray = data.optJSONArray("district_names");
-                                ArrayList<String> districts = new ArrayList<>();
-                                if (districtsArray != null) {
-                                    for (int k = 0; k < districtsArray.length(); k++) {
-                                        districts.add(districtsArray.optString(k, "N/A"));
-                                    }
-                                }
-
-                                // Fetch profile icon
-                                String profileIcon = data.optString("profile_icon", ""); // Fetch the profile icon URL
-
-                                // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon,username,"tutor"));
-                            }
-
-                            // Update UI on the main thread using FindingStudentsAdapter
-                            requireActivity().runOnUiThread(() -> {
-                                FindingStudentsAdapter findingStudentsAdapter = new FindingStudentsAdapter(applicationsList, getContext());
-                                findingStudentsRecyclerView.setAdapter(findingStudentsAdapter);
-                            });
-                        } else {
-                            String message = jsonObject.optString("message", "Unknown error");
-                            requireActivity().runOnUiThread(() ->
-                                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-                        }
-                    } catch (JSONException e) {
-                        Log.e("FetchApplicationData", "JSON parsing error: " + e.getMessage());
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("FetchApplicationData", "Request failed: " + e.getMessage());
+                    if (isAdded()) {
                         requireActivity().runOnUiThread(() ->
-                                Toast.makeText(getContext(), "Error processing data", Toast.LENGTH_SHORT).show());
+                                Toast.makeText(requireContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show()
+                        );
                     }
-                } else {
-                    Log.e("FetchApplicationData", "Request failed, response code: " + response.code());
-                    requireActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), "Failed to fetch application data", Toast.LENGTH_SHORT).show());
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (!isAdded()) return;
+
+                    if (response.isSuccessful()) {
+                        String jsonResponse = response.body().string();
+                        Log.d("FetchApplicationData", "Server response: " + jsonResponse);
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(jsonResponse);
+                            if (jsonObject.getBoolean("success")) {
+                                JSONArray dataArray = jsonObject.getJSONArray("data");
+                                ArrayList<ApplicationItem> applicationsList = new ArrayList<>();
+
+                                for (int i = 0; i < dataArray.length(); i++) {
+                                    JSONObject data = dataArray.getJSONObject(i);
+                                    String appId = data.optString("app_id", "N/A");
+                                    String memberId = data.optString("member_id", "N/A");
+                                    String classLevel = data.optString("class_level_name", "N/A");
+                                    String fee = data.optString("feePerHr", "N/A");
+                                    String username = data.optString("username", "N/A");
+
+                                    // Handle subjects
+                                    JSONArray subjectsArray = data.optJSONArray("subject_names");
+                                    ArrayList<String> subjects = new ArrayList<>();
+                                    if (subjectsArray != null) {
+                                        for (int j = 0; j < subjectsArray.length(); j++) {
+                                            subjects.add(subjectsArray.optString(j, "N/A"));
+                                        }
+                                    }
+
+                                    // Handle districts
+                                    JSONArray districtsArray = data.optJSONArray("district_names");
+                                    ArrayList<String> districts = new ArrayList<>();
+                                    if (districtsArray != null) {
+                                        for (int k = 0; k < districtsArray.length(); k++) {
+                                            districts.add(districtsArray.optString(k, "N/A"));
+                                        }
+                                    }
+
+                                    String profileIcon = data.optString("profile_icon", "");
+
+                                    applicationsList.add(new ApplicationItem(
+                                            appId, subjects, classLevel, fee, districts,
+                                            memberId, profileIcon, username, "tutor"));
+                                }
+
+                                if (isAdded()) {
+                                    requireActivity().runOnUiThread(() -> {
+                                        if (isAdded()) {
+                                            FindingStudentsAdapter findingStudentsAdapter =
+                                                    new FindingStudentsAdapter(applicationsList, requireContext());
+                                            findingStudentsRecyclerView.setAdapter(findingStudentsAdapter);
+                                        }
+                                    });
+                                }
+                            } else {
+                                String message = jsonObject.optString("message", "Unknown error");
+                                if (isAdded()) {
+                                    requireActivity().runOnUiThread(() ->
+                                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                                    );
+                                }
+                            }
+                        } catch (JSONException e) {
+                            Log.e("FetchApplicationData", "JSON parsing error: " + e.getMessage());
+                            if (isAdded()) {
+                                requireActivity().runOnUiThread(() ->
+                                        Toast.makeText(requireContext(), "Error processing data", Toast.LENGTH_SHORT).show()
+                                );
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e("HomeFragment", "Error in fetchTutorsApplicationData: " + e.getMessage());
+        }
     }
 
     private void fetchStudentsApplicationData() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
-        String memberId = sharedPreferences.getString("member_id", null);
+        if (!isAdded()) {
+            Log.e("HomeFragment", "Fragment not attached to activity");
+            return;
+        }
 
-        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_PS_application_data.php";
+        try {
+            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("CircleA", MODE_PRIVATE);
+            String memberId = sharedPreferences.getString("member_id", null);
+            String url = "http://" + IPConfig.getIP() + "/FYP/php/get_PS_application_data.php";
 
-        // Create a POST request with member_id
-        RequestBody requestBody = new FormBody.Builder()
-                .add("member_id", memberId)
-                .build();
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("member_id", memberId)
+                    .build();
 
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build();
 
-        // Execute the request
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("FetchApplicationData", "Request failed: " + e.getMessage());
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String jsonResponse = response.body().string();
-                    Log.d("FetchApplicationData", "Server response: " + jsonResponse);
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(jsonResponse);
-                        if (jsonObject.getBoolean("success")) {
-                            JSONArray dataArray = jsonObject.getJSONArray("data");
-
-                            // Create a list to hold the application data
-                            ArrayList<ApplicationItem> applicationsList = new ArrayList<>();
-
-                            // Iterate through the application array
-                            for (int i = 0; i < dataArray.length(); i++) {
-                                JSONObject data = dataArray.getJSONObject(i);
-                                String appId = data.optString("app_id", "N/A");
-                                String memberId = data.optString("member_id", "N/A");
-                                String classLevel = data.optString("class_level_name", "N/A");
-                                String fee = data.optString("feePerHr", "N/A");
-                                String username = data.optString("username", "N/A");
-
-                                // Fetch subjects
-                                JSONArray subjectsArray = data.optJSONArray("subject_names");
-                                ArrayList<String> subjects = new ArrayList<>();
-                                if (subjectsArray != null) {
-                                    for (int j = 0; j < subjectsArray.length(); j++) {
-                                        subjects.add(subjectsArray.optString(j, "N/A"));
-                                    }
-                                }
-
-                                // Fetch districts
-                                JSONArray districtsArray = data.optJSONArray("district_names");
-                                ArrayList<String> districts = new ArrayList<>();
-                                if (districtsArray != null) {
-                                    for (int k = 0; k < districtsArray.length(); k++) {
-                                        districts.add(districtsArray.optString(k, "N/A"));
-                                    }
-                                }
-
-                                // Fetch profile icon
-                                String profileIcon = data.optString("profile_icon", "");
-
-                                // Create ApplicationItem object and add it to the list
-                                applicationsList.add(new ApplicationItem(appId, subjects, classLevel, fee, districts, memberId, profileIcon, username,"student" ));
-                            }
-
-                            // Update UI on the main thread using ApplicationAdapter
-                            requireActivity().runOnUiThread(() -> {
-                                ApplicationAdapter findingTutorsAdapter = new ApplicationAdapter(applicationsList, getContext());
-                                findingTutorsRecyclerView.setAdapter(findingTutorsAdapter);
-                            });
-                        } else {
-                            String message = jsonObject.optString("message", "Unknown error");
-                            requireActivity().runOnUiThread(() ->
-                                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-                        }
-                    } catch (JSONException e) {
-                        Log.e("FetchApplicationData", "JSON parsing error: " + e.getMessage());
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("FetchApplicationData", "Request failed: " + e.getMessage());
+                    if (isAdded()) {
                         requireActivity().runOnUiThread(() ->
-                                Toast.makeText(getContext(), "Error processing data", Toast.LENGTH_SHORT).show());
+                                Toast.makeText(requireContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show()
+                        );
                     }
-                } else {
-                    Log.e("FetchApplicationData", "Request failed, response code: " + response.code());
-                    requireActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), "Failed to fetch application data", Toast.LENGTH_SHORT).show());
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (!isAdded()) return;
+
+                    if (response.isSuccessful()) {
+                        String jsonResponse = response.body().string();
+                        Log.d("FetchApplicationData", "Server response: " + jsonResponse);
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(jsonResponse);
+                            if (jsonObject.getBoolean("success")) {
+                                JSONArray dataArray = jsonObject.getJSONArray("data");
+                                ArrayList<ApplicationItem> applicationsList = new ArrayList<>();
+
+                                for (int i = 0; i < dataArray.length(); i++) {
+                                    JSONObject data = dataArray.getJSONObject(i);
+                                    String appId = data.optString("app_id", "N/A");
+                                    String memberId = data.optString("member_id", "N/A");
+                                    String classLevel = data.optString("class_level_name", "N/A");
+                                    String fee = data.optString("feePerHr", "N/A");
+                                    String username = data.optString("username", "N/A");
+
+                                    JSONArray subjectsArray = data.optJSONArray("subject_names");
+                                    ArrayList<String> subjects = new ArrayList<>();
+                                    if (subjectsArray != null) {
+                                        for (int j = 0; j < subjectsArray.length(); j++) {
+                                            subjects.add(subjectsArray.optString(j, "N/A"));
+                                        }
+                                    }
+
+                                    JSONArray districtsArray = data.optJSONArray("district_names");
+                                    ArrayList<String> districts = new ArrayList<>();
+                                    if (districtsArray != null) {
+                                        for (int k = 0; k < districtsArray.length(); k++) {
+                                            districts.add(districtsArray.optString(k, "N/A"));
+                                        }
+                                    }
+
+                                    String profileIcon = data.optString("profile_icon", "");
+
+                                    applicationsList.add(new ApplicationItem(
+                                            appId, subjects, classLevel, fee, districts,
+                                            memberId, profileIcon, username, "student"));
+                                }
+
+                                if (isAdded()) {
+                                    requireActivity().runOnUiThread(() -> {
+                                        if (isAdded()) {
+                                            ApplicationAdapter findingTutorsAdapter =
+                                                    new ApplicationAdapter(applicationsList, requireContext());
+                                            findingTutorsRecyclerView.setAdapter(findingTutorsAdapter);
+                                        }
+                                    });
+                                }
+                            } else {
+                                String message = jsonObject.optString("message", "Unknown error");
+                                if (isAdded()) {
+                                    requireActivity().runOnUiThread(() ->
+                                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                                    );
+                                }
+                            }
+                        } catch (JSONException e) {
+                            Log.e("FetchApplicationData", "JSON parsing error: " + e.getMessage());
+                            if (isAdded()) {
+                                requireActivity().runOnUiThread(() ->
+                                        Toast.makeText(requireContext(), "Error processing data", Toast.LENGTH_SHORT).show()
+                                );
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e("HomeFragment", "Error in fetchStudentsApplicationData: " + e.getMessage());
+        }
     }
 }

@@ -93,6 +93,7 @@ public class Matching extends Fragment {
         btnRequest.setOnClickListener(v -> {
             requestSubButtonsLayout.setVisibility(View.VISIBLE);
             hideAllRequestLayouts();
+            showRequestLayouts();
             updateMainButtonStyles(true);
         });
 

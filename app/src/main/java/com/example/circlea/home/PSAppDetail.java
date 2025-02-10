@@ -137,7 +137,7 @@ public class PSAppDetail extends AppCompatActivity {
     }
 
     private void fetchTutorApplicationData() {
-        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_application_data.php";
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_T_application_data.php";
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("member_id", tutorId)
@@ -209,7 +209,7 @@ public class PSAppDetail extends AppCompatActivity {
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
                                 ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
                                 ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
-                                ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
+                               // ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
 
                                 applicationView.setOnClickListener(v -> {
                                     for (int j = 0; j < applicationsContainer.getChildCount(); j++) {

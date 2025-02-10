@@ -1,38 +1,30 @@
 package com.example.circlea.setting;
 
-import android.Manifest;
+import android.content.ClipData;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -45,200 +37,129 @@ import okhttp3.Response;
 
 public class uploadCert extends AppCompatActivity {
 
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-    private static final String[] ALLOWED_FILE_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"};
-
-    private String memberId = "2";
-    private Uri selectedFileUri;
-    private ImageView imageView;
-
+    // List of selected file items with individual description input
+    private List<FileItem> selectedFileItems = new ArrayList<>();
     private ActivityResultLauncher<Intent> filePickerLauncher;
-    private ActivityResultLauncher<Intent> cameraLauncher;
+    private RecyclerView recyclerViewFiles;
+    private FileAdapter fileAdapter;
+    private String memberId, contact, skills, education, language, other;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.upload_cert);
 
-        //memberId = getIntent().getStringExtra("MEMBER_ID");
+        // Retrieve data passed from previous activity
+        Intent intent = getIntent();
+        memberId = intent.getStringExtra("member_id");
+        contact = intent.getStringExtra("contact");
+        skills = intent.getStringExtra("skills");
+        education = intent.getStringExtra("education");
+        language = intent.getStringExtra("language");
+        other = intent.getStringExtra("other");
 
-        imageView = findViewById(R.id.imageView);
-        Button btnSelectFile = findViewById(R.id.btnSelectFile);
-        Button btnTakePhoto = findViewById(R.id.btnTakePhoto);
+        Button btnSelectFiles = findViewById(R.id.btnSelectFiles);
         Button btnUpload = findViewById(R.id.btnUpload);
 
+        // Initialize RecyclerView for file previews with individual description input
+        recyclerViewFiles = findViewById(R.id.recyclerViewFiles);
+        recyclerViewFiles.setLayoutManager(new GridLayoutManager(this, 3)); // 3 columns
+        fileAdapter = new FileAdapter(this, selectedFileItems);
+        recyclerViewFiles.setAdapter(fileAdapter);
+
+        // Initialize file picker using ACTION_OPEN_DOCUMENT (supports multiple selection)
         filePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        selectedFileUri = result.getData().getData();
-                        if (validateFile(selectedFileUri)) {
-                            showFilePreview(selectedFileUri);
-                        } else {
-                            Toast.makeText(this, "Invalid file format or size exceeds 10MB!", Toast.LENGTH_SHORT).show();
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+
+                        if (result.getData().getClipData() != null) {
+                            ClipData clipData = result.getData().getClipData();
+                            for (int i = 0; i < clipData.getItemCount(); i++) {
+                                selectedFileItems.add(new FileItem(clipData.getItemAt(i).getUri()));
+                            }
+                            Toast.makeText(this, "Selected " + clipData.getItemCount() + " files", Toast.LENGTH_SHORT).show();
+                        } else if (result.getData().getData() != null) {
+                            selectedFileItems.add(new FileItem(result.getData().getData()));
+                            Toast.makeText(this, "Selected 1 file", Toast.LENGTH_SHORT).show();
                         }
+                        // Refresh RecyclerView to show newly added files
+                        fileAdapter.notifyDataSetChanged();
                     }
-                }
-        );
+                });
 
-        cameraLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Bitmap photo = (Bitmap) result.getData().getExtras().get("data");
-                        imageView.setImageBitmap(photo);
-                        savePhoto(photo);
-                    }
-                }
-        );
+        // 點選「選取檔案」按鈕時，不清除原有選擇，直接追加新檔案
+        btnSelectFiles.setOnClickListener(v -> openFilePicker());
 
-        btnSelectFile.setOnClickListener(v -> openFilePicker());
-        btnTakePhoto.setOnClickListener(v -> takePhoto());
         btnUpload.setOnClickListener(v -> {
-            if (selectedFileUri != null) {
-                uploadFileToServer(selectedFileUri);
+            if (!selectedFileItems.isEmpty()) {
+                uploadAllFiles();
             } else {
-                Toast.makeText(this, "Please select a file or take a photo first!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please select files first!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        // Use ACTION_OPEN_DOCUMENT to support multiple file selection on compatible devices
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
-                "application/pdf", "image/jpeg", "image/png", "image/jpg"});
-        filePickerLauncher.launch(intent);
+                "application/pdf",
+                "image/jpeg",
+                "image/png",
+                "image/jpg"
+        });
+        filePickerLauncher.launch(Intent.createChooser(intent, "Select Files"));
     }
 
-    private void takePhoto() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
-        } else {
-            openCamera();
-        }
-    }
+    private void uploadAllFiles() {
+        final int totalFiles = selectedFileItems.size();
+        final AtomicInteger successCount = new AtomicInteger(0);
+        final AtomicInteger failCount = new AtomicInteger(0);
 
-    private void openCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            cameraLauncher.launch(cameraIntent);
-        } else {
-            Toast.makeText(this, "No camera app available", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void savePhoto(Bitmap photo) {
-        File photoFile = new File(getExternalFilesDir(null), "captured_photo.jpg");
-        try (FileOutputStream out = new FileOutputStream(photoFile)) {
-            photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            selectedFileUri = Uri.fromFile(photoFile);
-            Log.d("PhotoSave", "Photo saved at: " + selectedFileUri.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error saving photo", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private boolean validateFile(Uri fileUri) {
-        return isValidFileFormat(fileUri) && isValidFileSize(fileUri);
-    }
-
-    private boolean isValidFileFormat(Uri fileUri) {
-        String fileExtension = getFileExtension(fileUri);
-        Log.d("FileExtension", "Selected file extension: " + fileExtension);
-        if (fileExtension == null) {
-            return false;
-        }
-        for (String allowedExtension : ALLOWED_FILE_EXTENSIONS) {
-            if (fileExtension.equalsIgnoreCase(allowedExtension)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isValidFileSize(Uri fileUri) {
-        try {
-            if (fileUri.getScheme().equals("content")) {
-                Cursor cursor = getContentResolver().query(fileUri, null, null, null, null);
-                if (cursor != null) {
-                    int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                    if (cursor.moveToFirst()) {
-                        long size = cursor.getLong(sizeIndex);
-                        cursor.close();
-                        return size <= MAX_FILE_SIZE;
-                    }
-                    cursor.close();
+        for (FileItem fileItem : selectedFileItems) {
+            uploadFileToServer(fileItem, new UploadCallback() {
+                @Override
+                public void onSuccess() {
+                    int completed = successCount.incrementAndGet();
+                    checkUploadCompletion(completed, failCount.get(), totalFiles);
                 }
-            } else {
-                String filePath = getRealPathFromURI(fileUri);
-                File file = new File(filePath);
-                return file.exists() && file.length() <= MAX_FILE_SIZE;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private String getFileExtension(Uri uri) {
-        String fileName = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null) {
-                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                if (cursor.moveToFirst()) {
-                    fileName = cursor.getString(nameIndex);
+                @Override
+                public void onFailure() {
+                    int failed = failCount.incrementAndGet();
+                    checkUploadCompletion(successCount.get(), failed, totalFiles);
                 }
-                cursor.close();
-            }
-        } else {
-            fileName = uri.getLastPathSegment();
-        }
-
-        if (fileName != null && fileName.contains(".")) {
-            return fileName.substring(fileName.lastIndexOf('.') + 1);
-        }
-        return null;
-    }
-
-    private String getRealPathFromURI(Uri uri) {
-        String filePath = null;
-        String[] projection = {MediaStore.Images.Media.DATA};
-
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            filePath = cursor.getString(column_index);
-            cursor.close();
-        }
-
-        if (filePath == null) {
-            filePath = uri.getPath();
-        }
-
-        return filePath;
-    }
-
-    private void showFilePreview(Uri fileUri) {
-        String mimeType = getContentResolver().getType(fileUri);
-
-        if (mimeType != null && mimeType.startsWith("image/")) {
-            imageView.setImageURI(fileUri);
-        } else if (mimeType != null && mimeType.equals("application/pdf")) {
-            imageView.setImageResource(R.drawable.ic_pdf_icon);
-        } else {
-            imageView.setImageDrawable(null);
+            });
         }
     }
 
-    private void uploadFileToServer(Uri fileUri) {
+    private void checkUploadCompletion(int successCount, int failCount, int totalFiles) {
+        if (successCount + failCount == totalFiles) {
+            runOnUiThread(() -> {
+                String message = String.format("Upload completed. Success: %d, Failed: %d",
+                        successCount, failCount);
+                Toast.makeText(uploadCert.this, message, Toast.LENGTH_LONG).show();
+                if (successCount == totalFiles) {
+                    finish();
+                }
+            });
+        }
+    }
+
+    interface UploadCallback {
+        void onSuccess();
+        void onFailure();
+    }
+
+    private void uploadFileToServer(FileItem fileItem, UploadCallback callback) {
         try {
-            InputStream inputStream = getContentResolver().openInputStream(fileUri);
+            InputStream inputStream = getContentResolver().openInputStream(fileItem.getFileUri());
             if (inputStream == null) {
-                Toast.makeText(this, "Failed to open InputStream", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Failed to open file", Toast.LENGTH_SHORT).show();
+                callback.onFailure();
                 return;
             }
 
@@ -248,55 +169,79 @@ public class uploadCert extends AppCompatActivity {
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
             }
-
             byte[] fileBytes = byteArrayOutputStream.toByteArray();
             inputStream.close();
 
-            String newFileName = generateNewFileName(fileUri);
+            String fileName = getFileName(fileItem.getFileUri());
+            String description = fileItem.getDescription();
 
-            Log.d("UploadFile", "memberId: " + memberId);
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build();
+
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("memberId", memberId) // Add memberId to the request
-                    .addFormDataPart("file", newFileName,
-                            RequestBody.create(MediaType.parse("application/octet-stream"),fileBytes))
+                    .addFormDataPart("memberId", memberId)
+                    .addFormDataPart("file", fileName,
+                            RequestBody.create(MediaType.parse("application/octet-stream"), fileBytes))
+                    .addFormDataPart("description", description)
+                    .addFormDataPart("contact", contact)
+                    .addFormDataPart("skills", skills)
+                    .addFormDataPart("education", education)
+                    .addFormDataPart("language", language)
+                    .addFormDataPart("other", other)
                     .build();
 
             Request request = new Request.Builder()
-                    .url("http://"+ IPConfig.getIP()+"/FYP/php/uploadCert.php") // Change to your server URL
+                    .url("http://" + IPConfig.getIP() + "/FYP/php/uploadCV.php")
                     .post(requestBody)
                     .build();
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e("UploadFile", "Upload failed: " + e.getMessage());
-                    runOnUiThread(() -> Toast.makeText(uploadCert.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(uploadCert.this,
+                            "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    callback.onFailure();
                 }
-
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
-                        runOnUiThread(() -> Toast.makeText(uploadCert.this, "File uploaded successfully!", Toast.LENGTH_SHORT).show());
+                        callback.onSuccess();
                     } else {
-                        Log.e("UploadFile", "Upload failed with code: " + response.code());
-                        runOnUiThread(() -> Toast.makeText(uploadCert.this, "Upload failed with code: " + response.code(), Toast.LENGTH_SHORT).show());
+                        callback.onFailure();
                     }
                 }
             });
+
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Error reading file", Toast.LENGTH_SHORT).show();
+            callback.onFailure();
         }
     }
 
-    private String generateNewFileName(Uri fileUri) {
-        String fileExtension = getFileExtension(fileUri);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-        String currentTime = sdf.format(new Date());
-        //String uniqueId = UUID.randomUUID().toString();
-        return memberId + "_" + currentTime + (fileExtension != null ? "." + fileExtension : "");
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (index != -1) {
+                        result = cursor.getString(index);
+                    }
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 }

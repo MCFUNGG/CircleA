@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="Home">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-02-06T10:01:05.341290Z">
+        <DropdownSelection timestamp="2025-02-08T14:49:06.487244400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=ba4ffe6e" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\USER\.android\avd\Pixel_8_Pro_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -35,6 +35,14 @@
       </SelectionState>
       <SelectionState runConfigName="uploadCert">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-02-10T03:30:10.345883300Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\USER\.android\avd\Pixel_8_Pro_API_35.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
     </selectionStates>
   </component>

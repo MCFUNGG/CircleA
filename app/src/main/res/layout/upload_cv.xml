@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 圖片預覽 -->
+        <ImageView
+            android:id="@+id/iv_preview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="#F0F0F0"/>
+
+        <!-- 選擇圖片按鈕 -->
+        <Button
+            android:id="@+id/btn_pick_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="選擇CV圖片"
+            android:layout_marginTop="16dp"/>
+
+        <!-- 表單輸入區 -->
+        <EditText
+            android:id="@+id/et_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="聯絡資訊"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/et_skills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="技能專長"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:id="@+id/et_education"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="教育背景"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:id="@+id/et_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="語言能力"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:id="@+id/et_other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="其他資訊"
+            android:layout_marginTop="8dp"/>
+
+        <!-- 上傳按鈕 -->
+        <Button
+            android:id="@+id/btn_upload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="立即上傳"
+            android:layout_marginTop="24dp"/>
+
+    </LinearLayout>
+</ScrollView>
