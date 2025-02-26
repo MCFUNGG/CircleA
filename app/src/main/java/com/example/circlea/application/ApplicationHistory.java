@@ -182,6 +182,7 @@ public class ApplicationHistory extends AppCompatActivity {
         String appId = data.optString("app_id", "N/A");
         String studentLevel = data.optString("class_level_name", "N/A");
         String fee = data.optString("feePerHr", "N/A");
+        String status = data.optString("status", "N/A");
 
         // Process arrays
         String subjects = processArrayToString(data.optJSONArray("subject_names"));
@@ -193,6 +194,19 @@ public class ApplicationHistory extends AppCompatActivity {
         ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
         ((TextView) applicationView.findViewById(R.id.fee_text)).setText(String.format("HK$%s/hr", fee));
         ((TextView) applicationView.findViewById(R.id.district_text)).setText(districts);
+
+        // Handle status
+        TextView statusTextView = applicationView.findViewById(R.id.status_tv);
+        if (status.equals("P")) {
+            statusTextView.setText("Pending");
+            statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
+        } else if (status.equals("A")) {
+            statusTextView.setText("Approved");
+            statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
+        }else if (status.equals("R")){
+            statusTextView.setText("Rejected");
+            statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
+        }
 
         applicationsContainer.addView(applicationView);
     }

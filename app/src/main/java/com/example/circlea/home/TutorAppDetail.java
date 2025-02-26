@@ -78,7 +78,7 @@ public class TutorAppDetail extends AppCompatActivity {
 
     private void initializeViews() {
         appIdTextView = findViewById(R.id.appIdTextView);
-        memberIdTextView = findViewById(R.id.memberIdTextView);
+        //memberIdTextView = findViewById(R.id.memberIdTextView);
         subjectTextView = findViewById(R.id.subjectTextView);
         classLevelTextView = findViewById(R.id.classLevelTextView);
         feeTextView = findViewById(R.id.feeTextView);
@@ -143,7 +143,7 @@ public class TutorAppDetail extends AppCompatActivity {
             }
         });
     }
-// show tutor application detail
+    // show tutor application detail
     private void displayIntentData() {
         // Get data from intent
         String tutotAppId = getIntent().getStringExtra("tutotAppId");
@@ -230,7 +230,20 @@ public class TutorAppDetail extends AppCompatActivity {
                                 String studentLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
                                 String description = data.optString("description", "N/A");
+                                String status = data.optString("status", "N/A");
 
+
+                                TextView statusTextView = applicationView.findViewById(R.id.status_tv);
+                                if (status.equals("P")) {
+                                    statusTextView.setText("Pending");
+                                    statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
+                                } else if (status.equals("A")) {
+                                    statusTextView.setText("Approved");
+                                    statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
+                                }else if (status.equals("R")){
+                                    statusTextView.setText("Rejected");
+                                    statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
+                                }
                                 // Handle subject names array
                                 JSONArray subjectNames = data.optJSONArray("subject_names");
                                 StringBuilder subjectsStr = new StringBuilder();
@@ -264,7 +277,7 @@ public class TutorAppDetail extends AppCompatActivity {
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
                                 ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
                                 ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
-                               // ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
+                                // ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
 
                                 // Add click listener for selection
                                 applicationView.setOnClickListener(v -> {
@@ -356,7 +369,7 @@ public class TutorAppDetail extends AppCompatActivity {
 
         // Create the request
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/check_if_match_exist.php")
+                .url("http://"+IPConfig.getIP()+"/FYP/php/check_if_match_exist.php")
                 .post(formBody)
                 .build();
 
@@ -411,7 +424,7 @@ public class TutorAppDetail extends AppCompatActivity {
         });
     }
 
-//post match request from PS
+    //post match request from PS
     private void handleApplyConfirmation() {
 
 
@@ -430,7 +443,7 @@ public class TutorAppDetail extends AppCompatActivity {
             return;
         }
 
-        if (matchMark == null) {
+        if (scoreText == null) {
             Toast.makeText(this, "Error: Matching score is missing", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -438,7 +451,7 @@ public class TutorAppDetail extends AppCompatActivity {
         // Log the values for debugging
         Log.d("PsSendRequestToT", "PS App ID: " + selectedAppId);
         Log.d("PsSendRequestToT", "Tutor App ID: " + tutorAppId);
-        Log.d("PsSendRequestToT", "Match Mark: " + matchMark);
+        Log.d("PsSendRequestToT", "Match Mark: " + scoreText);
 
         // Create OkHttpClient for the request
         OkHttpClient client = new OkHttpClient();
@@ -449,12 +462,12 @@ public class TutorAppDetail extends AppCompatActivity {
                 .add("tutor_app_id", tutorAppId)
                 .add("ps_id", psId)
                 .add("tutor_id", tutorId)
-                .add("match_mark", matchMark)
+                .add("match_mark", scoreText)
                 .build();
 
         // Create the request
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/FYP/php/post_match_request_from_PS.php")
+                .url("http://"+IPConfig.getIP()+"/FYP/php/post_match_request_from_PS.php")
                 .post(formBody)
                 .build();
 
@@ -518,13 +531,13 @@ public class TutorAppDetail extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(jsonResponse);
                 StringBuilder scores = new StringBuilder();
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.has("score")) {
-                        String score = jsonObject.getString("score");
-                        scores.append("Score ").append(i + 1).append(": ").append(score).append("\n");
-                    }
+
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                if (jsonObject.has("score")) {
+                    String score = jsonObject.getString("score");
+                    scores.append(score);
                 }
+
 
                 final String finalScore = scores.length() > 0 ?
                         scores.toString() : "No matching scores found.";
@@ -551,7 +564,7 @@ public class TutorAppDetail extends AppCompatActivity {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2/Matching/get_json.php")
+                .url("http://"+IPConfig.getIP()+"/Matching/get_json.php")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

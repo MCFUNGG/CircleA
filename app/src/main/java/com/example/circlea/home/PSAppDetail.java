@@ -69,7 +69,7 @@ public class PSAppDetail extends AppCompatActivity {
 
     private void initializeViews() {
         appIdTextView = findViewById(R.id.appIdTextView);
-        memberIdTextView = findViewById(R.id.memberIdTextView);
+        //memberIdTextView = findViewById(R.id.memberIdTextView);
         subjectTextView = findViewById(R.id.subjectTextView);
         classLevelTextView = findViewById(R.id.classLevelTextView);
         feeTextView = findViewById(R.id.feeTextView);
@@ -119,7 +119,7 @@ public class PSAppDetail extends AppCompatActivity {
         ArrayList<String> districts = getIntent().getStringArrayListExtra("districts");
 
         if (psAppId != null) appIdTextView.setText("Application ID: " + psAppId);
-        if (memberId != null) memberIdTextView.setText("Member ID: " + memberId);
+        //if (memberId != null) memberIdTextView.setText("Member ID: " + memberId);
         if (classLevel != null) classLevelTextView.setText("Class Level: " + classLevel);
         if (fee != null) feeTextView.setText("Fee: $" + fee + " /hr");
 
@@ -209,7 +209,7 @@ public class PSAppDetail extends AppCompatActivity {
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
                                 ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
                                 ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
-                               // ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
+                                // ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
 
                                 applicationView.setOnClickListener(v -> {
                                     for (int j = 0; j < applicationsContainer.getChildCount(); j++) {

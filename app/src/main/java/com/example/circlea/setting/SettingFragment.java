@@ -58,6 +58,7 @@ public class SettingFragment extends Fragment {
     private OkHttpClient client;
     private TextView userEmailTextView;
     private TextView userPhoneTextView, usernameTextView, logOutTextView;
+    private TextView statusTextView;
     private Button userOwnDetailbtn, userOwnCartbtn;
     private ImageView userIcon; // 用户头像的 ImageView
 
@@ -95,6 +96,9 @@ public class SettingFragment extends Fragment {
         logOutTextView = view.findViewById(R.id.log_out_tv);
         userIcon = view.findViewById(R.id.user_icon); // 初始化用户头像
         ImageButton menuButton = view.findViewById(R.id.menuButton);
+        statusTextView = view.findViewById(R.id.status_tv);
+        statusTextView.setVisibility(View.GONE); // Hide by default
+
 
         menuButton.setOnClickListener(v -> {
             ((Home) getActivity()).openDrawer(); // Call method from Home activity
@@ -146,7 +150,7 @@ public class SettingFragment extends Fragment {
             return;
         }
 
-        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_profile.php"; // 更新为您的 URL
+        String url = "http://"+ IPConfig.getIP()+"/FYP/php/get_member_own_profile.php";
         String ip = "";
         RequestBody requestBody = new FormBody.Builder()
                 .add("member_id", memberId)
@@ -183,30 +187,71 @@ public class SettingFragment extends Fragment {
                                 String email = data.optString("email", "N/A");
                                 String phone = data.optString("phone", "N/A");
                                 String username = data.optString("username", "N/A");
-                                String profileUrl = data.optString("profile", ""); // 获取头像 URL
+                                String profileUrl = data.optString("profile", "");
 
-                                Log.d("ProfileImageURL", "Loading image from URL: " + profileUrl); // Debug log
+                                // Get CV information
+                                boolean hasCv = data.optInt("has_cv", 0) == 1;
+                                String cvStatus = data.optString("cv_status", "none");
+
+                                Log.d("FetchSettingData", "CV Status: " + cvStatus + ", Has CV: " + hasCv);
 
                                 requireActivity().runOnUiThread(() -> {
                                     userEmailTextView.setText(email);
                                     userPhoneTextView.setText(phone);
                                     usernameTextView.setText(username);
 
+                                    // Handle CV status
+                                    // In fetchSettingData() method, update the CV status check:
+                                    if (hasCv) {
+                                        statusTextView.setVisibility(View.VISIBLE);
+                                        String trimmedStatus = cvStatus.trim(); // Remove any whitespace
+                                        Log.d("FetchSettingData", "Trimmed status: '" + trimmedStatus + "'");
+
+                                        if ("Approved".equalsIgnoreCase(trimmedStatus)) {  // Changed from "A" to "Approved"
+                                            statusTextView.setText("Approved");
+                                            statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
+                                            Log.d("FetchSettingData", "Setting status to Approved");
+
+                                        } else {
+                                            Log.d("FetchSettingData", "Unknown status: '" + trimmedStatus + "'");
+                                            statusTextView.setVisibility(View.GONE);  // Hide for unknown status
+                                        }
+                                    } else {
+                                        statusTextView.setVisibility(View.GONE);
+                                        Log.d("FetchSettingData", "No CV found, hiding status");
+                                    }
+
+                                    // Handle profile image
                                     if (!profileUrl.isEmpty()) {
-                                        String fullProfileUrl = "http://" +IPConfig.getIP()+profileUrl;
-                                        Glide.with(getActivity())
+                                        String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl;
+                                        Glide.with(requireContext())
                                                 .load(fullProfileUrl)
+                                                .error(R.drawable.ic_launcher_foreground)
                                                 .into(userIcon);
                                         Toast.makeText(getActivity(), fullProfileUrl, Toast.LENGTH_SHORT).show();
                                     } else {
-                                        userIcon.setImageResource(R.drawable.ic_launcher_foreground); // 设置默认头像
+                                        userIcon.setImageResource(R.drawable.ic_launcher_foreground);
                                     }
                                 });
                             }
+                        } else {
+                            String errorMessage = jsonObject.optString("message", "Unknown error occurred");
+                            Log.e("FetchSettingData", "API Error: " + errorMessage);
+                            requireActivity().runOnUiThread(() ->
+                                    Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show()
+                            );
                         }
                     } catch (JSONException e) {
                         Log.e("FetchSettingData", "JSON parsing error: " + e.getMessage());
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(getActivity(), "Error parsing data", Toast.LENGTH_SHORT).show()
+                        );
                     }
+                } else {
+                    Log.e("FetchSettingData", "Server Error: " + response.code());
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(getActivity(), "Server error: " + response.code(), Toast.LENGTH_SHORT).show()
+                    );
                 }
             }
         });
