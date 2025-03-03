@@ -1,4 +1,4 @@
-package com.example.circlea.matching;
+package com.example.circlea.matching.cases;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.circlea.R;
+
 import java.util.List;
 
 public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapter.ViewHolder> {

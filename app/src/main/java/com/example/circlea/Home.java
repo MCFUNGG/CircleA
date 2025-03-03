@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +32,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -44,6 +49,17 @@ public class Home extends AppCompatActivity {
     private NavigationView navigationView;
     private TextView headerUsername,headerEmail;
     private OkHttpClient client;
+
+    private Map<Integer, View> notificationDots = new HashMap<>();
+    private static final int[] MENU_ITEMS_WITH_BADGE = {
+            R.id.nav_home,
+            R.id.nav_message,
+            R.id.nav_post_application,
+            R.id.nav_history_application,
+            R.id.nav_create_cv,
+            R.id.nav_history_cv
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,28 +106,32 @@ public class Home extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             Fragment selectedFragment = null;
+            int itemId = item.getItemId();
+
+            // 首先隐藏红点（如果存在）
+            showBadge(itemId, false);
 
             // Use if-else statements to select the fragment or start an activity
-            if (item.getItemId() == R.id.nav_home) {
+            if (itemId == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
-            } else if (item.getItemId() == R.id.nav_post_application) {
+            } else if (itemId == R.id.nav_post_application) {
                 Intent intent = new Intent(this, ParentApplicationFillDetail.class);
                 startActivity(intent);
                 drawerLayout.closeDrawer(GravityCompat.START);
-            } else if (item.getItemId() == R.id.nav_history_application) {
+            } else if (itemId == R.id.nav_history_application) {
                 Intent intent = new Intent(this, ApplicationHistory.class);
                 startActivity(intent);
                 drawerLayout.closeDrawer(GravityCompat.START);
-            } else if (item.getItemId() == R.id.nav_create_cv) {
+            } else if (itemId == R.id.nav_create_cv) {
                 Intent intent = new Intent(this, ScanCV.class);
                 startActivity(intent);
                 drawerLayout.closeDrawer(GravityCompat.START);
-            } else if (item.getItemId() == R.id.nav_matching) {
+            } else if (itemId == R.id.nav_matching) {
                 selectedFragment = new Matching();
                 drawerLayout.closeDrawer(GravityCompat.START);
-            } else if (item.getItemId() == R.id.nav_application) {
+            } else if (itemId == R.id.nav_application) {
                 selectedFragment = new ApplicationFragment();
-            } else if (item.getItemId() == R.id.nav_setting) {
+            } else if (itemId == R.id.nav_setting) {
                 selectedFragment = new SettingFragment();
             } else {
                 return false; // Handle unknown menu item
@@ -123,6 +143,99 @@ public class Home extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+
+        // setup
+        setupAllMenuBadges();
+
+        // red dot test
+        //showBadge(R.id.nav_history_application, true);
+        //showBadge(R.id.nav_history_cv, true);
+    }
+
+    private void setupAllMenuBadges() {
+        for (int itemId : MENU_ITEMS_WITH_BADGE) {
+            setupMenuItemBadge(itemId);
+        }
+    }
+
+    private void setupMenuItemBadge(int itemId) {
+        MenuItem menuItem = navigationView.getMenu().findItem(itemId);
+        if (menuItem != null) {
+            FrameLayout customLayout = (FrameLayout) getLayoutInflater().inflate(
+                    R.layout.menu_item_with_badge, null);
+
+            View notificationDot = customLayout.findViewById(R.id.notification_dot);
+            notificationDots.put(itemId, notificationDot);
+
+            // 修改点击事件处理
+            customLayout.setOnClickListener(v -> {
+                showBadge(itemId, false);  // 先隐藏红点
+                navigationView.setCheckedItem(itemId);
+                // 触发原始的菜单项点击事件
+                navigationView.getMenu().performIdentifierAction(itemId, 0);
+            });
+
+            menuItem.setActionView(customLayout);
+        }
+    }
+
+    private boolean onNavigationItemSelected(MenuItem item) {
+        Fragment selectedFragment = null;
+
+        // Use if-else statements to select the fragment or start an activity
+        if (item.getItemId() == R.id.nav_home) {
+            selectedFragment = new HomeFragment();
+        } else if (item.getItemId() == R.id.nav_post_application) {
+            Intent intent = new Intent(this, ParentApplicationFillDetail.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else if (item.getItemId() == R.id.nav_history_application) {
+            Intent intent = new Intent(this, ApplicationHistory.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else if (item.getItemId() == R.id.nav_create_cv) {
+            Intent intent = new Intent(this, ScanCV.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else if (item.getItemId() == R.id.nav_matching) {
+            selectedFragment = new Matching();
+        } else if (item.getItemId() == R.id.nav_application) {
+            selectedFragment = new ApplicationFragment();
+        } else if (item.getItemId() == R.id.nav_setting) {
+            selectedFragment = new SettingFragment();
+        }
+
+        if (selectedFragment != null) {
+            loadFragment(selectedFragment);
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+    public void showBadge(int itemId, boolean show) {
+        View notificationDot = notificationDots.get(itemId);
+        if (notificationDot != null) {
+            if (show) {
+                notificationDot.setVisibility(View.VISIBLE);
+                // 添加显示动画
+                notificationDot.setScaleX(0f);
+                notificationDot.setScaleY(0f);
+                notificationDot.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(200)
+                        .setInterpolator(new OvershootInterpolator())
+                        .start();
+            } else {
+                notificationDot.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    // 清除所有红点
+    public void clearAllBadges() {
+        for (int itemId : MENU_ITEMS_WITH_BADGE) {
+            showBadge(itemId, false);
+        }
     }
 
     private void loadUserInfo() {

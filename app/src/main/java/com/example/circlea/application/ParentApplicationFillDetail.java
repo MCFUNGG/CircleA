@@ -99,7 +99,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                 lessonsPerWeekText.setVisibility(View.VISIBLE);
             } else {
                 studentLevelLabel.setText("Target Student Level");
-                dateContainer.setVisibility(View.GONE);
+                dateContainer.setVisibility(View.VISIBLE);
                 lessonsPerWeekText.setVisibility(View.GONE);
             }
         });

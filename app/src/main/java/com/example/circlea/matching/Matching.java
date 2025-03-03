@@ -16,6 +16,12 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.circlea.matching.cases.MatchingCase;
+import com.example.circlea.matching.cases.MatchingCaseAdapter;
+import com.example.circlea.matching.request.MatchingRequest;
+import com.example.circlea.matching.request.MatchingRequestReceivedAdapter;
+import com.example.circlea.matching.request.MatchingRequestSentAdapter;
 import com.google.android.material.button.MaterialButton;
 
 import com.example.circlea.Home;

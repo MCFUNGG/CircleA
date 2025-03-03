@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -58,9 +59,9 @@ public class SettingFragment extends Fragment {
     private OkHttpClient client;
     private TextView userEmailTextView;
     private TextView userPhoneTextView, usernameTextView, logOutTextView;
-    private TextView statusTextView;
     private Button userOwnDetailbtn, userOwnCartbtn;
     private ImageView userIcon; // 用户头像的 ImageView
+    private ImageView tutorBadge;
 
     // 声明 ActivityResultLauncher
     private ActivityResultLauncher<Intent> getImageLauncher = registerForActivityResult(
@@ -96,8 +97,7 @@ public class SettingFragment extends Fragment {
         logOutTextView = view.findViewById(R.id.log_out_tv);
         userIcon = view.findViewById(R.id.user_icon); // 初始化用户头像
         ImageButton menuButton = view.findViewById(R.id.menuButton);
-        statusTextView = view.findViewById(R.id.status_tv);
-        statusTextView.setVisibility(View.GONE); // Hide by default
+        tutorBadge = view.findViewById(R.id.tutor_badge); // Hide by default
 
 
         menuButton.setOnClickListener(v -> {
@@ -203,22 +203,14 @@ public class SettingFragment extends Fragment {
                                     // Handle CV status
                                     // In fetchSettingData() method, update the CV status check:
                                     if (hasCv) {
-                                        statusTextView.setVisibility(View.VISIBLE);
-                                        String trimmedStatus = cvStatus.trim(); // Remove any whitespace
-                                        Log.d("FetchSettingData", "Trimmed status: '" + trimmedStatus + "'");
-
-                                        if ("Approved".equalsIgnoreCase(trimmedStatus)) {  // Changed from "A" to "Approved"
-                                            statusTextView.setText("Approved");
-                                            statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
-                                            Log.d("FetchSettingData", "Setting status to Approved");
-
+                                        String trimmedStatus = cvStatus.trim();
+                                        if ("Approved".equalsIgnoreCase(trimmedStatus)) {
+                                            tutorBadge.setVisibility(View.VISIBLE);  // 直接显示徽章
                                         } else {
-                                            Log.d("FetchSettingData", "Unknown status: '" + trimmedStatus + "'");
-                                            statusTextView.setVisibility(View.GONE);  // Hide for unknown status
+                                            tutorBadge.setVisibility(View.GONE);     // 隐藏徽章
                                         }
                                     } else {
-                                        statusTextView.setVisibility(View.GONE);
-                                        Log.d("FetchSettingData", "No CV found, hiding status");
+                                        tutorBadge.setVisibility(View.GONE);         // 隐藏徽章
                                     }
 
                                     // Handle profile image
@@ -256,6 +248,8 @@ public class SettingFragment extends Fragment {
             }
         });
     }
+
+
 
     private void uploadImage(Uri imageUri) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CircleA", MODE_PRIVATE);

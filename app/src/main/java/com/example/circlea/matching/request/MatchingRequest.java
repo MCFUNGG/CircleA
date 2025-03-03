@@ -1,4 +1,4 @@
-package com.example.circlea.matching;
+package com.example.circlea.matching.request;
 
 public class MatchingRequest {
     private String matchId;

@@ -73,7 +73,7 @@
             android:name=".matching.Matching"
             android:exported="true" />
         <activity
-            android:name=".matching.RequestReceivedDetail"
+            android:name=".matching.request.RequestReceivedDetail"
             android:exported="true" />
         <activity
             android:name=".home.TutorAppDetail"
