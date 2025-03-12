@@ -1,5 +1,4 @@
 package com.example.circlea.matching.cases;
-
 public class MatchingCase {
     private String matchId;
     private String psAppId;
@@ -13,6 +12,11 @@ public class MatchingCase {
     private String status;
     private String profileIcon;
     private String matchCreator;
+    // Add new fields
+    private String psId;
+    private String tutorId;
+    private String psProfileIcon;
+    private String tutorProfileIcon;
 
     public MatchingCase(String matchId, String psAppId, String tutorAppId,
                         String psUsername, String tutorUsername, String fee,
@@ -32,7 +36,7 @@ public class MatchingCase {
         this.matchCreator = matchCreator;
     }
 
-    // Getters
+    // Existing getters
     public String getMatchId() { return matchId; }
     public String getPsAppId() { return psAppId; }
     public String getTutorAppId() { return tutorAppId; }
@@ -45,6 +49,18 @@ public class MatchingCase {
     public String getStatus() { return status; }
     public String getProfileIcon() { return profileIcon; }
     public String getMatchCreator() { return matchCreator; }
+
+    // Add new getters
+    public String getPsId() { return psId; }
+    public String getTutorId() { return tutorId; }
+    public String getPsProfileIcon() { return psProfileIcon; }
+    public String getTutorProfileIcon() { return tutorProfileIcon; }
+
+    // Add setters for the new fields
+    public void setPsId(String psId) { this.psId = psId; }
+    public void setTutorId(String tutorId) { this.tutorId = tutorId; }
+    public void setPsProfileIcon(String psProfileIcon) { this.psProfileIcon = psProfileIcon; }
+    public void setTutorProfileIcon(String tutorProfileIcon) { this.tutorProfileIcon = tutorProfileIcon; }
 
     // Get the appropriate username based on the match creator
     public String getUsername() {

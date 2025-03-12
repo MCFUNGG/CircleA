@@ -23,4 +23,16 @@
         <color name="error_red">#FF5252</color>
     <color name="status_pending">#FF6B6B</color>
     <color name="status_approved">#4CAF50</color>
+    <color name="selected_slot_background">#1A2196F3</color>
+    <color name="background_light">#F5F5F5</color>
+    <color name="primary">#6200EE</color>
+    <color name="success">#1B873B</color>
+    <color name="success_container">#D1F7DD</color>
+    <color name="warning">#B25000</color>
+    <color name="warning_container">#FFEDCC</color>
+    <color name="error">#B3261E</color>
+    <color name="error_container">#F9DEDC</color>
+    <color name="neutral_90">#E5E5E5</color>
+    <color name="neutral_30">#4D4D4D</color>
+    <color name="primary_container">#EADDFF</color>
 </resources>

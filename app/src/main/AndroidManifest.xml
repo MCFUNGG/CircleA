@@ -76,11 +76,31 @@
             android:name=".matching.request.RequestReceivedDetail"
             android:exported="true" />
         <activity
+            android:name=".matching.request.RequestSentDetail"
+            android:exported="true" />
+        <activity
+            android:name=".matching.cases.detail.book.TutorBooking"
+            android:exported="true" />
+        <activity
+            android:name=".matching.cases.detail.MatchingCaseDetailStudent"
+            android:exported="true" />
+        <activity
+            android:name=".matching.cases.detail.Payment"
+            android:exported="true" />
+        <activity
+            android:name=".matching.cases.detail.FirstLessonFeedback"
+            android:exported="true" />
+        <activity
+            android:name=".matching.cases.detail.CaseDetailMenu"
+            android:exported="true" />
+        <activity
             android:name=".home.TutorAppDetail"
             android:exported="true"/>
         <activity
             android:name=".home.PSAppDetail"
             android:exported="true"/>
+
+
 
     </application>
 

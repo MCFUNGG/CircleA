@@ -344,8 +344,25 @@ public class Matching extends Fragment {
                     String psUsername = item.optString("ps_username", "N/A");
                     String tutorUsername = item.optString("tutor_username", "N/A");
                     String status = item.optString("status", "Pending");
-                    String profileIcon = item.optString("profile_icon", "N/A");
                     String matchCreator = item.optString("match_creator", "");
+
+                    // Get the appropriate profile icon based on member role
+                    String psId = item.optString("ps_id", "N/A");
+                    String tutorId = item.optString("tutor_id", "N/A");
+                    String psProfileIcon = item.optString("ps_profile_icon", "N/A");
+                    String tutorProfileIcon = item.optString("tutor_profile_icon", "N/A");
+
+                    // Select the appropriate profile icon based on current user's role
+                    String profileIcon;
+                    if (memberId.equals(psId)) {
+                        // Current user is student, show tutor's profile
+                        profileIcon = tutorProfileIcon;
+                    } else if (memberId.equals(tutorId)) {
+                        // Current user is tutor, show student's profile
+                        profileIcon = psProfileIcon;
+                    } else {
+                        profileIcon = "N/A";
+                    }
 
                     String classLevel = appDetails.optString("class_level_name", "N/A");
                     String fee = appDetails.optString("feePerHr", "N/A");
@@ -358,6 +375,10 @@ public class Matching extends Fragment {
                             profileIcon, matchCreator
                     );
 
+                    matchingCase.setPsId(psId);
+                    matchingCase.setTutorId(tutorId);
+                    matchingCase.setPsProfileIcon(psProfileIcon);
+                    matchingCase.setTutorProfileIcon(tutorProfileIcon);
                     caseList.add(matchingCase);
                     Log.d("Matching", "Added case: " + matchId);
                 }
@@ -553,9 +574,24 @@ public class Matching extends Fragment {
 
 
 
-    private void showToast(String message) {
-        requireActivity().runOnUiThread(() ->
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-        );
+    private void showToast(final String message) {
+        if (getActivity() == null || !isAdded()) {
+            Log.d("Matching", "Cannot show toast - Fragment not attached: " + message);
+            return;
+        }
+
+        try {
+            getActivity().runOnUiThread(() -> {
+                try {
+                    if (getActivity() != null && isAdded() && getContext() != null) {
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IllegalStateException e) {
+                    Log.e("Matching", "Failed to show toast on UI thread: " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e("Matching", "Failed to post toast to UI thread: " + e.getMessage());
+        }
     }
 }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="How did your first lesson go?"
+        android:textSize="18sp"
+        android:textColor="#1C1B1F"
+        android:textAlignment="center"
+        android:layout_marginBottom="24dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_lesson_complete"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:text="Completed The Lesson"
+            android:textColor="#006E1C"
+            app:backgroundTint="#DCEEE5"
+            app:icon="@drawable/ic_check_circle"
+            app:iconTint="#006E1C"
+            app:iconSize="48dp"
+            app:iconGravity="textTop"
+            app:iconPadding="8dp"
+            app:strokeWidth="0dp"
+            app:cornerRadius="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_lesson_incomplete"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:text="Incomplete For Some Reason"
+            android:textColor="#BA1A1A"
+            app:backgroundTint="#FFDAD6"
+            app:icon="@drawable/ic_cancel"
+            app:iconTint="#BA1A1A"
+            app:iconSize="48dp"
+            app:iconGravity="textTop"
+            app:iconPadding="8dp"
+            app:strokeWidth="0dp"
+            app:cornerRadius="8dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
