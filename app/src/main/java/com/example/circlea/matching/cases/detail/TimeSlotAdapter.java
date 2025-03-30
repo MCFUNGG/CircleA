@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.circlea.matching.cases.detail.book.TutorBooking;
 import com.google.android.material.button.MaterialButton;
 import com.example.circlea.R;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
 
@@ -39,60 +41,135 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TimeSlot timeSlot = timeSlots.get(position);
+
+        // Set date and time
         holder.dateTextView.setText(timeSlot.getDateString());
         holder.timeTextView.setText(timeSlot.getTimeString());
 
+        MaterialCardView cardView = (MaterialCardView) holder.itemView;
 
         if (isTutor) {
-            // Tutor view - can edit time slots
+            // Tutor view logic
             holder.editButton.setVisibility(View.VISIBLE);
+
+            // Enable edit button only for available and editable slots
+            boolean canEdit = timeSlot.isAvailable() && timeSlot.isEditable();
+            holder.editButton.setEnabled(canEdit);
+            holder.editButton.setAlpha(canEdit ? 1.0f : 0.5f);
+
+            // Set edit button click listener
             holder.editButton.setOnClickListener(v -> {
-                // 修改这里，直接调用 tutorActivity 的方法
-                if (tutorActivity != null) {
+                if (tutorActivity != null && canEdit) {
                     tutorActivity.showTimePickerDialog(context, timeSlot);
                 }
             });
-            holder.itemView.setBackgroundResource(android.R.color.transparent);
+
+            // Update card appearance based on status
+            updateCardAppearance(cardView, timeSlot);
+
+            // Add status to time text if not available
+            if (!timeSlot.isAvailable()) {
+                holder.timeTextView.setText(String.format("%s (%s)",
+                        timeSlot.getTimeString(),
+                        timeSlot.getStatus().toUpperCase()));
+            }
         } else {
-            // Student view - can select time slots
+            // Student view logic
             holder.editButton.setVisibility(View.GONE);
 
-            // Update the background based on selection state
-            holder.itemView.setBackgroundResource(
-                    timeSlot.isSelected() ? R.color.selected_slot_background : android.R.color.transparent
-            );
+            // Set card selection state
+            cardView.setChecked(timeSlot.isSelected());
+            cardView.setCheckable(true);
+            cardView.setClickable(true);
+
+            // Update card appearance based on selection
+            if (timeSlot.isSelected()) {
+                cardView.setStrokeColor(context.getColor(R.color.selected_slot_background));
+                cardView.setStrokeWidth(4);
+            } else {
+                cardView.setStrokeColor(context.getColor(com.google.android.material.R.color.material_on_surface_stroke));
+                cardView.setStrokeWidth(1);
+            }
 
             // Handle click for selection
-            holder.itemView.setOnClickListener(v -> {
-                // Deselect previously selected slot if any
-                if (selectedSlot != null && selectedSlot != timeSlot) {
-                    selectedSlot.setSelected(false);
-                    notifyItemChanged(timeSlots.indexOf(selectedSlot));
-                }
+            cardView.setOnClickListener(v -> {
+                if (timeSlot.isAvailable()) {
+                    // Deselect previous slot if exists
+                    if (selectedSlot != null && selectedSlot != timeSlot) {
+                        selectedSlot.setSelected(false);
+                        notifyItemChanged(timeSlots.indexOf(selectedSlot));
+                    }
 
-                // Toggle selection of current slot
-                timeSlot.setSelected(!timeSlot.isSelected());
-                selectedSlot = timeSlot.isSelected() ? timeSlot : null;
-                notifyItemChanged(position);
+                    // Select new slot
+                    timeSlot.setSelected(true);
+                    selectedSlot = timeSlot;
+                    notifyItemChanged(position);
+                }
             });
         }
+
+    }
+
+    private void updateCardAppearance(MaterialCardView cardView, TimeSlot timeSlot) {
+        Context context = cardView.getContext();
+        int strokeColor;
+        float strokeWidth;
+
+        switch (timeSlot.getStatus().toLowerCase()) {
+            case "pending":
+                strokeColor = context.getColor(R.color.status_pending);
+                strokeWidth = 2;
+                break;
+            case "confirmed":
+                strokeColor = context.getColor(R.color.status_approved);
+                strokeWidth = 2;
+                break;
+            case "expired":
+                strokeColor = context.getColor(R.color.error_red);
+                strokeWidth = 1;
+                cardView.setAlpha(0.7f);
+                break;
+            default: // available
+                strokeColor = context.getColor(com.google.android.material.R.color.material_on_surface_stroke);
+                strokeWidth = 1;
+                cardView.setAlpha(1.0f);
+                break;
+        }
+
+        cardView.setStrokeColor(strokeColor);
+        cardView.setStrokeWidth((int) (strokeWidth * context.getResources().getDisplayMetrics().density));
+    }
+
+    private void handleSlotSelection(TimeSlot timeSlot, int position) {
+        // Deselect previous slot
+        if (selectedSlot != null && selectedSlot != timeSlot) {
+            selectedSlot.setSelected(false);
+            notifyItemChanged(timeSlots.indexOf(selectedSlot));
+        }
+
+        // Toggle current slot
+        timeSlot.setSelected(!timeSlot.isSelected());
+        selectedSlot = timeSlot.isSelected() ? timeSlot : null;
+        notifyItemChanged(position);
     }
 
     @Override
     public int getItemCount() {
         return timeSlots.size();
     }
+
     public void updateTimeSlots(List<TimeSlot> newSlots) {
         this.timeSlots = newSlots;
         notifyDataSetChanged();
     }
+
     public TimeSlot getSelectedSlot() {
         return selectedSlot;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView dateTextView;
-        TextView timeTextView;
+        MaterialTextView dateTextView;
+        MaterialTextView timeTextView;
         MaterialButton editButton;
 
         public ViewHolder(@NonNull View itemView) {

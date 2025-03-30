@@ -131,6 +131,7 @@ public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapte
                     } else if (currentMemberId.equals(matchingCase.getPsId())) {
                         // User is student - show available slots or waiting message
                         // TODO: Check if tutor has created time slots
+
                         showStudentOptionsDialog(matchingCase);
                     }
                 }
@@ -177,6 +178,7 @@ public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapte
                             Intent intent = new Intent(context, MatchingCaseDetailStudent.class);
                             intent.putExtra("case_id", matchingCase.getMatchId());
                             intent.putExtra("is_tutor", false);
+                            intent.putExtra("tutor_id",matchingCase.getTutorId());
                             intent.putExtra("lessonFee",matchingCase.getFee());
                                 Log.d("MatchingCaseAdapter",
                                     " case_id: "+matchingCase.getMatchId()+

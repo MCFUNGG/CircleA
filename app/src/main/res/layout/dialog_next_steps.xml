@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_rebook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Rebook Lesson"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textColor="@color/purple_500"
+        android:gravity="start|center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_find_other_tutor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Find Other Tutor"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textColor="@color/purple_500"
+        android:gravity="start|center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp" />
+
+</LinearLayout>

@@ -19,8 +19,11 @@ public class TimeSlot {
         this.endTime = endTime;
         this.isSelected = isSelected;
         this.status = "available"; // Default status
-        this.modified = false;     // 新创建的时间段初始为未修改状态
+        this.modified = false;
+        this.editable = true;  // 新创建的时间段初始为未修改状态
     }
+
+
 
     public void setModified(boolean modified) {
         this.modified = modified;

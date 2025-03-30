@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="Set Available Time Slots"
+            app:navigationIcon="@drawable/ic_back"
             style="@style/Widget.Material3.Toolbar.Surface"/>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -30,6 +31,7 @@
 
             <!-- Available Time Slots Section -->
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/available_time_slots_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Available Time Slots"
@@ -71,13 +73,61 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"/>
 
+            <!-- Booking Detail Section -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/booking_detail_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                style="@style/Widget.Material3.CardView.Filled">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/booking_student_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/booking_date_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/booking_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.Chip.Assist"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/update_lesson_status_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update Lesson Status"
+                android:visibility="gone"
+                style="@style/Widget.Material3.Button.UnelevatedButton"/>
+
             <!-- Booking Requests Section -->
             <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/booking_requests_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="24dp"/>
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/booking_requests_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Booking Requests"
@@ -112,6 +162,7 @@
                         android:nestedScrollingEnabled="false"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -123,4 +174,5 @@
         android:layout_margin="16dp"
         android:text="Save Available Slots"
         app:icon="@drawable/ic_save"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
