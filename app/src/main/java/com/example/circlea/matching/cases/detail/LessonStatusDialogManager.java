@@ -49,9 +49,9 @@ public class LessonStatusDialogManager {
         MaterialButton completeButton = view.findViewById(R.id.btn_lesson_complete);
         MaterialButton incompleteButton = view.findViewById(R.id.btn_lesson_incomplete);
 
-        AlertDialog dialog = builder.setTitle("First Lesson Status")
+        AlertDialog dialog = builder.setTitle(context.getString(R.string.first_lesson_status))
                 .setView(view)
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(context.getString(R.string.cancel), null)
                 .create();
 
         completeButton.setOnClickListener(v -> {
@@ -69,12 +69,12 @@ public class LessonStatusDialogManager {
 
     private void showConfirmCompletionDialog() {
         new AlertDialog.Builder(context)
-                .setTitle("Confirm Completion")
-                .setMessage("By marking the lesson as completed, you'll proceed to the feedback process. This action cannot be undone.\n\nDo you want to continue?")
-                .setPositiveButton("Continue", (dialogInterface, i) -> {
+                .setTitle(context.getString(R.string.confirm_completion))
+                .setMessage(context.getString(R.string.by_marking_the_lesson_as_completed_you_ll_proceed_to_the_feedback_process_this_action_cannot_be_undone) + "\n\n" + context.getString(R.string.do_you_want_to_continue))
+                .setPositiveButton(context.getString(R.string.continue_btn), (dialogInterface, i) -> {
                     callback.onLessonComplete();
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(context.getString(R.string.cancel), null)
                 .show();
     }
 
@@ -82,9 +82,9 @@ public class LessonStatusDialogManager {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_incomplete_reason, null);
 
-        AlertDialog dialog = builder.setTitle("Reason for Incomplete Lesson")
+        AlertDialog dialog = builder.setTitle(context.getString(R.string.reason_for_incomplete_lesson))
                 .setView(view)
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(context.getString(R.string.cancel), null)
                 .create();
 
         int[] buttonIds = {
@@ -119,9 +119,9 @@ public class LessonStatusDialogManager {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_custom_reason, null);
         EditText input = view.findViewById(R.id.edit_text_reason);
 
-        builder.setTitle("Specify Reason")
+        builder.setTitle(context.getString(R.string.specify_reason))
                 .setView(view)
-                .setPositiveButton("Submit", (dialog, which) -> {
+                .setPositiveButton(context.getString(R.string.submit), (dialog, which) -> {
                     String customReason = input.getText().toString().trim();
                     if (!customReason.isEmpty()) {
                         if (isTutor) {
@@ -130,10 +130,10 @@ public class LessonStatusDialogManager {
                             callback.onSubmitIncompleteStatus(customReason);
                         }
                     } else {
-                        Toast.makeText(context, "Please enter a reason", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.please_enter_a_reason), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(context.getString(R.string.cancel), null)
                 .show();
     }
 
@@ -144,12 +144,12 @@ public class LessonStatusDialogManager {
             MaterialButton rebookButton = view.findViewById(R.id.btn_rebook);
             MaterialButton findOtherTutorButton = view.findViewById(R.id.btn_find_other_tutor);
 
-            rebookButton.setText("Provide New Time Slot");
+            rebookButton.setText(context.getString(R.string.provide_new_time_slot));
             findOtherTutorButton.setVisibility(View.GONE);
 
             AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setTitle("Provide New Time Slot")
-                    .setMessage("Please provide new available time slots for rebooking.")
+                    .setTitle(context.getString(R.string.provide_new_time_slot))
+                    .setMessage(context.getString(R.string.please_provide_new_available_time_slots_for_rebooking))
                     .setView(view)
                     .setCancelable(true)
                     .create();
@@ -166,13 +166,13 @@ public class LessonStatusDialogManager {
             MaterialButton rebookButton = view.findViewById(R.id.btn_rebook);
             MaterialButton findOtherTutorButton = view.findViewById(R.id.btn_find_other_tutor);
 
-            rebookButton.setText("Rebook Lesson");
-            findOtherTutorButton.setText("Find Other Tutor");
+            rebookButton.setText(context.getString(R.string.rebook_lesson));
+            findOtherTutorButton.setText(context.getString(R.string.find_other_tutor));
             findOtherTutorButton.setVisibility(View.VISIBLE);
 
             AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setTitle("Next Steps")
-                    .setMessage("What would you like to do next?")
+                    .setTitle(context.getString(R.string.next_steps))
+                    .setMessage(context.getString(R.string.what_would_you_like_to_do_next))
                     .setView(view)
                     .setCancelable(true)
                     .create();

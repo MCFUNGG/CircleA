@@ -29,10 +29,10 @@
       </SelectionState>
       <SelectionState runConfigName="MatchingCaseDetailTutor">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-03-06T02:18:35.280747400Z">
+        <DropdownSelection timestamp="2025-04-02T10:31:35.937719Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\USER\.android\avd\Pixel_8_Pro_API_35.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\USER\.android\avd\Pixel_7a_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>

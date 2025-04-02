@@ -984,18 +984,18 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
 
     private void showWaitingDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Status Submitted")
-                .setMessage("lesson status has been submitted. Waiting for the other party's response.")
-                .setPositiveButton("OK", null)
+                .setTitle(getString(R.string.status_submitted_student))
+                .setMessage(getString(R.string.waiting_for_other_party))
+                .setPositiveButton(getString(R.string.ok), null)
                 .show();
     }
 
     private void showBothIncompleteDialog(String reason) {
         new AlertDialog.Builder(this)
-                .setTitle("Status Matched")
-                .setMessage("您與對方均標記課程未完成,系統處理退款及重新預約")
-                .setPositiveButton("OK", (dialog, which) -> {
-                    // 直接显示下一步选项
+                .setTitle(getString(R.string.status_matched_student))
+                .setMessage(getString(R.string.both_marked_incomplete))
+                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+                    // Show next step options directly
                     dialogManager.showNextStepsDialog(reason);
                 })
                 .show();
@@ -1003,11 +1003,11 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
 
     private void showConflictDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Status Conflict")
-                .setMessage("您確認課程已完成，但對方確認未完成。管理員將於 1-3 個工作日內審核,透過whatsapp與你聯繫,請提供詳細說明及證明文件。")
-                .setPositiveButton("OK", (dialog, which) -> {
-                    // TODO: 实现证据提交
-                    Toast.makeText(this, "Evidence submission to be implemented",
+                .setTitle(getString(R.string.status_conflict_student))
+                .setMessage(getString(R.string.student_conflict_message))
+                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+                    // TODO: Implement evidence submission
+                    Toast.makeText(this, getString(R.string.evidence_submission_to_be_implemented),
                             Toast.LENGTH_SHORT).show();
                 })
                 .show();

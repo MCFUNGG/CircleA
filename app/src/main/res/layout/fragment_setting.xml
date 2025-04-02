@@ -21,12 +21,12 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_menu"
-            android:contentDescription="Menu" />
+            android:contentDescription="@string/menu" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textSize="20sp"
             android:textColor="#333333"
             android:layout_marginStart="16dp"
@@ -89,7 +89,7 @@
                             android:id="@+id/username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Username"
+                            android:text="@string/username_placeholder"
                             android:textSize="20sp"
                             android:textColor="#333333"
                             android:fontFamily="sans-serif-medium"/>
@@ -108,7 +108,7 @@
                         android:id="@+id/user_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="user@example.com"
+                        android:text="@string/email_placeholder"
                         android:textSize="14sp"
                         android:textColor="#757575"/>
 
@@ -116,7 +116,7 @@
                         android:id="@+id/user_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+1234567890"
+                        android:text="@string/phone_placeholder"
                         android:textSize="14sp"
                         android:textColor="#757575"/>
                 </LinearLayout>
@@ -127,7 +127,7 @@
                 android:id="@+id/user_own_detail_button"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Member Details"
+                android:text="@string/member_details"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"
                 app:cornerRadius="12dp"
@@ -138,7 +138,7 @@
                 android:id="@+id/cart_button"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Member Cart"
+                android:text="@string/member_cart"
                 android:textSize="16sp"
                 android:layout_marginBottom="24dp"
                 app:cornerRadius="12dp"
@@ -155,7 +155,7 @@
                 android:id="@+id/log_out_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Log Out"
+                android:text="@string/log_out"
                 android:textColor="#FF5252"
                 android:textSize="16sp"
                 android:gravity="center"

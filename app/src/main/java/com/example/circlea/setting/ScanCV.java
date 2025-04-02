@@ -258,7 +258,7 @@ public class ScanCV extends AppCompatActivity {
     // 表單資料驗證
     private boolean validateFormData() {
         if (contactEditText.getText().toString().trim().isEmpty()) {
-            showToast("請填寫聯絡資訊");
+            showToast(getString(R.string.please_fill_contact_info));
             return false;
         }
         return true;

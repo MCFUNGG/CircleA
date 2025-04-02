@@ -154,7 +154,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             public void onFailure(Call call, IOException e) {
                 Log.e("LoadLevelsRequest", "Request failed: " + e.getMessage());
                 runOnUiThread(() ->
-                        Toast.makeText(ParentApplicationFillDetail.this, "Error fetching data", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(ParentApplicationFillDetail.this, getString(R.string.error_fetching_data), Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -200,12 +200,12 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                     } catch (JSONException e) {
                         Log.e("LoadLevelsRequest", "JSON parsing error: " + e.getMessage());
                         runOnUiThread(() ->
-                                Toast.makeText(ParentApplicationFillDetail.this, "Error processing response", Toast.LENGTH_SHORT).show());
+                                Toast.makeText(ParentApplicationFillDetail.this, getString(R.string.error_processing_response), Toast.LENGTH_SHORT).show());
                     }
                 } else {
                     Log.e("LoadLevelsRequest", "Request failed with response code: " + response.code());
                     runOnUiThread(() ->
-                            Toast.makeText(ParentApplicationFillDetail.this, "Failed to fetch levels and subjects", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(ParentApplicationFillDetail.this, getString(R.string.failed_to_fetch_levels_and_subjects), Toast.LENGTH_SHORT).show());
                 }
             }
         });
@@ -373,7 +373,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         } else if (selectedId == R.id.radio_parent) {
             appCreator = "PS";
         } else {
-            Toast.makeText(this, "Please select an option", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.please_select_an_option), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -385,7 +385,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         ArrayList<String> selectedDistrictIds = getSelectedDistrictIds();
 
         if (classLevelId == null || selectedDistrictIds.isEmpty() || fee.isEmpty() || selectedDates.isEmpty() || selectedSubjectIds.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required information", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.please_fill_in_all_required_information), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -415,7 +415,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Request failed, please try again.", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, getString(R.string.request_failed_please_try_again), Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -426,18 +426,18 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
                         try {
                             JSONObject jsonResponse = new JSONObject(responseData);
                             if (jsonResponse.getBoolean("success")) {
-                                Toast.makeText(ParentApplicationFillDetail.this, "Application submitted successfully!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ParentApplicationFillDetail.this, getString(R.string.application_submitted_successfully), Toast.LENGTH_SHORT).show();
                                 finish();
                             } else {
                                 Toast.makeText(ParentApplicationFillDetail.this, jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(ParentApplicationFillDetail.this, "Error processing response", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ParentApplicationFillDetail.this, getString(R.string.error_processing_response), Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
-                    runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, "Server error, please try again later.", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(ParentApplicationFillDetail.this, getString(R.string.server_error_please_try_again_later), Toast.LENGTH_SHORT).show());
                 }
             }
         });

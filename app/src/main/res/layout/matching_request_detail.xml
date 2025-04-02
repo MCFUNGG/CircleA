@@ -58,7 +58,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Your Application"
+                                android:text="@string/your_application"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="#1E3F71"/>
@@ -67,7 +67,7 @@
                                 android:id="@+id/tutorAppIdTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Application ID: "
+                                android:text="@string/application_id"
                                 android:textSize="14sp"
                                 android:textColor="#666666"/>
                         </LinearLayout>
@@ -76,7 +76,7 @@
                             android:id="@+id/tutorFeeTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="HK$200/hr"
+                            android:text=""
                             android:textSize="18sp"
                             android:textColor="#1E3F71"
                             android:textStyle="bold"/>
@@ -95,7 +95,7 @@
                             android:layout_weight="1"
                             android:drawableStart="@drawable/ic_class"
                             android:drawablePadding="8dp"
-                            android:text="Class Level"
+                            android:text="@string/class_level"
                             android:textSize="14sp"/>
                     </LinearLayout>
 
@@ -105,7 +105,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_subject"
                         android:drawablePadding="8dp"
-                        android:text="Subjects"
+                        android:text="@string/subjects"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp"/>
 
@@ -115,7 +115,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_location"
                         android:drawablePadding="8dp"
-                        android:text="Districts"
+                        android:text="@string/districts"
                         android:textSize="14sp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -137,7 +137,7 @@
                 android:textSize="16sp"
                 android:textColor="#1E3F71"
                 android:textStyle="bold"
-                android:text="mmmmm sent you a request"/>
+                android:text="@string/sent_you_a_request"/>
 
             <!-- PS Application Card -->
             <androidx.cardview.widget.CardView
@@ -177,7 +177,7 @@
                                 android:id="@+id/psMemberIdTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="PS Username"
+                                android:text="@string/ps_username"
                                 android:textSize="18sp"
                                 android:textStyle="bold"/>
 
@@ -185,7 +185,7 @@
                                 android:id="@+id/psAppIdTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Application ID: "
+                                android:text="@string/application_id"
                                 android:textSize="14sp"
                                 android:textColor="#666666"/>
 
@@ -198,7 +198,7 @@
                             android:id="@+id/psFeeTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="HK$200/hr"
+                            android:text=""
                             android:textSize="18sp"
                             android:textColor="#1E3F71"
                             android:textStyle="bold"/>
@@ -219,7 +219,7 @@
                             android:layout_weight="1"
                             android:drawableStart="@drawable/ic_class"
                             android:drawablePadding="8dp"
-                            android:text="Class Level"
+                            android:text="@string/class_level"
                             android:textSize="14sp"/>
                     </LinearLayout>
 
@@ -229,7 +229,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_subject"
                         android:drawablePadding="8dp"
-                        android:text="Subjects"
+                        android:text="@string/subjects"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp"/>
 
@@ -241,7 +241,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_location"
                         android:drawablePadding="8dp"
-                        android:text="Districts"
+                        android:text="@string/districts"
                         android:textSize="14sp"/>
 
                 </LinearLayout>
@@ -262,7 +262,7 @@
                     android:layout_marginEnd="8dp"
                     app:backgroundTint="#f23d3d"
                     app:cornerRadius="20dp"
-                    android:text="Reject"
+                    android:text="@string/reject"
                     android:textColor="#FFFFFF"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -273,7 +273,7 @@
                     android:layout_marginStart="8dp"
                     app:backgroundTint="#29B314"
                     app:cornerRadius="20dp"
-                    android:text="Accept"
+                    android:text="@string/accept"
                     android:textColor="#FFFFFF"/>
             </LinearLayout>
         </LinearLayout>

@@ -213,11 +213,11 @@ public class Matching extends Fragment {
 
     private void updateRequestHeaderTexts(boolean isReceived) {
         if (isReceived) {
-            tvRequestFromPs.setText("Request From Parent/Student");
-            tvRequestFromTutor.setText("Request From Tutor");
+            tvRequestFromPs.setText(getString(R.string.request_from_ps));
+            tvRequestFromTutor.setText(getString(R.string.request_from_tutor));
         } else {
-            tvRequestFromPs.setText("Request Sent As Parent/Student");
-            tvRequestFromTutor.setText("Request Sent As Tutor");
+            tvRequestFromPs.setText(getString(R.string.request_sent_as_ps));
+            tvRequestFromTutor.setText(getString(R.string.request_sent_as_tutor));
         }
     }
     private void setupRecyclerViews() {
@@ -237,13 +237,13 @@ public class Matching extends Fragment {
         MatchingRequestReceivedAdapter.OnItemClickListener receivedClickListener =
                 (request, position) -> {
                     selectedRequestId = request.getRequestId();
-                    Toast.makeText(requireContext(), "Selected received request: " + selectedRequestId, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.selected_received_request, selectedRequestId), Toast.LENGTH_SHORT).show();
                 };
 
         MatchingRequestSentAdapter.OnItemClickListener sentClickListener =
                 (request, position) -> {
                     selectedRequestId = request.getRequestId();
-                    Toast.makeText(requireContext(), "Selected sent request: " + selectedRequestId, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.selected_sent_request, selectedRequestId), Toast.LENGTH_SHORT).show();
                 };
 
         caseAdapter.setOnItemClickListener((matchingCase, position) -> {
@@ -251,9 +251,9 @@ public class Matching extends Fragment {
             String status = matchingCase.getStatus();
 
             if (status.equalsIgnoreCase("P")) {
-                Toast.makeText(requireContext(), "Waiting for admin approve", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.waiting_for_admin_approve), Toast.LENGTH_SHORT).show();
             } else if (status.equalsIgnoreCase("A")) {
-                Toast.makeText(requireContext(), "Selected case: " + caseId, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.selected_case, caseId), Toast.LENGTH_SHORT).show();
                 // Add navigation to case details here if needed
             }
         });
@@ -287,7 +287,7 @@ public class Matching extends Fragment {
 
     private void loadCaseData() {
         if (memberId == null) {
-            Toast.makeText(requireContext(), "Error: Missing user information", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.error_missing_user_info), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -306,7 +306,7 @@ public class Matching extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("Matching", "Failed to load cases: " + e.getMessage());
-                showToast("Failed to load cases. Please try again.");
+                showToast(getString(R.string.failed_to_load_cases));
             }
 
             @Override
@@ -318,12 +318,12 @@ public class Matching extends Fragment {
                         JSONArray dataArray = jsonResponse.getJSONArray("data");
                         processCases(dataArray);
                     } else {
-                        String message = jsonResponse.optString("message", "No cases found");
+                        String message = jsonResponse.optString("message", getString(R.string.no_cases_found));
                         showToast(message);
                     }
                 } catch (JSONException e) {
                     Log.e("Matching", "JSON parsing error: " + e.getMessage());
-                    showToast("Error processing server response");
+                    showToast(getString(R.string.error_processing_server_response));
                 }
             }
         });
@@ -338,19 +338,19 @@ public class Matching extends Fragment {
                     JSONObject item = dataArray.getJSONObject(i);
                     JSONObject appDetails = item.getJSONObject("application_details");
 
-                    String matchId = item.optString("match_id", "N/A");
-                    String psAppId = item.optString("ps_app_id", "N/A");
-                    String tutorAppId = item.optString("tutor_app_id", "N/A");
-                    String psUsername = item.optString("ps_username", "N/A");
-                    String tutorUsername = item.optString("tutor_username", "N/A");
-                    String status = item.optString("status", "Pending");
+                    String matchId = item.optString("match_id", getString(R.string.n_a));
+                    String psAppId = item.optString("ps_app_id", getString(R.string.n_a));
+                    String tutorAppId = item.optString("tutor_app_id", getString(R.string.n_a));
+                    String psUsername = item.optString("ps_username", getString(R.string.n_a));
+                    String tutorUsername = item.optString("tutor_username", getString(R.string.n_a));
+                    String status = item.optString("status", getString(R.string.pending));
                     String matchCreator = item.optString("match_creator", "");
 
                     // Get the appropriate profile icon based on member role
-                    String psId = item.optString("ps_id", "N/A");
-                    String tutorId = item.optString("tutor_id", "N/A");
-                    String psProfileIcon = item.optString("ps_profile_icon", "N/A");
-                    String tutorProfileIcon = item.optString("tutor_profile_icon", "N/A");
+                    String psId = item.optString("ps_id", getString(R.string.n_a));
+                    String tutorId = item.optString("tutor_id", getString(R.string.n_a));
+                    String psProfileIcon = item.optString("ps_profile_icon", getString(R.string.n_a));
+                    String tutorProfileIcon = item.optString("tutor_profile_icon", getString(R.string.n_a));
 
                     // Select the appropriate profile icon based on current user's role
                     String profileIcon;
@@ -361,11 +361,11 @@ public class Matching extends Fragment {
                         // Current user is tutor, show student's profile
                         profileIcon = psProfileIcon;
                     } else {
-                        profileIcon = "N/A";
+                        profileIcon = getString(R.string.n_a);
                     }
 
-                    String classLevel = appDetails.optString("class_level_name", "N/A");
-                    String fee = appDetails.optString("feePerHr", "N/A");
+                    String classLevel = appDetails.optString("class_level_name", getString(R.string.n_a));
+                    String fee = appDetails.optString("feePerHr", getString(R.string.n_a));
                     String subjects = processArray(appDetails.getJSONArray("subject_names"));
                     String districts = processArray(appDetails.getJSONArray("district_names"));
 
@@ -388,7 +388,7 @@ public class Matching extends Fragment {
             } catch (Exception e) {
                 Log.e("Matching", "Error processing cases: " + e.getMessage());
                 e.printStackTrace();
-                showToast("Error processing cases");
+                showToast(getString(R.string.error_processing_cases));
             }
         });
     }
@@ -396,7 +396,7 @@ public class Matching extends Fragment {
 
     private void loadRequestData(boolean isReceived) {
         if (memberId == null) {
-            Toast.makeText(requireContext(), "Error: Missing user information", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.error_missing_user_info), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -428,7 +428,7 @@ public class Matching extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("Matching", "Network request failed: " + e.getMessage());
-                showToast("Failed to load match requests. Please try again.");
+                showToast(getString(R.string.failed_to_load_match_requests));
             }
 
             @Override
@@ -442,13 +442,13 @@ public class Matching extends Fragment {
                         JSONArray dataArray = jsonResponse.getJSONArray("data");
                         processMatchRequests(dataArray, isReceived);
                     } else {
-                        String message = jsonResponse.optString("message", "No matching requests found");
+                        String message = jsonResponse.optString("message", getString(R.string.no_matching_requests_found));
                         showToast(message);
                         requireActivity().runOnUiThread(() -> hideAllRequestLayouts());
                     }
                 } catch (JSONException e) {
                     Log.e("Matching", "JSON parsing error: " + e.getMessage());
-                    showToast("Error processing server response");
+                    showToast(getString(R.string.error_processing_server_response));
                 }
             }
         });
@@ -539,16 +539,16 @@ public class Matching extends Fragment {
         JSONObject appDetails = item.getJSONObject("application_details");
         String creator = item.optString("match_creator", "");
 
-        String matchId = item.optString("match_id", "N/A");
-        String psAppId = item.optString("ps_app_id", "N/A");
-        String tutorAppId = item.optString("tutor_app_id", "N/A");
-        String psUsername = item.optString("ps_username", "N/A");
-        String tutorUsername = item.optString("tutor_username", "N/A");
-        String matchMark = item.optString("match_mark", "N/A");
-        String profileIcon = item.optString("profile_icon", "N/A");
+        String matchId = item.optString("match_id", getString(R.string.n_a));
+        String psAppId = item.optString("ps_app_id", getString(R.string.n_a));
+        String tutorAppId = item.optString("tutor_app_id", getString(R.string.n_a));
+        String psUsername = item.optString("ps_username", getString(R.string.n_a));
+        String tutorUsername = item.optString("tutor_username", getString(R.string.n_a));
+        String matchMark = item.optString("match_mark", getString(R.string.n_a));
+        String profileIcon = item.optString("profile_icon", getString(R.string.n_a));
 
-        String classLevel = appDetails.optString("class_level_name", "N/A");
-        String fee = appDetails.optString("feePerHr", "N/A");
+        String classLevel = appDetails.optString("class_level_name", getString(R.string.n_a));
+        String fee = appDetails.optString("feePerHr", getString(R.string.n_a));
         String subjects = processArray(appDetails.getJSONArray("subject_names"));
         String districts = processArray(appDetails.getJSONArray("district_names"));
 
@@ -561,7 +561,7 @@ public class Matching extends Fragment {
 
     private String processArray(JSONArray array) throws JSONException {
         if (array == null || array.length() == 0) {
-            return "N/A";
+            return getString(R.string.n_a);
         }
 
         StringBuilder result = new StringBuilder();

@@ -280,7 +280,7 @@
                         Log.e("FetchApplicationData", "Request failed: " + e.getMessage());
                         if (isAdded()) {
                             requireActivity().runOnUiThread(() ->
-                                    Toast.makeText(requireContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), getString(R.string.failed_to_fetch_data), Toast.LENGTH_SHORT).show()
                             );
                         }
                     }
@@ -356,7 +356,7 @@
                                         });
                                     }
                                 } else {
-                                    String message = jsonObject.optString("message", "Unknown error");
+                                    String message = jsonObject.optString("message", getString(R.string.unknown_error));
                                     if (isAdded()) {
                                         requireActivity().runOnUiThread(() ->
                                                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
@@ -367,7 +367,7 @@
                                 Log.e("FetchApplicationData", "JSON parsing error: " + e.getMessage());
                                 if (isAdded()) {
                                     requireActivity().runOnUiThread(() ->
-                                            Toast.makeText(requireContext(), "Error processing data", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(requireContext(), getString(R.string.error_processing_data), Toast.LENGTH_SHORT).show()
                                     );
                                 }
                             }
@@ -405,7 +405,7 @@
                         Log.e("FetchApplicationData", "Request failed: " + e.getMessage());
                         if (isAdded()) {
                             requireActivity().runOnUiThread(() ->
-                                    Toast.makeText(requireContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), getString(R.string.failed_to_fetch_data), Toast.LENGTH_SHORT).show()
                             );
                         }
                     }
@@ -465,7 +465,7 @@
                                         });
                                     }
                                 } else {
-                                    String message = jsonObject.optString("message", "Unknown error");
+                                    String message = jsonObject.optString("message", getString(R.string.unknown_error));
                                     if (isAdded()) {
                                         requireActivity().runOnUiThread(() ->
                                                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
@@ -476,7 +476,7 @@
                                 Log.e("FetchApplicationData", "JSON parsing error: " + e.getMessage());
                                 if (isAdded()) {
                                     requireActivity().runOnUiThread(() ->
-                                            Toast.makeText(requireContext(), "Error processing data", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(requireContext(), getString(R.string.error_processing_data), Toast.LENGTH_SHORT).show()
                                     );
                                 }
                             }

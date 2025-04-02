@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
-        android:contentDescription="Image Preview"
+        android:contentDescription="@string/image_preview"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -21,7 +21,7 @@
         android:id="@+id/selectImageBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Select Image"
+        android:text="@string/select_image"
         app:layout_constraintTop_toBottomOf="@id/imageView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
                 android:id="@+id/contactEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Contact"
+                android:hint="@string/contact"
                 android:layout_marginTop="16dp"/>
 
             <!-- Skills Input -->
@@ -55,7 +55,7 @@
                 android:id="@+id/skillsEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Skills"
+                android:hint="@string/skills"
                 android:layout_marginTop="8dp"/>
 
             <!-- Education Input -->
@@ -63,7 +63,7 @@
                 android:id="@+id/educationEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Education"
+                android:hint="@string/education"
                 android:layout_marginTop="8dp"/>
 
             <!-- Language Input -->
@@ -71,7 +71,7 @@
                 android:id="@+id/languageEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Language"
+                android:hint="@string/language"
                 android:layout_marginTop="8dp"/>
 
             <!-- Other Input -->
@@ -79,7 +79,7 @@
                 android:id="@+id/otherEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Other"
+                android:hint="@string/other"
                 android:layout_marginTop="8dp"/>
 
             <!-- Save Button -->
@@ -87,7 +87,7 @@
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save"
+                android:text="@string/save"
                 android:layout_marginTop="16dp"/>
         </LinearLayout>
     </ScrollView>

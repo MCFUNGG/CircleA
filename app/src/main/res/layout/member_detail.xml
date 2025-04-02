@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Member Detail Form"
+                android:text="@string/member_detail_form"
                 android:textSize="20sp"
                 android:textColor="#333333"
                 android:layout_weight="1"
@@ -43,7 +43,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gender:"
+        android:text="@string/gender_label"
         android:textSize="16sp"
         android:textColor="#333333"
         android:layout_marginBottom="8dp" />
@@ -59,14 +59,14 @@
             android:id="@+id/gender_male"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Male"
+            android:text="@string/male"
             android:textColor="#333333" />
 
         <RadioButton
             android:id="@+id/gender_female"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Female"
+            android:text="@string/female"
             android:textColor="#333333" />
     </RadioGroup>
 
@@ -74,7 +74,7 @@
         android:id="@+id/address_district_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Address District ID"
+        android:hint="@string/address_district_id"
         android:maxLength="50"
         android:inputType="text"
         android:layout_marginBottom="8dp"
@@ -84,7 +84,7 @@
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Address"
+        android:hint="@string/address"
         android:maxLength="255"
         android:inputType="text"
         android:layout_marginBottom="8dp"
@@ -94,7 +94,7 @@
         android:id="@+id/dob"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Date of Birth (MM/DD/YYYY)"
+        android:hint="@string/date_of_birth"
         android:inputType="date"
         android:layout_marginBottom="8dp"
         android:backgroundTint="#DDDDDD" />
@@ -103,7 +103,7 @@
         android:id="@+id/profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Profile"
+        android:hint="@string/profile_text"
         android:maxLength="50"
         android:inputType="text"
         android:layout_marginBottom="8dp"
@@ -114,7 +114,7 @@
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Description"
+        android:hint="@string/description"
         android:maxLength="1024"
         android:inputType="textMultiLine"
         android:layout_marginBottom="16dp"
@@ -124,7 +124,7 @@
         android:id="@+id/submit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit"
+        android:text="@string/submit"
         android:layout_marginTop="16dp"
         android:backgroundTint="#1E88E5"
         android:textColor="#FFFFFF" />

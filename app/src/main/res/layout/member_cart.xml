@@ -16,13 +16,13 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/exit"
-            android:contentDescription="Exit"/>
+            android:contentDescription="@string/exit"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Saved Applications"
+            android:text="@string/saved_applications"
             android:textSize="24sp"
             android:textStyle="bold"/>
     </RelativeLayout>
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="4dp"
-            android:text="Tutor Apps"/>
+            android:text="@string/tutor_apps"/>
 
         <Button
             android:id="@+id/studentAppsButton"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="4dp"
-            android:text="Student Apps"/>
+            android:text="@string/student_apps"/>
     </LinearLayout>
 
     <ScrollView

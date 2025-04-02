@@ -357,4 +357,37 @@ public class Home extends AppCompatActivity {
     public void openDrawer() {
         drawerLayout.openDrawer(GravityCompat.START); // Method to open the drawer
     }
+
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        
+        // Rebuild the navigation drawer with the new language
+        refreshNavigationMenu();
+    }
+    
+    public void refreshNavigationMenu() {
+        // Reinflate custom item layouts with updated strings
+        View customViewApplication = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_application, null);
+        TextView customTextViewApplication = customViewApplication.findViewById(R.id.custom_text_application);
+        customTextViewApplication.setText(getString(R.string.nav_post_application));
+
+        View customViewTutor = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_tutor, null);
+        TextView customTextViewTutor = customViewTutor.findViewById(R.id.custom_text_tutor);
+        customTextViewTutor.setText(getString(R.string.tutor_section_title));
+
+        View customView = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_view, null);
+
+        // Clear the menu and reinflate it with the updated resources
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.menu_main);
+
+        // Set the custom view as the action view for the placeholder item
+        navigationView.getMenu().findItem(R.id.nav_custom_item_application).setActionView(customViewApplication);
+        navigationView.getMenu().findItem(R.id.nav_custom_item_tutor).setActionView(customViewTutor);
+        navigationView.getMenu().findItem(R.id.nav_custom_item_view).setActionView(customView);
+
+        // Setup all menu badges again
+        setupAllMenuBadges();
+    }
 }

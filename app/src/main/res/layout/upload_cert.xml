@@ -12,7 +12,7 @@
         android:id="@+id/btnSelectFiles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select File"
+        android:text="@string/select_file"
         android:clickable="true"
         android:focusable="true"
         android:elevation="8dp"
@@ -38,7 +38,7 @@
         android:id="@+id/btnUpload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Upload"
+        android:text="@string/upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

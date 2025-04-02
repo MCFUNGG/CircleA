@@ -104,7 +104,7 @@ public class ApplicationHistory extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() -> Toast.makeText(ApplicationHistory.this,
-                        "Failed to fetch PS applications", Toast.LENGTH_SHORT).show());
+                        getString(R.string.failed_to_fetch_ps_applications), Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -135,7 +135,7 @@ public class ApplicationHistory extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() -> Toast.makeText(ApplicationHistory.this,
-                        "Failed to fetch tutor applications", Toast.LENGTH_SHORT).show());
+                        getString(R.string.failed_to_fetch_tutor_applications), Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -164,14 +164,14 @@ public class ApplicationHistory extends AppCompatActivity {
                     }
                 });
             } else {
-                String message = jsonObject.optString("message", "Unknown error");
+                String message = jsonObject.optString("message", getString(R.string.unknown_error));
                 runOnUiThread(() -> Toast.makeText(ApplicationHistory.this,
                         message, Toast.LENGTH_SHORT).show());
             }
         } catch (JSONException e) {
             e.printStackTrace();
             runOnUiThread(() -> Toast.makeText(ApplicationHistory.this,
-                    "Error processing data", Toast.LENGTH_SHORT).show());
+                    getString(R.string.error_processing_data), Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -179,32 +179,34 @@ public class ApplicationHistory extends AppCompatActivity {
         View applicationView = LayoutInflater.from(this)
                 .inflate(R.layout.history_application_item, applicationsContainer, false);
 
-        String appId = data.optString("app_id", "N/A");
-        String studentLevel = data.optString("class_level_name", "N/A");
-        String fee = data.optString("feePerHr", "N/A");
-        String status = data.optString("status", "N/A");
+        String appId = data.optString("app_id", getString(R.string.n_a));
+        String studentLevel = data.optString("class_level_name", getString(R.string.n_a));
+        String fee = data.optString("feePerHr", getString(R.string.n_a));
+        String status = data.optString("status", getString(R.string.n_a));
 
         // Process arrays
         String subjects = processArrayToString(data.optJSONArray("subject_names"));
         String districts = processArrayToString(data.optJSONArray("district_names"));
 
         // Set values
-        ((TextView) applicationView.findViewById(R.id.app_id)).setText("ID: " + appId);
+        ((TextView) applicationView.findViewById(R.id.app_id)).setText(
+                String.format(getString(R.string.app_id_format), appId));
         ((TextView) applicationView.findViewById(R.id.subject_text)).setText(subjects);
         ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
-        ((TextView) applicationView.findViewById(R.id.fee_text)).setText(String.format("HK$%s/hr", fee));
+        ((TextView) applicationView.findViewById(R.id.fee_text)).setText(
+                String.format(getString(R.string.fee_format), fee));
         ((TextView) applicationView.findViewById(R.id.district_text)).setText(districts);
 
         // Handle status
         TextView statusTextView = applicationView.findViewById(R.id.status_tv);
         if (status.equals("P")) {
-            statusTextView.setText("Pending");
+            statusTextView.setText(getString(R.string.pending));
             statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
         } else if (status.equals("A")) {
-            statusTextView.setText("Approved");
+            statusTextView.setText(getString(R.string.approved));
             statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
         }else if (status.equals("R")){
-            statusTextView.setText("Rejected");
+            statusTextView.setText(getString(R.string.rejected));
             statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
         }
 
@@ -212,7 +214,7 @@ public class ApplicationHistory extends AppCompatActivity {
     }
 
     private String processArrayToString(JSONArray array) throws JSONException {
-        if (array == null || array.length() == 0) return "N/A";
+        if (array == null || array.length() == 0) return getString(R.string.n_a);
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < array.length(); i++) {
             if (i > 0) result.append(", ");

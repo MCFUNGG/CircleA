@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set Time Slot"
+        android:text="@string/set_time_slot"
         android:textSize="24sp"
         android:textColor="#1C1B1F"
         android:fontFamily="sans-serif-medium"
@@ -30,7 +30,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Time"
+            android:text="@string/start_time"
             android:textSize="18sp"
             android:textColor="#1C1B1F"
             android:fontFamily="sans-serif-medium"
@@ -76,7 +76,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="End Time"
+            android:text="@string/end_time"
             android:textSize="18sp"
             android:textColor="#1C1B1F"
             android:fontFamily="sans-serif-medium"

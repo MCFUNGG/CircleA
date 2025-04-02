@@ -48,14 +48,14 @@ public class BookingRequestAdapter extends RecyclerView.Adapter<BookingRequestAd
 
         // Set student information
         holder.studentName.setText(request.getStudentName());
-        holder.studentId.setText("ID: " + request.getStudentId());
+        holder.studentId.setText(context.getString(R.string.id_format, request.getStudentId()));
 
         // Format and set date/time
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d, yyyy", Locale.getDefault());
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-        holder.dateText.setText("Date: " + dateFormat.format(request.getDateTime().getTime()));
-        holder.timeText.setText("Time: " + timeFormat.format(request.getDateTime().getTime()));
+        holder.dateText.setText(context.getString(R.string.date_format, dateFormat.format(request.getDateTime().getTime())));
+        holder.timeText.setText(context.getString(R.string.time_format, timeFormat.format(request.getDateTime().getTime())));
 
         // Set status chip
         holder.statusChip.setText(request.getStatus());

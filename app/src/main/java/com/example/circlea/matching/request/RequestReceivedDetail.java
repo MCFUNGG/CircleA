@@ -196,17 +196,17 @@ public class RequestReceivedDetail extends AppCompatActivity {
 
                                     // Update UI
                                     if (tutorAppIdTextView != null)
-                                        tutorAppIdTextView.setText("Tutor Application ID: " + appId);
+                                        tutorAppIdTextView.setText(String.format(getString(R.string.tutor_application_id), appId));
                                     if (tutorSubjectTextView != null)
-                                        tutorSubjectTextView.setText("Subjects: " + subjects);
+                                        tutorSubjectTextView.setText(String.format(getString(R.string.subjects_format), subjects));
                                     if (tutorClassLevelTextView != null)
-                                        tutorClassLevelTextView.setText("Class Level: " + classLevelName);
+                                        tutorClassLevelTextView.setText(String.format(getString(R.string.class_level_format), classLevelName));
                                     if (tutorFeeTextView != null)
-                                        tutorFeeTextView.setText("Fee: HK$" + fee);
+                                        tutorFeeTextView.setText(String.format(getString(R.string.fee_hk_format), fee));
                                     if (tutorDistrictTextView != null)
-                                        tutorDistrictTextView.setText("Districts: " + districts);
+                                        tutorDistrictTextView.setText(String.format(getString(R.string.districts_format), districts));
                                     if (tutorMemberIdTextView != null)
-                                        tutorMemberIdTextView.setText("Username: " + username);
+                                        tutorMemberIdTextView.setText(String.format(getString(R.string.username_format), username));
 
                                     // Load profile icon if available
                                     String profileIcon = data.optString("profile_icon", "");

@@ -132,10 +132,28 @@
 
             Log.d("Request", "Loading booking requests for match_id: " + caseId);
 
-            RequestBody formBody = new FormBody.Builder()
-                    .add("match_id", caseId)
-                    .add("tutor_id", tutorId)
-                    .build();
+            // Add null checks for caseId and tutorId
+            FormBody.Builder formBodyBuilder = new FormBody.Builder();
+            
+            if (caseId != null && !caseId.isEmpty()) {
+                formBodyBuilder.add("match_id", caseId);
+            } else {
+                Log.e("TutorBooking", "match_id is null or empty");
+                Toast.makeText(this, getString(R.string.invalid_case_id), Toast.LENGTH_SHORT).show();
+                finish(); // Close activity if caseId is invalid
+                return;
+            }
+            
+            if (tutorId != null && !tutorId.isEmpty()) {
+                formBodyBuilder.add("tutor_id", tutorId);
+            } else {
+                Log.e("TutorBooking", "tutor_id is null or empty");
+                Toast.makeText(this, getString(R.string.not_logged_in), Toast.LENGTH_SHORT).show();
+                finish(); // Close activity if tutorId is invalid
+                return;
+            }
+
+            RequestBody formBody = formBodyBuilder.build();
 
             String url = "http://" + IPConfig.getIP() + "/FYP/php/get_booking_requests.php";
             Log.d("Request", "URL: " + url);
@@ -150,7 +168,7 @@
                 public void onFailure(Call call, IOException e) {
                     Log.e("Network", "Failed to load booking requests: " + e.getMessage());
                     runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                            "Failed to load booking requests", Toast.LENGTH_SHORT).show());
+                            getString(R.string.failed_to_load_booking_requests), Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -174,7 +192,7 @@
                     } catch (Exception e) {
                         Log.e("Parse", "Failed to parse booking requests: " + e.getMessage());
                         runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                                "Error loading booking requests", Toast.LENGTH_SHORT).show());
+                                getString(R.string.error_loading_booking_requests), Toast.LENGTH_SHORT).show());
                     }
                 }
             });
@@ -225,7 +243,7 @@
                         showBookingDetail(confirmedRequest);
 
                         // Set toolbar title
-                        topAppBar.setTitle("Booking Detail");
+                        topAppBar.setTitle(getString(R.string.booking_detail));
 
                         // Hide "Available Time Slots" title and section
                         availableTimeSlotsTitle.setVisibility(View.GONE);
@@ -248,7 +266,7 @@
 
                     } else {
                         // Show time slots and requests, hide booking detail
-                        topAppBar.setTitle("Set Available Time Slots");
+                        topAppBar.setTitle(getString(R.string.set_available_time_slots));
                         findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
                         // Show time slots section
                         availableTimeSlotsTitle.setVisibility(View.VISIBLE);
@@ -282,7 +300,7 @@
                 } catch (Exception e) {
                     Log.e("BookingRequests", "Error processing booking requests: " + e.getMessage());
                     Toast.makeText(TutorBooking.this,
-                            "Error processing booking requests", Toast.LENGTH_SHORT).show();
+                            getString(R.string.error_processing_booking_requests), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -290,12 +308,14 @@
             SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-            bookingStudentName.setText("Student: " + request.getStudentName());
-            bookingDateTime.setText(String.format("Date: %s\nTime: %s - %s",
-                    dateFormat.format(request.getStartTime().getTime()),
-                    timeFormat.format(request.getStartTime().getTime()),
-                    timeFormat.format(request.getEndTime().getTime())
-            ));
+            String studentLabel = getString(R.string.student_label, request.getStudentName());
+            bookingStudentName.setText(studentLabel);
+
+            String dateTimeText = getString(R.string.date_time_format, 
+                               dateFormat.format(request.getStartTime().getTime()),
+                               timeFormat.format(request.getStartTime().getTime()),
+                               timeFormat.format(request.getEndTime().getTime()));
+            bookingDateTime.setText(dateTimeText);
 
             // Set status chip appearance
             bookingStatus.setText(request.getStatus());
@@ -310,22 +330,22 @@
         @Override
         public void onAcceptBooking(BookingRequest request) {
             new AlertDialog.Builder(this)
-                    .setTitle("Accept Booking")
-                    .setMessage("Are you sure you want to accept this booking request?")
-                    .setPositiveButton("Accept", (dialog, which) ->
+                    .setTitle(getString(R.string.accept_booking))
+                    .setMessage(getString(R.string.are_you_sure_you_want_to_accept_this_booking_request))
+                    .setPositiveButton(getString(R.string.yes), (dialog, which) ->
                             handleBookingResponse(request.getRequestId(), true))
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.no), null)
                     .show();
         }
 
         @Override
         public void onRejectBooking(BookingRequest request) {
             new AlertDialog.Builder(this)
-                    .setTitle("Reject Booking")
-                    .setMessage("Are you sure you want to reject this booking request?")
-                    .setPositiveButton("Reject", (dialog, which) ->
+                    .setTitle(getString(R.string.reject_booking))
+                    .setMessage(getString(R.string.are_you_sure_you_want_to_reject_this_booking_request))
+                    .setPositiveButton(getString(R.string.reject), (dialog, which) ->
                             handleBookingResponse(request.getRequestId(), false))
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .show();
         }
 
@@ -364,7 +384,7 @@
         public void showTimePickerDialog(Context context, TimeSlot timeSlot) {
 
             if (!timeSlot.isAvailable() || !timeSlot.isEditable()) {
-                Toast.makeText(context, "This time slot cannot be edited", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, getString(R.string.this_time_slot_cannot_be_edited), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -381,7 +401,7 @@
             setupTimePicker(startHourPicker, startMinutePicker, timeSlot.getStartTime());
             setupTimePicker(endHourPicker, endMinutePicker, timeSlot.getEndTime());
 
-            builder.setPositiveButton("Save", (dialog, which) -> {
+            builder.setPositiveButton(getString(R.string.save), (dialog, which) -> {
                 Calendar startTime = (Calendar) timeSlot.getStartTime().clone();
                 startTime.set(Calendar.HOUR_OF_DAY, startHourPicker.getValue());
                 startTime.set(Calendar.MINUTE, startMinutePicker.getValue());
@@ -398,7 +418,7 @@
                 }
             });
 
-            builder.setNegativeButton("Cancel", null);
+            builder.setNegativeButton(getString(R.string.cancel), null);
             builder.create().show();
         }
 
@@ -425,7 +445,7 @@
                 public void onFailure(Call call, IOException e) {
                     Log.e("Network", "Failed to load time slots: " + e.getMessage());
                     runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                            "Failed to load time slots", Toast.LENGTH_SHORT).show());
+                            getString(R.string.failed_to_load_time_slots), Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -449,7 +469,7 @@
                     } catch (Exception e) {
                         Log.e("Parse", "Failed to parse time slots: " + e.getMessage());
                         runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                                "Error loading time slots", Toast.LENGTH_SHORT).show());
+                                getString(R.string.error_loading_time_slots), Toast.LENGTH_SHORT).show());
                     }
                 }
             });
@@ -485,14 +505,14 @@
                 } catch (Exception e) {
                     Log.e("TimeSlots", "Error processing time slots: " + e.getMessage());
                     Toast.makeText(TutorBooking.this,
-                            "Error processing time slots", Toast.LENGTH_SHORT).show();
+                            getString(R.string.error_processing_time_slots), Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
         private void saveAvailableSlots() {
             if (timeSlots.isEmpty()) {
-                Toast.makeText(this, "Please add at least one time slot", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.please_add_at_least_one_time_slot), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -506,7 +526,7 @@
             }
 
             if (!hasChanges) {
-                Toast.makeText(this, "No changes to save", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.no_changes_to_save), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -572,7 +592,7 @@
                     public void onFailure(Call call, IOException e) {
                         Log.e("TimeSlots", "Network failure: " + e.getMessage(), e);
                         runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                                "Failed to save time slots", Toast.LENGTH_SHORT).show());
+                                getString(R.string.failed_to_save_time_slots), Toast.LENGTH_SHORT).show());
                     }
 
                     @Override
@@ -594,13 +614,13 @@
                         } catch (Exception e) {
                             Log.e("TimeSlots", "Error processing response: " + e.getMessage(), e);
                             runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                                    "Error processing server response", Toast.LENGTH_SHORT).show());
+                                    getString(R.string.error_processing_server_response), Toast.LENGTH_SHORT).show());
                         }
                     }
                 });
             } catch (Exception e) {
                 Log.e("TimeSlots", "Error preparing data: " + e.getMessage(), e);
-                Toast.makeText(this, "Error preparing data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_preparing_data) + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -608,19 +628,19 @@
             Calendar now = Calendar.getInstance();
 
             if (slot.getStartTime().after(slot.getEndTime())) {
-                Toast.makeText(this, "Start time must be before end time", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.start_time_must_be_before_end_time), Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             if (slot.getStartTime().before(now)) {
-                Toast.makeText(this, "Cannot create time slots in the past", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.cannot_create_time_slots_in_the_past), Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             long durationInMinutes = (slot.getEndTime().getTimeInMillis() -
                     slot.getStartTime().getTimeInMillis()) / (60 * 1000);
             if (durationInMinutes < 30) {
-                Toast.makeText(this, "Time slot must be at least 30 minutes", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.time_slot_must_be_at_least_30_minutes), Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -629,13 +649,13 @@
 
         private boolean isValidTimeRange(Calendar startTime, Calendar endTime) {
             if (startTime.after(endTime)) {
-                Toast.makeText(this, "Start time must be before end time", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.start_time_must_be_before_end_time), Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             long durationInMinutes = (endTime.getTimeInMillis() - startTime.getTimeInMillis()) / (60 * 1000);
             if (durationInMinutes < 30) {
-                Toast.makeText(this, "Time slot must be at least 30 minutes", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.time_slot_must_be_at_least_30_minutes), Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -662,7 +682,7 @@
                 public void onFailure(Call call, IOException e) {
                     Log.e("Network", "Failed to process booking response: " + e.getMessage());
                     runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                            "Failed to process response", Toast.LENGTH_SHORT).show());
+                            getString(R.string.failed_to_process_response), Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -685,7 +705,7 @@
                     } catch (Exception e) {
                         Log.e("Parse", "Failed to parse booking response: " + e.getMessage());
                         runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                                "Error processing response", Toast.LENGTH_SHORT).show());
+                                getString(R.string.error_processing_response), Toast.LENGTH_SHORT).show());
                     }
                 }
             });
@@ -693,23 +713,23 @@
 
         private void showResponseDialog(TimeSlot slot) {
             if (!slot.getStatus().equals("pending")) {
-                Toast.makeText(this, "This slot is not pending for response", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.this_slot_is_not_pending_for_response), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String message = String.format("Student request for time slot:\n%s\n%s - %s",
+            String message = String.format(getString(R.string.student_request_for_time_slot),
                     slot.getDateString(),
                     new SimpleDateFormat("HH:mm", Locale.getDefault()).format(slot.getStartTime().getTime()),
                     new SimpleDateFormat("HH:mm", Locale.getDefault()).format(slot.getEndTime().getTime()));
 
             new AlertDialog.Builder(this)
-                    .setTitle("Booking Request")
+                    .setTitle(getString(R.string.booking_request))
                     .setMessage(message)
-                    .setPositiveButton("Accept", (dialog, which) ->
+                    .setPositiveButton(getString(R.string.accept), (dialog, which) ->
                             handleBookingResponse(slot.getSlotId(), true))
-                    .setNegativeButton("Reject", (dialog, which) ->
+                    .setNegativeButton(getString(R.string.reject), (dialog, which) ->
                             handleBookingResponse(slot.getSlotId(), false))
-                    .setNeutralButton("Cancel", null)
+                    .setNeutralButton(getString(R.string.cancel), null)
                     .show();
         }
         private void showUpdateLessonStatusDialog() {
@@ -719,9 +739,9 @@
             MaterialButton incompleteButton = dialogView.findViewById(R.id.btn_lesson_incomplete);
 
             AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("First Lesson Status")
+                    .setTitle(getString(R.string.first_lesson_status))
                     .setView(dialogView)
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .create();
 
             completeButton.setOnClickListener(v -> {
@@ -739,12 +759,12 @@
 
         private void showConfirmCompletionDialog() {
             new AlertDialog.Builder(this)
-                    .setTitle("Confirm Completion")
-                    .setMessage("By marking the lesson as completed, you'll proceed to the feedback process. This action cannot be undone.\n\nDo you want to continue?")
-                    .setPositiveButton("Continue", (dialogInterface, i) -> {
+                    .setTitle(getString(R.string.confirm_completion))
+                    .setMessage(getString(R.string.by_marking_the_lesson_as_completed_you_ll_proceed_to_the_feedback_process_this_action_cannot_be_undone) + "\n\n" + getString(R.string.do_you_want_to_continue))
+                    .setPositiveButton(getString(R.string.continue_btn), (dialogInterface, i) -> {
                         submitLessonStatusWithAction("completed", null, null);
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .show();
         }
 
@@ -752,9 +772,9 @@
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             View view = LayoutInflater.from(this).inflate(R.layout.dialog_incomplete_reason, null);
 
-            AlertDialog dialog = builder.setTitle("Reason for Incomplete Lesson")
+            AlertDialog dialog = builder.setTitle(getString(R.string.reason_for_incomplete_lesson))
                     .setView(view)
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .create();
 
             int[] buttonIds = {
@@ -785,17 +805,17 @@
             View view = LayoutInflater.from(this).inflate(R.layout.dialog_custom_reason, null);
             EditText input = view.findViewById(R.id.edit_text_reason);
 
-            builder.setTitle("Specify Reason")
+            builder.setTitle(getString(R.string.specify_reason))
                     .setView(view)
-                    .setPositiveButton("Submit", (dialog, which) -> {
+                    .setPositiveButton(getString(R.string.submit), (dialog, which) -> {
                         String customReason = input.getText().toString().trim();
                         if (!customReason.isEmpty()) {
                             showRebookOrRefundDialog(customReason);
                         } else {
-                            Toast.makeText(this, "Please enter a reason", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.please_enter_a_reason), Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .show();
         }
 
@@ -805,9 +825,9 @@
 
             // Show a simple notification dialog
             new AlertDialog.Builder(this)
-                    .setTitle("Provide New Time Slot")
-                    .setMessage("Please provide new available time slots for rebooking.")
-                    .setPositiveButton("OK", (dialog, which) -> {
+                    .setTitle(getString(R.string.provide_new_time_slot))
+                    .setMessage(getString(R.string.please_provide_new_available_time_slots_for_rebooking))
+                    .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
                         // The page will refresh automatically after status update
                     })
                     .show();
@@ -828,7 +848,7 @@
                         break;
                     case "conflict":
                         // Check if tutor marked as completed
-                        if (message.contains("Student marked lesson as incomplete")) {
+                        if (message.contains(getString(R.string.student_marked_lesson_as_incomplete))) {
                             // Tutor marked completed, student marked incomplete
                             showConflictDialog(true);
                         } else {
@@ -846,23 +866,23 @@
                 }
             } catch (Exception e) {
                 Log.e("LessonStatus", "Error handling response: " + e.getMessage());
-                Toast.makeText(this, "Error processing response", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_processing_response), Toast.LENGTH_SHORT).show();
             }
         }
 
         private void showWaitingDialog() {
             new AlertDialog.Builder(this)
-                    .setTitle("Status Submitted")
-                    .setMessage("Your status has been submitted. Waiting for the student's response.")
-                    .setPositiveButton("OK", null)
+                    .setTitle(getString(R.string.status_submitted))
+                    .setMessage(getString(R.string.your_status_has_been_submitted_waiting_for_the_student_s_response))
+                    .setPositiveButton(getString(R.string.ok), null)
                     .show();
         }
 
         private void showBothIncompleteDialog(String reason) {
             new AlertDialog.Builder(this)
-                    .setTitle("Status Matched")
-                    .setMessage("Both you and the student have marked the lesson as incomplete. The system will process refund and rebooking.")
-                    .setPositiveButton("OK", (dialog, which) -> {
+                    .setTitle(getString(R.string.status_matched))
+                    .setMessage(getString(R.string.both_you_and_the_student_have_marked_the_lesson_as_incomplete_the_system_will_process_refund_and_rebooking))
+                    .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
                         showRebookOrRefundDialog(reason);
                     })
                     .show();
@@ -871,15 +891,15 @@
 
         private void showConflictDialog(boolean tutorMarkedComplete) {
             String message = tutorMarkedComplete ?
-                    "您標記課程已完成，但學生標記未完成。管理員將於 1-3 個工作日內審核,透過whatsapp與你聯繫,請提供詳細說明及證明文件。" :
-                    "您確認課程未完成，但對方確認已完成。管理員將於 1-3 個工作日內審核,透過whatsapp與你聯繫,請提供詳細說明及證明文件。";
+                    getString(R.string.you_marked_lesson_completed_but_student_marked_incomplete) :
+                    getString(R.string.you_confirmed_lesson_unfinished_but_other_confirmed_completed);
 
             new AlertDialog.Builder(this)
-                    .setTitle("Status Conflict")
+                    .setTitle(getString(R.string.status_conflict))
                     .setMessage(message)
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        // TODO: 实现证据提交
-                        Toast.makeText(this, "Evidence submission to be implemented",
+                    .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+                        // TODO: Implement evidence submission
+                        Toast.makeText(this, getString(R.string.evidence_submission_to_be_implemented),
                                 Toast.LENGTH_SHORT).show();
                     })
                     .show();
@@ -888,9 +908,9 @@
 
         private void showCompletedDialog(String message) {
             new AlertDialog.Builder(this)
-                    .setTitle("Lesson Completed")
+                    .setTitle(getString(R.string.lesson_completed))
                     .setMessage(message)
-                    .setPositiveButton("OK", null)
+                    .setPositiveButton(getString(R.string.ok), null)
                     .show();
         }
 
@@ -921,7 +941,7 @@
                 @Override
                 public void onFailure(Call call, IOException e) {
                     runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                            "Failed to update lesson status", Toast.LENGTH_SHORT).show());
+                            getString(R.string.failed_to_update_lesson_status), Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -940,7 +960,7 @@
                         }
                     } catch (Exception e) {
                         runOnUiThread(() -> Toast.makeText(TutorBooking.this,
-                                "Error processing response: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                getString(R.string.error_processing_response) + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
                 }
             });

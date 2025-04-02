@@ -105,6 +105,11 @@ public class LanguageManager {
 
                 activityResources.updateConfiguration(activityConfig, activityResources.getDisplayMetrics());
 
+                // If Home activity, refresh the navigation menu before restarting
+                if (activity instanceof Home) {
+                    ((Home) activity).refreshNavigationMenu();
+                }
+
                 // Restart activity to apply changes
                 Intent intent = activity.getIntent();
                 activity.finish();

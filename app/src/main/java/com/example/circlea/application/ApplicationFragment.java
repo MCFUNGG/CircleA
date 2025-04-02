@@ -15,6 +15,8 @@ import com.example.circlea.Home;
 import com.example.circlea.LanguageManager;
 import com.example.circlea.R;
 import com.example.circlea.setting.ScanCV;
+import android.widget.Toast;
+import android.app.AlertDialog;
 
 public class ApplicationFragment extends Fragment {
     private Button btnpost, btnhistory, createCvButton;

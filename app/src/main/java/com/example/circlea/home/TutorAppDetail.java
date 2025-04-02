@@ -172,7 +172,7 @@ public class TutorAppDetail extends AppCompatActivity {
             classLevelTextView.setText("Class Level: " + classLevel);
         }
         if (fee != null) {
-            feeTextView.setText("Fee: $" + fee + " /hr");
+            feeTextView.setText(String.format(getString(R.string.fee_per_hour_format), fee));
         }
 
         if (education != null) {
@@ -182,23 +182,23 @@ public class TutorAppDetail extends AppCompatActivity {
 
         // Display subjects
         if (subjects != null && !subjects.isEmpty()) {
-            subjectTextView.setText("Subjects: " + String.join(", ", subjects));
+            subjectTextView.setText(String.format(getString(R.string.subjects_format), String.join(", ", subjects)));
         } else {
-            subjectTextView.setText("Subjects: N/A");
+            subjectTextView.setText(getString(R.string.subjects_na));
         }
 
         // Display districts
         if (districts != null && !districts.isEmpty()) {
-            districtTextView.setText("Districts: " + String.join(", ", districts));
+            districtTextView.setText(String.format(getString(R.string.districts_format), String.join(", ", districts)));
         } else {
-            districtTextView.setText("Districts: N/A");
+            districtTextView.setText(getString(R.string.districts_na));
         }
 
         if (education != null && !education.isEmpty()) {
             educationText.setText(education);
             Log.d("DEBUG_EDUCATION", "Setting education text: " + education);
         } else {
-            educationText.setText("暂无教育背景信息");
+            educationText.setText(getString(R.string.no_education_background));
             Log.d("DEBUG_EDUCATION", "No education data available");
         }
     }

@@ -31,7 +31,7 @@ public class CaseDetailMenu extends AppCompatActivity {
         isTutor = getIntent().getBooleanExtra("is_tutor", false);
         caseId = getIntent().getStringExtra("case_id");
         lessonFee = Double.parseDouble(getIntent().getStringExtra("lessonFee"));
-    Log.d("case lesson fee(using Double.parseDouble ):", String.valueOf(lessonFee));
+        Log.d("case lesson fee(using Double.parseDouble ):", String.valueOf(lessonFee));
 
         initializeViews();
         setupDescriptions();
@@ -50,11 +50,11 @@ public class CaseDetailMenu extends AppCompatActivity {
 
     private void setupDescriptions() {
         if (isTutor) {
-            timeManagementDesc.setText("Set/Modify Available Time Slots");
-            requestManagementDesc.setText("Review/Reject Appointment Requests");
+            timeManagementDesc.setText(getString(R.string.tutor_time_management_desc));
+            requestManagementDesc.setText(getString(R.string.tutor_request_management_desc));
         } else {
-            timeManagementDesc.setText("View/Book Time Slots");
-            requestManagementDesc.setText("View Request ");
+            timeManagementDesc.setText(getString(R.string.student_time_management_desc));
+            requestManagementDesc.setText(getString(R.string.student_request_management_desc));
         }
     }
 
@@ -65,7 +65,7 @@ public class CaseDetailMenu extends AppCompatActivity {
             intent = new Intent(this, TutorBooking.class);
             intent.putExtra("case_id", caseId);
             intent.putExtra("is_tutor", isTutor);
-            intent.putExtra("lessonFee",lessonFee);
+            intent.putExtra("lessonFee", String.valueOf(lessonFee));
 
             Log.d("CaseMenu", "caseId: " + caseId + " ,isTutor: " + isTutor);
             startActivity(intent);
