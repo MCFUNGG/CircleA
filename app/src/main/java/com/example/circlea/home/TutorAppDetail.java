@@ -1,6 +1,7 @@
 package com.example.circlea.home;
 
 import static android.app.PendingIntent.getActivity;
+import static android.content.ContentValues.TAG;
 
 import android.app.Dialog;
 import android.content.SharedPreferences;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
 public class TutorAppDetail extends AppCompatActivity {
 
     private TextView appIdTextView, memberIdTextView, subjectTextView, classLevelTextView,
-            feeTextView, districtTextView, matchingScoreTextView;
+            feeTextView, districtTextView, matchingScoreTextView,educationText;
     private ImageButton exitBtn;
     private Button applyButton;
     private Dialog applyDialog;
@@ -86,6 +87,7 @@ public class TutorAppDetail extends AppCompatActivity {
         matchingScoreTextView = findViewById(R.id.matchingScoreTextView);
         exitBtn = findViewById(R.id.exitButton);
         applyButton = findViewById(R.id.applyButton);
+        educationText = findViewById(R.id.educationText);
         if (matchingScoreTextView == null) {
             Log.e("TutorAppDetail", "Failed to initialize matchingScoreTextView");
         }
@@ -150,6 +152,12 @@ public class TutorAppDetail extends AppCompatActivity {
         String memberId = getIntent().getStringExtra("member_id");
         String classLevel = getIntent().getStringExtra("classLevel");
         String fee = getIntent().getStringExtra("fee");
+        String education = getIntent().getStringExtra("education");
+        // Add debug logs to check all intent data
+        Log.d("DEBUG_INTENT", "All extras in intent: " + getIntent().getExtras());
+        Log.d("DEBUG_INTENT", "Tutor ID: " + getIntent().getStringExtra("tutor_id"));
+        Log.d("TEST_EDUCATION", "Raw education data: [" + education + "]");
+        Log.d("Test123","education data after intent in TutorAppDetail.java : "+education);
         ArrayList<String> subjects = getIntent().getStringArrayListExtra("subjects");
         ArrayList<String> districts = getIntent().getStringArrayListExtra("districts");
 
@@ -167,6 +175,11 @@ public class TutorAppDetail extends AppCompatActivity {
             feeTextView.setText("Fee: $" + fee + " /hr");
         }
 
+        if (education != null) {
+            educationText.setText(education);
+            Log.d(TAG,"educationtextview: "+education);
+        }
+
         // Display subjects
         if (subjects != null && !subjects.isEmpty()) {
             subjectTextView.setText("Subjects: " + String.join(", ", subjects));
@@ -179,6 +192,14 @@ public class TutorAppDetail extends AppCompatActivity {
             districtTextView.setText("Districts: " + String.join(", ", districts));
         } else {
             districtTextView.setText("Districts: N/A");
+        }
+
+        if (education != null && !education.isEmpty()) {
+            educationText.setText(education);
+            Log.d("DEBUG_EDUCATION", "Setting education text: " + education);
+        } else {
+            educationText.setText("暂无教育背景信息");
+            Log.d("DEBUG_EDUCATION", "No education data available");
         }
     }
 

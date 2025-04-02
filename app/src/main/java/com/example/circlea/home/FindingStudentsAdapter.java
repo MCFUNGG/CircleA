@@ -126,6 +126,17 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 intent.putExtra("fee", application.getFee());
                 intent.putStringArrayListExtra("districts", application.getDistricts());
                 intent.putExtra("tutotAppId", application.getAppId());
+
+                String education = application.getEducation();
+                if (education == null) education = "";
+                Log.d("DEBUG_EDUCATION", "Before intent - Raw education: [" + education + "]");
+
+                // Add extra logging to check for special characters
+                Log.d("DEBUG_EDUCATION", "Education length: " + education.length());
+                Log.d("DEBUG_EDUCATION", "Education bytes: " + education.getBytes().length);
+
+                // Ensure we're not accidentally truncating the data
+                intent.putExtra("education", education);
                 context.startActivity(intent);
             });
 
@@ -203,7 +214,8 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                         app.getMemberId(),
                         app.getProfileIcon(),
                         app.getUsername(),
-                        "tutor"  // Explicitly set type as "tutor"
+                        "tutor",  // Explicitly set type as "tutor"
+                        app.getEducation()
                 );
                 dbHelper.saveApplication(appToSave);
                 if (holder != null) {

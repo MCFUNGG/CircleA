@@ -3,6 +3,14 @@
     <string name="title_activity_matching">Matching</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
-
+    <!-- Application Fragment Strings -->
+    <string name="menu_button_description">Menu</string>
+    <string name="application_page_title">Application Page</string>
+    <string name="post_recruitment">Post Recruitment</string>
+    <string name="my_application">My Application</string>
+    <string name="tutor_section_title">I am a tutor</string>
+    <string name="create_cv">Create CV</string>
+    <string name="my_cv">My CV</string>
+    <string name="switch_language">Switch to 中文</string>
 </resources>
 

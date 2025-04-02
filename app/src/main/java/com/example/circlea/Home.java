@@ -44,10 +44,16 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Home extends AppCompatActivity {
+    // Add these constants for fragment tracking
+    private static final String CURRENT_FRAGMENT_KEY = "current_fragment";
+    public static final String FRAGMENT_APPLICATION = "application";
+    public static final String FRAGMENT_HOME = "home";
+    public static final String FRAGMENT_SETTING = "setting";
+    public static final String FRAGMENT_MATCHING = "matching";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private TextView headerUsername,headerEmail;
+    private TextView headerUsername, headerEmail;
     private OkHttpClient client;
 
     private Map<Integer, View> notificationDots = new HashMap<>();
@@ -58,7 +64,6 @@ public class Home extends AppCompatActivity {
             R.id.nav_history_application,
             R.id.nav_create_cv,
             R.id.nav_history_cv
-
     };
 
     @Override
@@ -90,8 +95,41 @@ public class Home extends AppCompatActivity {
         navigationView.getMenu().findItem(R.id.nav_custom_item_application).setActionView(customViewApplication);
         navigationView.getMenu().findItem(R.id.nav_custom_item_tutor).setActionView(customViewTutor);
         navigationView.getMenu().findItem(R.id.nav_custom_item_view).setActionView(customView);
-        // Load default Fragment
-        loadFragment(new HomeFragment());
+
+        // MODIFIED: Force HomeFragment on first launch
+        if (savedInstanceState == null) {
+            // Check if this is first app launch
+            SharedPreferences prefs = getSharedPreferences("FragmentState", MODE_PRIVATE);
+            boolean isFirstLaunch = prefs.getBoolean("FIRST_LAUNCH", true);
+
+            if (isFirstLaunch) {
+                // First time launching the app - use HomeFragment and mark as not first launch anymore
+                loadFragment(new HomeFragment());
+                setCurrentFragment(FRAGMENT_HOME);
+                prefs.edit().putBoolean("FIRST_LAUNCH", false).commit();
+                Log.d("Home", "First launch - loading HomeFragment");
+            } else {
+                // Not first launch, check if we're coming back from a language change
+                String currentFragment = prefs.getString(CURRENT_FRAGMENT_KEY, FRAGMENT_HOME);
+                Log.d("Home", "Not first launch - loading saved fragment: " + currentFragment);
+
+                switch (currentFragment) {
+                    case FRAGMENT_APPLICATION:
+                        loadFragment(new ApplicationFragment());
+                        break;
+                    case FRAGMENT_SETTING:
+                        loadFragment(new SettingFragment());
+                        break;
+                    case FRAGMENT_MATCHING:
+                        loadFragment(new Matching());
+                        break;
+                    case FRAGMENT_HOME:
+                    default:
+                        loadFragment(new HomeFragment());
+                        break;
+                }
+            }
+        }
 
         // Set OnClickListener for the menu header
         View headerView = navigationView.getHeaderView(0);
@@ -101,6 +139,7 @@ public class Home extends AppCompatActivity {
 
         headerView.setOnClickListener(v -> {
             loadFragment(new SettingFragment()); // Load the SettingFragment
+            setCurrentFragment(FRAGMENT_SETTING); // Add this line to remember fragment
             drawerLayout.closeDrawer(GravityCompat.START); // Close the drawer
         });
 
@@ -108,12 +147,13 @@ public class Home extends AppCompatActivity {
             Fragment selectedFragment = null;
             int itemId = item.getItemId();
 
-            // 首先隐藏红点（如果存在）
+            // First hide the badge (if exists)
             showBadge(itemId, false);
 
             // Use if-else statements to select the fragment or start an activity
             if (itemId == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
+                setCurrentFragment(FRAGMENT_HOME);
             } else if (itemId == R.id.nav_post_application) {
                 Intent intent = new Intent(this, ParentApplicationFillDetail.class);
                 startActivity(intent);
@@ -128,11 +168,14 @@ public class Home extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             } else if (itemId == R.id.nav_matching) {
                 selectedFragment = new Matching();
+                setCurrentFragment(FRAGMENT_MATCHING);
                 drawerLayout.closeDrawer(GravityCompat.START);
             } else if (itemId == R.id.nav_application) {
                 selectedFragment = new ApplicationFragment();
+                setCurrentFragment(FRAGMENT_APPLICATION);
             } else if (itemId == R.id.nav_setting) {
                 selectedFragment = new SettingFragment();
+                setCurrentFragment(FRAGMENT_SETTING);
             } else {
                 return false; // Handle unknown menu item
             }
@@ -146,10 +189,13 @@ public class Home extends AppCompatActivity {
 
         // setup
         setupAllMenuBadges();
+    }
 
-        // red dot test
-        //showBadge(R.id.nav_history_application, true);
-        //showBadge(R.id.nav_history_cv, true);
+    // Add this method to remember the current fragment
+    public void setCurrentFragment(String fragmentKey) {
+        Log.d("Home", "Setting current fragment to: " + fragmentKey);
+        SharedPreferences prefs = getSharedPreferences("FragmentState", MODE_PRIVATE);
+        prefs.edit().putString(CURRENT_FRAGMENT_KEY, fragmentKey).commit(); // Using commit instead of apply for immediate save
     }
 
     private void setupAllMenuBadges() {
@@ -167,11 +213,11 @@ public class Home extends AppCompatActivity {
             View notificationDot = customLayout.findViewById(R.id.notification_dot);
             notificationDots.put(itemId, notificationDot);
 
-            // 修改点击事件处理
+            // Modified click event handling
             customLayout.setOnClickListener(v -> {
-                showBadge(itemId, false);  // 先隐藏红点
+                showBadge(itemId, false);  // Hide the dot first
                 navigationView.setCheckedItem(itemId);
-                // 触发原始的菜单项点击事件
+                // Trigger the original menu item click event
                 navigationView.getMenu().performIdentifierAction(itemId, 0);
             });
 
@@ -185,6 +231,7 @@ public class Home extends AppCompatActivity {
         // Use if-else statements to select the fragment or start an activity
         if (item.getItemId() == R.id.nav_home) {
             selectedFragment = new HomeFragment();
+            setCurrentFragment(FRAGMENT_HOME);
         } else if (item.getItemId() == R.id.nav_post_application) {
             Intent intent = new Intent(this, ParentApplicationFillDetail.class);
             startActivity(intent);
@@ -199,10 +246,13 @@ public class Home extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (item.getItemId() == R.id.nav_matching) {
             selectedFragment = new Matching();
+            setCurrentFragment(FRAGMENT_MATCHING);
         } else if (item.getItemId() == R.id.nav_application) {
             selectedFragment = new ApplicationFragment();
+            setCurrentFragment(FRAGMENT_APPLICATION);
         } else if (item.getItemId() == R.id.nav_setting) {
             selectedFragment = new SettingFragment();
+            setCurrentFragment(FRAGMENT_SETTING);
         }
 
         if (selectedFragment != null) {
@@ -211,12 +261,13 @@ public class Home extends AppCompatActivity {
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
     public void showBadge(int itemId, boolean show) {
         View notificationDot = notificationDots.get(itemId);
         if (notificationDot != null) {
             if (show) {
                 notificationDot.setVisibility(View.VISIBLE);
-                // 添加显示动画
+                // Add display animation
                 notificationDot.setScaleX(0f);
                 notificationDot.setScaleY(0f);
                 notificationDot.animate()
@@ -231,7 +282,7 @@ public class Home extends AppCompatActivity {
         }
     }
 
-    // 清除所有红点
+    // Clear all badges
     public void clearAllBadges() {
         for (int itemId : MENU_ITEMS_WITH_BADGE) {
             showBadge(itemId, false);
@@ -247,7 +298,7 @@ public class Home extends AppCompatActivity {
             Toast.makeText(this, "Member ID not found", Toast.LENGTH_SHORT).show();
             return;
         }
-        String url = "http://"+IPConfig.getIP()+"/FYP/php/get_member_own_profile.php"; // 更新为您的 URL
+        String url = "http://"+IPConfig.getIP()+"/FYP/php/get_member_own_profile.php";
 
         RequestBody requestBody = new FormBody.Builder()
                 .add("member_id", memberId)
@@ -282,25 +333,10 @@ public class Home extends AppCompatActivity {
                                 JSONObject data = dataArray.getJSONObject(0);
                                 String email = data.optString("email", "N/A");
                                 String username = data.optString("username", "N/A");
-                                //String profileUrl = data.optString("profile", "");
-
-                                //Log.d("ProfileImageURL", "Loading image from URL: " + profileUrl); // Debug log
 
                                 runOnUiThread(() -> {
                                     headerEmail.setText(email);
                                     headerUsername.setText(username);
-
-                                    /*
-                                    if (!profileUrl.isEmpty()) {
-                                        String fullProfileUrl = "http://10.0.2.2"+profileUrl;
-                                        Glide.with(getActivity())
-                                                .load(fullProfileUrl)
-                                                .into(userIcon);
-                                        Toast.makeText(getActivity(), fullProfileUrl, Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        userIcon.setImageResource(R.drawable.ic_launcher_foreground); // 设置默认头像
-                                    }
-                                    */
                                 });
                             }
                         }

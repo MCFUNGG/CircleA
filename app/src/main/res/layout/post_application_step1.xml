@@ -1,8 +1,17 @@
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F8F9FA">
+
+    <!-- Top section -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
 
         <Button
             android:id="@+id/exit_button"
@@ -10,22 +19,89 @@
             android:layout_height="48dp"
             android:background="@drawable/exit" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Application Form"
+            android:textColor="#1e4072"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
+    <!-- Progress Bar with Labels -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:max="3"
-            android:progress="1"
-            android:layout_marginBottom="16dp" />
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:max="3"
+                android:progress="1"
+                android:progressTint="#1e4072"
+                android:layout_marginBottom="4dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Basic Info"
+                    android:textSize="12sp"
+                    android:textColor="#1e4072"
+                    android:gravity="start" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Schedule"
+                    android:textSize="12sp"
+                    android:textColor="#757575"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Details"
+                    android:textSize="12sp"
+                    android:textColor="#757575"
+                    android:gravity="end" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Main Content -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp">
 
         <ViewFlipper
             android:id="@+id/view_flipper"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
 
             <!-- First Part: Radio and Subject -->
             <ScrollView
@@ -35,13 +111,16 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Select your role"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
+                        android:textColor="#1e4072"
+                        android:textStyle="bold"
                         android:layout_marginBottom="16dp" />
 
                     <RadioGroup
@@ -50,7 +129,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:background="@null"
-                        android:padding="8dp">
+                        android:padding="8dp"
+                        android:layout_marginBottom="24dp">
 
                         <RadioButton
                             android:id="@+id/radio_parent"
@@ -82,7 +162,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Subject" />
+                        android:text="Subject"
+                        android:textColor="#1e4072"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
                     <LinearLayout
                         android:id="@+id/subject_container"
@@ -100,45 +184,59 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:id="@+id/student_level_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Student Level" />
+                        android:text="Student Level"
+                        android:textColor="#1e4072"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
                     <Spinner
                         android:id="@+id/student_level_spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/spinner_background"
+                        android:padding="12dp"
+                        android:layout_marginBottom="24dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lesson Time"
-                        android:layout_marginTop="16dp"/>
+                        android:textColor="#1e4072"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
                     <LinearLayout
                         android:id="@+id/date_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                        android:orientation="vertical"
+                        android:layout_marginBottom="24dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lessons Per Week"
-                        android:layout_marginTop="16dp"/>
+                        android:textColor="#1e4072"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
                     <TextView
                         android:id="@+id/lessons_per_week_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:padding="8dp"/>
+                        android:padding="12dp"
+                        android:background="@drawable/edit_text_background" />
                 </LinearLayout>
             </ScrollView>
 
@@ -150,69 +248,102 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Expected Fee per Hour" />
+                        android:text="Expected Fee per Hour"
+                        android:textColor="#1e4072"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:background="@drawable/edit_text_background"
+                        android:layout_marginBottom="24dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="~ $"
                             android:layout_gravity="center_vertical"
-                            android:paddingHorizontal="8dp" />
+                            android:paddingHorizontal="12dp" />
 
                         <EditText
                             android:id="@+id/fee_input"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Fee"
+                            android:background="@null"
+                            android:padding="12dp"
                             android:inputType="numberDecimal" />
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="District" />
+                        android:text="District"
+                        android:textColor="#1e4072"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
                     <LinearLayout
                         android:id="@+id/district_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                        android:orientation="vertical"
+                        android:layout_marginBottom="24dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Description (please do not enter any personal details)" />
+                        android:text="Description (please do not enter any personal details)"
+                        android:textColor="#1e4072"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
                     <EditText
                         android:id="@+id/description_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textMultiLine" />
+                        android:inputType="textMultiLine"
+                        android:background="@drawable/edit_text_background"
+                        android:padding="12dp"
+                        android:minHeight="100dp"
+                        android:gravity="top|start" />
                 </LinearLayout>
             </ScrollView>
         </ViewFlipper>
+    </androidx.cardview.widget.CardView>
 
-        <Button
-            android:id="@+id/next_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Next" />
+    <!-- Navigation Buttons -->
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1e4072"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp" />
 
-        <Button
-            android:id="@+id/back_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Back" />
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:textColor="#1e4072"
+        android:backgroundTint="#FFFFFF"
+        android:padding="12dp"
+        android:stateListAnimator="@null"
+        app:strokeColor="#1e4072"
+        app:strokeWidth="1dp" />
 
-
-    </LinearLayout>
+</LinearLayout>

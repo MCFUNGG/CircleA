@@ -117,7 +117,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 ApplicationItem item = new ApplicationItem(
                         appId, subjectsList, classLevel, fee, districtsList,
-                        "", "", username, type);
+                        "", "", username, type, "");
                 applications.add(item);
             } while (cursor.moveToNext());
         }
@@ -148,7 +148,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 ApplicationItem item = new ApplicationItem(
                         appId, subjectsList, classLevel, fee, districtsList,
-                        "", "", username, type != null ? type : "student");
+                        "", "", username, type != null ? type : "student", "");
                 applications.add(item);
             } while (cursor.moveToNext());
         }
