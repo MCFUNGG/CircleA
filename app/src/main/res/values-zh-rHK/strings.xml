@@ -114,7 +114,7 @@
     <!-- Application History Strings -->
     <string name="failed_to_fetch_ps_applications">無法獲取家長/學生申請</string>
     <string name="failed_to_fetch_tutor_applications">無法獲取家教申請</string>
-    <string name="unknown_error">未知錯誤</string>
+    <string name="unknown_error">發生未知錯誤</string>
     <string name="error_processing_data">處理數據時出錯</string>
     <string name="n_a">不適用</string>
     <string name="pending">待處理</string>
@@ -424,4 +424,19 @@
     <string name="request_received_button">收到的請求</string>
     <string name="request_sent_button">發送的請求</string>
     <string name="your_cases">您的案例</string>
+
+    <!-- High Rated Tutors Section -->
+    <string name="tutor_rating">評分：%1$.1f</string>
+    <string name="tutor_subjects">科目：%s</string>
+    <string name="tutor_experience">經驗：%d年</string>
+    <string name="tutor_hourly_rate">時薪：HK$%d/小時</string>
+    <string name="view_tutor_profile">查看資料</string>
+    <string name="book_tutor">立即預約</string>
+    <string name="error_loading_tutors">無法載入導師資料</string>
+    <string name="error_processing_tutor_data">處理導師資料時出錯</string>
+    <string name="filter_by_subject">按科目篩選</string>
+    <string name="filter_by_rating">按評分篩選</string>
+    <string name="filter_by_price">按價格篩選</string>
+    <string name="sort_by_rating">按評分排序</string>
+    <string name="sort_by_price">按價格排序</string>
 </resources>

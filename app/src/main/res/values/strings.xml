@@ -424,5 +424,20 @@
     <string name="nav_header_application" translatable="false"></string>
     <string name="nav_header_tutor" translatable="false"></string>
     <string name="nav_header_view" translatable="false"></string>
+    
+    <!-- High Rated Tutors Section -->
+    <string name="tutor_rating">Rating: %1$.1f</string>
+    <string name="tutor_subjects">Subjects: %s</string>
+    <string name="tutor_experience">Experience: %d years</string>
+    <string name="tutor_hourly_rate">Rate: HK$%d/hr</string>
+    <string name="view_tutor_profile">View Profile</string>
+    <string name="book_tutor">Book Now</string>
+    <string name="error_loading_tutors">Failed to load tutors</string>
+    <string name="error_processing_tutor_data">Error processing tutor data</string>
+    <string name="filter_by_subject">Filter by Subject</string>
+    <string name="filter_by_rating">Filter by Rating</string>
+    <string name="filter_by_price">Filter by Price</string>
+    <string name="sort_by_rating">Sort by Rating</string>
+    <string name="sort_by_price">Sort by Price</string>
 </resources>
 

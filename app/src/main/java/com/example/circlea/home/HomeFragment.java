@@ -19,6 +19,7 @@
     import androidx.fragment.app.Fragment;
     import androidx.recyclerview.widget.LinearLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
+    import androidx.recyclerview.widget.DividerItemDecoration;
 
     import com.bumptech.glide.Glide;
     import com.example.circlea.Advertisement;
@@ -32,6 +33,7 @@
 
     import java.io.IOException;
     import java.util.ArrayList;
+    import java.util.Collections;
 
     import okhttp3.Call;
     import okhttp3.Callback;
@@ -40,6 +42,8 @@
     import okhttp3.Request;
     import okhttp3.RequestBody;
     import okhttp3.Response;
+
+    import java.util.concurrent.TimeUnit;
 
     public class HomeFragment extends Fragment {
 
@@ -80,15 +84,8 @@
             horizontalRecyclerView.setAdapter(horizontalAdapter);
             getAdsData();
 
-            // Set up vertical RecyclerView data
-            ArrayList<String> verticalData = new ArrayList<>();
-            for (int i = 1; i <= 5; i++) {
-                verticalData.add("Tutor " + i);
-            }
-            VerticalAdapter verticalAdapter = new VerticalAdapter(verticalData);
-            verticalRecyclerView.setAdapter(verticalAdapter);
-
-            // Fetch application data
+            // Fetch application data first
+            fetchHighRatedTutors();
             fetchTutorsApplicationData();
             fetchStudentsApplicationData();
 
@@ -117,26 +114,29 @@
         private void setupRecyclerViews() {
             if (!isAdded()) return;
 
+            // 设置水平列表
             LinearLayoutManager horizontalLayout = new LinearLayoutManager(requireContext(),
                     LinearLayoutManager.HORIZONTAL, false);
+            horizontalRecyclerView.setLayoutManager(horizontalLayout);
+            horizontalRecyclerView.setNestedScrollingEnabled(false);
+
+            // 设置垂直列表（高评分导师）
             LinearLayoutManager verticalLayout = new LinearLayoutManager(requireContext());
+            verticalRecyclerView.setLayoutManager(verticalLayout);
+            verticalRecyclerView.setNestedScrollingEnabled(false);
+            verticalRecyclerView.setHasFixedSize(true);
+            // 添加分割线
+            verticalRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
+
+            // 设置其他列表
             LinearLayoutManager tutorsLayout = new LinearLayoutManager(requireContext());
             LinearLayoutManager studentsLayout = new LinearLayoutManager(requireContext());
 
-            horizontalRecyclerView.setLayoutManager(horizontalLayout);
-            verticalRecyclerView.setLayoutManager(verticalLayout);
             findingTutorsRecyclerView.setLayoutManager(tutorsLayout);
             findingStudentsRecyclerView.setLayoutManager(studentsLayout);
 
-            horizontalRecyclerView.setNestedScrollingEnabled(false);
-            verticalRecyclerView.setNestedScrollingEnabled(false);
             findingTutorsRecyclerView.setNestedScrollingEnabled(false);
             findingStudentsRecyclerView.setNestedScrollingEnabled(false);
-
-            horizontalRecyclerView.setHasFixedSize(true);
-            verticalRecyclerView.setHasFixedSize(true);
-            findingTutorsRecyclerView.setHasFixedSize(true);
-            findingStudentsRecyclerView.setHasFixedSize(true);
         }
 
         private void setupButtons() {
@@ -485,6 +485,165 @@
                 });
             } catch (Exception e) {
                 Log.e("HomeFragment", "Error in fetchStudentsApplicationData: " + e.getMessage());
+            }
+        }
+
+        private void fetchHighRatedTutors() {
+            if (!isAdded()) {
+                Log.e("HomeFragment", "Fragment not attached to activity");
+                return;
+            }
+
+            try {
+                String url = "http://" + IPConfig.getIP() + "/FYP/php/get_tutor_applications.php";
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.e("FetchHighRatedTutors", "Request failed: " + e.getMessage());
+                        if (isAdded()) {
+                            requireActivity().runOnUiThread(() -> Toast
+                                    .makeText(requireContext(), "Failed to fetch high rated tutors", Toast.LENGTH_SHORT)
+                                    .show());
+                        }
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (!isAdded())
+                            return;
+
+                        if (response.isSuccessful()) {
+                            String jsonResponse = response.body().string();
+                            Log.d("FetchHighRatedTutors", "Server response: " + jsonResponse);
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(jsonResponse);
+                                if (jsonObject.getBoolean("success")) {
+                                    JSONArray dataArray = jsonObject.getJSONArray("data");
+                                    ArrayList<ApplicationItem> applicationsList = new ArrayList<>();
+
+                                    for (int i = 0; i < dataArray.length(); i++) {
+                                        JSONObject data = dataArray.getJSONObject(i);
+                                        String appId = data.optString("app_id", "N/A");
+                                        String memberId = data.optString("member_id", "N/A");
+                                        String classLevel = data.optString("class_level_name", "N/A");
+                                        String fee = data.optString("feePerHr", "N/A");
+                                        String username = data.optString("username", "N/A");
+                                        String rating = data.optString("rating", "0.0");
+
+                                        JSONArray subjectsArray = data.optJSONArray("subjects");
+                                        ArrayList<String> subjects = new ArrayList<>();
+                                        if (subjectsArray != null) {
+                                            for (int j = 0; j < subjectsArray.length(); j++) {
+                                                subjects.add(subjectsArray.optString(j, "N/A"));
+                                            }
+                                        }
+
+                                        JSONArray districtsArray = data.optJSONArray("districts");
+                                        ArrayList<String> districts = new ArrayList<>();
+                                        if (districtsArray != null) {
+                                            for (int k = 0; k < districtsArray.length(); k++) {
+                                                districts.add(districtsArray.optString(k, "N/A"));
+                                            }
+                                        }
+
+                                        String profileIcon = data.optString("profile", "");
+
+                                        ApplicationItem item = new ApplicationItem(
+                                                appId, subjects, classLevel, fee, districts,
+                                                memberId, profileIcon, username, "tutor", rating);
+                                        applicationsList.add(item);
+                                    }
+
+                                    // Sort by rating in descending order
+                                    Collections.sort(applicationsList, (a, b) -> {
+                                        double ratingA = Double.parseDouble(a.getRating());
+                                        double ratingB = Double.parseDouble(b.getRating());
+                                        return Double.compare(ratingB, ratingA);
+                                    });
+
+                                    // Convert sorted ApplicationItems to strings
+                                    ArrayList<String> tutorStrings = new ArrayList<>();
+                                    for (ApplicationItem item : applicationsList) {
+                                        tutorStrings.add(item.getUsername()); // Just use username for now
+                                    }
+
+                                    if (isAdded()) {
+                                        requireActivity().runOnUiThread(() -> {
+                                            if (isAdded()) {
+                                                VerticalAdapter verticalAdapter = new VerticalAdapter(
+                                                        applicationsList, requireContext());
+                                                verticalRecyclerView.setAdapter(verticalAdapter);
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    String message = jsonObject.optString("message", "Unknown error");
+                                    if (isAdded()) {
+                                        requireActivity().runOnUiThread(
+                                                () -> Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show());
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                Log.e("FetchHighRatedTutors", "JSON parsing error: " + e.getMessage());
+                                if (isAdded()) {
+                                    requireActivity().runOnUiThread(() -> Toast
+                                            .makeText(requireContext(), "Error processing data", Toast.LENGTH_SHORT)
+                                            .show());
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("HomeFragment", "Error in fetchHighRatedTutors: " + e.getMessage());
+            }
+        }
+
+        // 添加临时测试数据方法
+        private void showTestData() {
+            Log.d("HomeFragment", "Showing test data");
+            ArrayList<ApplicationItem> testData = new ArrayList<>();
+            ArrayList<String> subjects = new ArrayList<>();
+            subjects.add("Math");
+            subjects.add("English");
+            
+            ArrayList<String> districts = new ArrayList<>();
+            districts.add("Central");
+            districts.add("North");
+
+            for (int i = 1; i <= 5; i++) {
+                ApplicationItem tutor = new ApplicationItem(
+                    String.valueOf(i),
+                    subjects,
+                    "Level " + i,
+                    "100",
+                    districts,
+                    String.valueOf(i),
+                    "",
+                    "Tutor " + i,
+                    "tutor",
+                    "4." + i,
+                    "Bachelor's Degree"
+                );
+                tutor.setRating("4." + i);
+                testData.add(tutor);
+                Log.d("HomeFragment", "Added test tutor " + i + " with rating " + "4." + i);
+            }
+
+            if (isAdded()) {
+                Log.d("HomeFragment", "Setting adapter with " + testData.size() + " test tutors");
+                requireActivity().runOnUiThread(() -> {
+                    VerticalAdapter adapter = new VerticalAdapter(testData, requireContext());
+                    verticalRecyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    Log.d("HomeFragment", "Adapter set and notified");
+                });
             }
         }
     }

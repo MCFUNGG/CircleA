@@ -57,6 +57,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (data != null && position < data.size()) {
             ApplicationItem application = data.get(position);
+            Log.d("ApplicationAdapter", "onBindViewHolder: " + application);
 
             // Check if application is saved and set the correct star icon
             if (dbHelper.isApplicationSaved(application.getAppId())) {
@@ -79,6 +80,10 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
             holder.username.setText(application.getUsername());
             holder.classLevelTextView.setText(application.getClassLevel());
+
+
+            Log.d("ApplicationAdapter", "onBindViewHolder: " + application.getSubjects());
+
 
             // Concatenate subjects
             StringBuilder subjects = new StringBuilder();
