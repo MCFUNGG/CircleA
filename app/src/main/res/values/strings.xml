@@ -10,6 +10,7 @@
     <string name="my_application">My Application</string>
     <string name="tutor_section_title">I am a tutor</string>
     <string name="create_cv">Create CV</string>
+    <string name="edit_cv">Edit CV</string>
     <string name="my_cv">My CV</string>
     <string name="switch_language">Switch to 中文</string>
     <string name="apply_now">Apply Now</string>
@@ -220,7 +221,6 @@
     <string name="last_name">Last Name</string>
     
     <!-- Error Messages -->
-    <string name="network_error">Network error. Please check your connection.</string>
     <string name="invalid_input">Invalid input</string>
     <string name="field_required">This field is required</string>
     <string name="passwords_do_not_match">Passwords do not match</string>
@@ -252,7 +252,6 @@
     <string name="please_rate_tutor">Please rate the tutor</string>
     
     <!-- Network Error Messages -->
-    <string name="failed_to_fetch_data">Failed to fetch data</string>
     
     <!-- Time picker dialog strings -->
     <string name="time_separator">:</string>
@@ -370,8 +369,6 @@
     <string name="date_of_birth">Date of Birth (MM/DD/YYYY)</string>
     
     <!-- Scan CV Strings -->
-    <string name="image_preview">Image Preview</string>
-    <string name="select_image">Select Image</string>
     <string name="select_cv_image">Select CV Image</string>
     <string name="select_file">Select File</string>
     <string name="contact">Contact</string>
@@ -505,5 +502,50 @@
     <string name="tutor_contact_info">Tutor Contact Information</string>
     <string name="error_loading_tutor_contact">Error loading tutor contact information</string>
     <string name="tutor_contact_not_available">Tutor contact information not available</string>
+    
+    <!-- Application Edit Dialog -->
+    <string name="edit_application">Edit Application</string>
+    <string name="loading_data_try_again">Loading data, please try again in a moment.</string>
+    <string name="loading_data">Loading Data</string>
+    <string name="loading_data_description">We need to fetch some data before proceeding. Please wait or tap Retry if it takes too long.</string>
+    <string name="retry">Retry</string>
+    <string name="failed_to_fetch_data">Failed to fetch data.</string>
+    
+    <!-- Delete Application Confirmation -->
+    <string name="delete_application_confirmation_message">您確定要刪除此申請嗎？此操作無法撤銷。</string>
+    <string name="deleting_application">正在刪除申請...</string>
+    <string name="failed_to_delete_application">刪除申請失敗</string>
+    <string name="application_deleted_successfully">申請已成功刪除</string>
+    
+    <!-- New content filter strings -->
+    <string name="content_filter_bad_words">描述包含不適當詞彙。請修改後再提交。</string>
+    <string name="content_filter_personal_info">描述包含個人信息。為保護隱私，請勿在描述中包含電話號碼、電子郵件或地址等。</string>
+    <string name="content_filter_bad_words_and_personal_info">描述包含不適當詞彙和個人信息。請修改後再提交。</string>
+    
+    <!-- CV Related Strings -->
+    <string name="return_label">Return</string>
+    <string name="current_cv">Current CV</string>
+    <string name="contact_info">Contact Information</string>
+    <string name="other_info">Other Information</string>
+    <string name="cv_history">CV History</string>
+    <string name="no_cv_found">No CV Found</string>
+    <string name="create_new_cv">Create New CV</string>
+    <string name="view">View</string>
+    <string name="activate">Activate</string>
+    
+    <!-- Image Description Strings -->
+    <string name="image_preview">Image Preview</string>
+    <string name="select_image">Select Image</string>
+    
+    <!-- New strings added from the code block -->
+    <string name="network_error">網絡錯誤</string>
+    <string name="invalid_response_format">無效的響應格式</string>
+    <string name="json_parsing_error">JSON解析錯誤</string>
+    <string name="server_error">服務器錯誤</string>
+    <string name="saving">Saving...</string>
+    <string name="failed_to_load_image">Failed to load image</string>
+    <string name="recognition_error">Recognition error</string>
+    <string name="text_recognition_complete">Text recognition complete</string>
+    <string name="image_conversion_failed">Image conversion failed</string>
 </resources>
 

@@ -8,9 +8,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +41,8 @@ public class ScanCV extends AppCompatActivity {
             languageEditText, otherEditText;
     private TextRecognizer textRecognizer;
     private Uri savedImageUri;
+    private Button saveButton;
+    private TextView titleTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,19 +53,45 @@ public class ScanCV extends AppCompatActivity {
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
         // Initialize views
+        titleTextView = findViewById(R.id.titleTextView);
         imageView = findViewById(R.id.imageView);
         contactEditText = findViewById(R.id.contactEditText);
         skillsEditText = findViewById(R.id.skillsEditText);
         educationEditText = findViewById(R.id.educationEditText);
         languageEditText = findViewById(R.id.languageEditText);
         otherEditText = findViewById(R.id.otherEditText);
+        saveButton = findViewById(R.id.saveButton);
+
+        // 檢查是否有傳入的CV數據（編輯模式）
+        Intent intent = getIntent();
+        if (intent.hasExtra("cv_id")) {
+            // 編輯模式 - 預填充表單
+            contactEditText.setText(intent.getStringExtra("contact"));
+            skillsEditText.setText(intent.getStringExtra("skills"));
+            educationEditText.setText(intent.getStringExtra("education"));
+            languageEditText.setText(intent.getStringExtra("language"));
+            otherEditText.setText(intent.getStringExtra("other"));
+            
+            // 設置標題為編輯模式
+            titleTextView.setText(getString(R.string.edit_cv));
+        } else {
+            // 創建模式
+            titleTextView.setText(getString(R.string.create_cv));
+        }
 
         // Set up buttons
-        Button selectImageBtn = findViewById(R.id.selectImageBtn);
-        Button saveButton = findViewById(R.id.saveButton);
+        findViewById(R.id.selectImageBtn).setOnClickListener(v -> openGallery());
+        saveButton.setOnClickListener(v -> {
+            if (validateFormData()) {
+                saveCV();
+                Toast.makeText(this, "儲存中...", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-        selectImageBtn.setOnClickListener(v -> openGallery());
-        saveButton.setOnClickListener(v -> saveCV());
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     private void openGallery() {
@@ -98,13 +128,12 @@ public class ScanCV extends AppCompatActivity {
             textRecognizer.process(image)
                     .addOnSuccessListener(this::processRecognizedText)
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Error: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "辨識錯誤: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
 
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "載入圖片失敗", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -236,6 +265,12 @@ public class ScanCV extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         String memberId = sharedPreferences.getString("member_id", "");
         intent.putExtra("member_id", memberId);
+        
+        // 檢查是否為編輯模式，如果是則傳遞CV ID
+        if (getIntent().hasExtra("cv_id")) {
+            intent.putExtra("cv_id", getIntent().getIntExtra("cv_id", 0));
+            intent.putExtra("is_edit", true);
+        }
 
         startActivity(intent);
     }
@@ -250,7 +285,7 @@ public class ScanCV extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
             return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
         } catch (IOException | SecurityException e) {
-            showToast("圖片轉換失敗: " + e.getMessage());
+            Toast.makeText(this, "圖片轉換失敗: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             return null; // 返回null以表示轉換失敗
         }
     }
@@ -258,13 +293,10 @@ public class ScanCV extends AppCompatActivity {
     // 表單資料驗證
     private boolean validateFormData() {
         if (contactEditText.getText().toString().trim().isEmpty()) {
-            showToast(getString(R.string.please_fill_contact_info));
+            Toast.makeText(this, getString(R.string.please_fill_contact_info), Toast.LENGTH_SHORT).show();
+            contactEditText.requestFocus();
             return false;
         }
         return true;
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

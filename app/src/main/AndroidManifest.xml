@@ -101,8 +101,12 @@
         <activity
             android:name=".home.PSAppDetail"
             android:exported="true"/>
-
-
+        <activity
+            android:name=".setting.MyCVActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".home.TutorProfileActivity"
+            android:exported="true"/>
 
     </application>
 

@@ -60,6 +60,16 @@ public class uploadCert extends AppCompatActivity {
         education = intent.getStringExtra("education");
         language = intent.getStringExtra("language");
         other = intent.getStringExtra("other");
+        
+        // 檢查是否為編輯模式
+        boolean isEditMode = intent.getBooleanExtra("is_edit", false);
+        int cvId = intent.getIntExtra("cv_id", 0);
+        
+        if (isEditMode) {
+            setTitle(getString(R.string.edit_cv));
+        } else {
+            setTitle(getString(R.string.create_cv));
+        }
 
         Button btnSelectFiles = findViewById(R.id.btnSelectFiles);
         Button btnUpload = findViewById(R.id.btnUpload);
@@ -198,6 +208,16 @@ public class uploadCert extends AppCompatActivity {
         multipartBuilder.addFormDataPart("education", education);
         multipartBuilder.addFormDataPart("language", language);
         multipartBuilder.addFormDataPart("other", other);
+        
+        // 檢查是否為編輯模式
+        Intent intent = getIntent();
+        boolean isEditMode = intent.getBooleanExtra("is_edit", false);
+        int cvId = intent.getIntExtra("cv_id", 0);
+        
+        if (isEditMode && cvId > 0) {
+            multipartBuilder.addFormDataPart("cv_id", String.valueOf(cvId));
+            multipartBuilder.addFormDataPart("is_edit", "true");
+        }
 
         for (FileItem fileItem : selectedFileItems) {
             try {
@@ -222,8 +242,9 @@ public class uploadCert extends AppCompatActivity {
 
         RequestBody requestBody = multipartBuilder.build();
 
+        // 更新URL以使用cv_data表而不是member_cv表
         Request request = new Request.Builder()
-                .url("http://" + IPConfig.getIP() + "/FYP/php/upload_cv.php")
+                .url("http://" + IPConfig.getIP() + "/FYP/php/upload_cv_to_cvdata.php")
                 .post(requestBody)
                 .build();
 
@@ -245,11 +266,14 @@ public class uploadCert extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     runOnUiThread(() -> {
                         Toast.makeText(uploadCert.this, "Upload successful!", Toast.LENGTH_SHORT).show();
+                        // 上傳成功後，轉到MyCVActivity以查看CV列表
+                        Intent intent = new Intent(uploadCert.this, MyCVActivity.class);
+                        startActivity(intent);
                         finish();
                     });
                 } else {
                     runOnUiThread(() -> Toast.makeText(uploadCert.this,
-                            "Upload failed: " + response.message(), Toast.LENGTH_SHORT).show());
+                            "Upload failed: " + response.code(), Toast.LENGTH_SHORT).show());
                 }
             }
         });

@@ -4,6 +4,7 @@
     import static android.content.Context.MODE_PRIVATE;
 
     import android.content.SharedPreferences;
+    import android.content.Intent;
     import android.os.Bundle;
     import android.util.Log;
     import android.view.LayoutInflater;
@@ -26,6 +27,7 @@
     import com.example.circlea.Home;
     import com.example.circlea.IPConfig;
     import com.example.circlea.R;
+    import com.example.circlea.home.TutorProfileActivity;
 
     import org.json.JSONArray;
     import org.json.JSONException;
@@ -578,6 +580,19 @@
                                             if (isAdded()) {
                                                 VerticalAdapter verticalAdapter = new VerticalAdapter(
                                                         applicationsList, requireContext());
+                                                
+                                                // 為高評分導師添加點擊事件處理
+                                                verticalAdapter.setOnItemClickListener(new VerticalAdapter.OnItemClickListener() {
+                                                    @Override
+                                                    public void onItemClick(int position, ApplicationItem item) {
+                                                        // 打開導師個人資料頁面
+                                                        Intent intent = new Intent(requireContext(), TutorProfileActivity.class);
+                                                        intent.putExtra("tutor_id", item.getMemberId());
+                                                        intent.putExtra("tutorName", item.getUsername());
+                                                        startActivity(intent);
+                                                    }
+                                                });
+                                                
                                                 verticalRecyclerView.setAdapter(verticalAdapter);
                                             }
                                         });

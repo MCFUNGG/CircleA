@@ -20,8 +20,8 @@
     <color name="divider_color">#E0E0E0</color>
     <color name="light_purple">#F8F7FF</color>
     <color name="orange">#FF9966</color>
-        <color name="divider">#E0E0E0</color>
-        <color name="error_red">#FF5252</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="error_red">#FF5252</color>
     <color name="status_pending">#FF6B6B</color>
     <color name="status_approved">#4CAF50</color>
     <color name="selected_slot_background">#1A2196F3</color>
@@ -36,4 +36,7 @@
     <color name="neutral_90">#E5E5E5</color>
     <color name="neutral_30">#4D4D4D</color>
     <color name="primary_container">#EADDFF</color>
+    <color name="red_500">#F44336</color>
+    <color name="red_700">#D32F2F</color>
+    <color name="colorPrimary">@color/green_500</color>
 </resources>

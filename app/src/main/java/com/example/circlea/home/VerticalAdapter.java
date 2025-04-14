@@ -38,6 +38,17 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.ViewHo
     private ArrayList<ApplicationItem> data;
     private Context context;
     private DatabaseHelper dbHelper;
+    private OnItemClickListener mListener;
+    
+    // 定義項目點擊監聽器接口
+    public interface OnItemClickListener {
+        void onItemClick(int position, ApplicationItem item);
+    }
+    
+    // 設置點擊監聽器的方法
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
 
     public VerticalAdapter(ArrayList<ApplicationItem> data, Context context) {
         this.data = data;
@@ -102,6 +113,13 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.ViewHo
 
 
             holder.layout.setOnClickListener(v -> {
+                // 如果使用了自定義點擊監聽器，優先調用它
+                if (mListener != null) {
+                    mListener.onItemClick(position, application);
+                    return;
+                }
+                
+                // 默認的點擊行為 - 打開TutorAppDetail頁面
                 SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
                 String userMemberId = sharedPreferences.getString("member_id", null);
                 String tutorsMemberId = application.getMemberId();
@@ -117,6 +135,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.ViewHo
 
                 Intent intent = new Intent(context, TutorAppDetail.class);
                 intent.putExtra("tutor_id", application.getMemberId());
+                intent.putExtra("tutorName", application.getUsername());
                 intent.putStringArrayListExtra("subjects", application.getSubjects());
                 intent.putExtra("classLevel", application.getClassLevel());
                 intent.putExtra("fee", application.getFee());

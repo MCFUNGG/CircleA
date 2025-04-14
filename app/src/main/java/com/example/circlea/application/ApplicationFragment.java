@@ -17,9 +17,10 @@ import com.example.circlea.R;
 import com.example.circlea.setting.ScanCV;
 import android.widget.Toast;
 import android.app.AlertDialog;
+import com.example.circlea.setting.MyCVActivity;
 
 public class ApplicationFragment extends Fragment {
-    private Button btnpost, btnhistory, createCvButton;
+    private Button btnpost, btnhistory, createCvButton, myCvButton;
     private LanguageManager languageManager;
     private static final String TAG = "ApplicationFragment";
 
@@ -71,6 +72,7 @@ public class ApplicationFragment extends Fragment {
         btnpost = view.findViewById(R.id.post_button);
         btnhistory = view.findViewById(R.id.my_application_button);
         createCvButton = view.findViewById(R.id.create_cv_button);
+        myCvButton = view.findViewById(R.id.my_cv_button);
         ImageButton menuButton = view.findViewById(R.id.menuButton);
 
         menuButton.setOnClickListener(v -> {
@@ -91,6 +93,11 @@ public class ApplicationFragment extends Fragment {
 
         btnhistory.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ApplicationHistory.class);
+            startActivity(intent);
+        });
+
+        myCvButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MyCVActivity.class);
             startActivity(intent);
         });
 

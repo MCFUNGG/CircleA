@@ -34,6 +34,7 @@ import com.example.circlea.Home;
 import com.example.circlea.IPConfig;
 import com.example.circlea.Login;
 import com.example.circlea.R;
+import com.example.circlea.setting.MyCVActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -98,7 +99,6 @@ public class SettingFragment extends Fragment {
         userIcon = view.findViewById(R.id.user_icon); // 初始化用户头像
         ImageButton menuButton = view.findViewById(R.id.menuButton);
         tutorBadge = view.findViewById(R.id.tutor_badge); // Hide by default
-
 
         menuButton.setOnClickListener(v -> {
             ((Home) getActivity()).openDrawer(); // Call method from Home activity

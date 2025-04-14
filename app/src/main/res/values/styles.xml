@@ -85,4 +85,11 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <!-- Add AppBarOverlay and PopupOverlay styles -->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+    
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

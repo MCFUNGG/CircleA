@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
+import com.example.circlea.utils.ContentFilter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -387,6 +388,17 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
         if (classLevelId == null || selectedDistrictIds.isEmpty() || fee.isEmpty() || selectedDates.isEmpty() || selectedSubjectIds.isEmpty()) {
             Toast.makeText(this, getString(R.string.please_fill_in_all_required_information), Toast.LENGTH_SHORT).show();
             return;
+        }
+        
+        // 檢查描述內容是否包含敏感詞或個人信息
+        if (!description.isEmpty()) {
+            ContentFilter.ContentCheckResult checkResult = ContentFilter.checkContent(description);
+            
+            if (!checkResult.isClean()) {
+                String warningMessage = ContentFilter.getWarningMessage(checkResult);
+                Toast.makeText(this, warningMessage, Toast.LENGTH_LONG).show();
+                return;
+            }
         }
 
         OkHttpClient client = new OkHttpClient();

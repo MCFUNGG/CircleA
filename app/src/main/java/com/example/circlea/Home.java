@@ -166,6 +166,10 @@ public class Home extends AppCompatActivity {
                 Intent intent = new Intent(this, ScanCV.class);
                 startActivity(intent);
                 drawerLayout.closeDrawer(GravityCompat.START);
+            } else if (itemId == R.id.nav_history_cv) {
+                Intent intent = new Intent(this, com.example.circlea.setting.MyCVActivity.class);
+                startActivity(intent);
+                drawerLayout.closeDrawer(GravityCompat.START);
             } else if (itemId == R.id.nav_matching) {
                 selectedFragment = new Matching();
                 setCurrentFragment(FRAGMENT_MATCHING);
@@ -242,6 +246,10 @@ public class Home extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (item.getItemId() == R.id.nav_create_cv) {
             Intent intent = new Intent(this, ScanCV.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else if (item.getItemId() == R.id.nav_history_cv) {
+            Intent intent = new Intent(this, com.example.circlea.setting.MyCVActivity.class);
             startActivity(intent);
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (item.getItemId() == R.id.nav_matching) {
