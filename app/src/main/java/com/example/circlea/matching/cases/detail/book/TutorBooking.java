@@ -51,6 +51,9 @@
     import okhttp3.RequestBody;
     import okhttp3.Response;
 
+    import com.example.circlea.data.model.StudentContactResponse;
+    import com.google.gson.Gson;
+
     public class TutorBooking extends AppCompatActivity implements BookingRequestAdapter.OnBookingActionListener  {
 
         private RecyclerView timeSlotsRecyclerView;
@@ -89,6 +92,14 @@
         private void initializeViews() {
             topAppBar = findViewById(R.id.topAppBar);
             setSupportActionBar(topAppBar);
+            
+            // Enable back button and set its appearance
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            
+            // Setup back button click listener
+            topAppBar.setNavigationOnClickListener(v -> onBackPressed());
 
             MaterialButton selectDateButton = findViewById(R.id.select_date_button);
             ExtendedFloatingActionButton saveSlotsButton = findViewById(R.id.save_slots_button);
@@ -123,8 +134,9 @@
             saveSlotsButton.setOnClickListener(v -> saveAvailableSlots());
             MaterialButton updateLessonStatusButton = findViewById(R.id.update_lesson_status_button);
             updateLessonStatusButton.setOnClickListener(v -> showUpdateLessonStatusDialog());
-            // Setup toolbar
-            topAppBar.setNavigationOnClickListener(v -> finish());
+
+            MaterialButton viewStudentContactButton = findViewById(R.id.view_student_contact_button);
+            viewStudentContactButton.setOnClickListener(v -> getStudentContact());
         }
 
         private void getStudentBookingRequest() {
@@ -325,6 +337,7 @@
             bookingStatus.setTextColor(textColor);
 
             bookingDetailCard.setVisibility(View.VISIBLE);
+            findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -978,6 +991,109 @@
             minutePicker.setMaxValue(59);
             minutePicker.setValue(time.get(Calendar.MINUTE));
             minutePicker.setFormatter(value -> String.format("%02d", value));
+        }
+
+        @Override
+        public void onBackPressed() {
+            // Check if there are unsaved changes
+            boolean hasUnsavedChanges = false;
+            for (TimeSlot slot : timeSlots) {
+                if (slot.isEditable() && (slot.isModified() || slot.getSlotId() == null)) {
+                    hasUnsavedChanges = true;
+                    break;
+                }
+            }
+
+            if (hasUnsavedChanges) {
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(getString(R.string.unsaved_changes))
+                        .setMessage(getString(R.string.you_have_unsaved_changes_do_you_want_to_discard_them))
+                        .setPositiveButton(getString(R.string.discard), (dialog, which) -> super.onBackPressed())
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .show();
+            } else {
+                super.onBackPressed();
+            }
+        }
+
+        private void getStudentContact() {
+            if (caseId == null || tutorId == null) {
+                Toast.makeText(this, getString(R.string.error_loading_contact), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            OkHttpClient client = new OkHttpClient();
+            
+            RequestBody formBody = new FormBody.Builder()
+                    .add("match_id", caseId)
+                    .add("tutor_id", tutorId)
+                    .build();
+            
+            String url = "http://" + IPConfig.getIP() + "/FYP/php/get_student_contact.php";
+            
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(formBody)
+                    .build();
+            
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("Network", "Failed to load student contact: " + e.getMessage());
+                    runOnUiThread(() -> Toast.makeText(TutorBooking.this, 
+                            getString(R.string.error_loading_contact), Toast.LENGTH_SHORT).show());
+                }
+                
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d("Response", "Student contact: " + responseData);
+                    
+                    try {
+                        Gson gson = new Gson();
+                        StudentContactResponse contactResponse = gson.fromJson(responseData, StudentContactResponse.class);
+                        
+                        runOnUiThread(() -> {
+                            if (contactResponse.isSuccess()) {
+                                // Show student contact information in dialog
+                                showStudentContactDialog(contactResponse.getStudent());
+                            } else {
+                                // Show error message
+                                Toast.makeText(TutorBooking.this, contactResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.e("Parse", "Failed to parse student contact: " + e.getMessage());
+                        runOnUiThread(() -> Toast.makeText(TutorBooking.this,
+                                getString(R.string.error_loading_contact), Toast.LENGTH_SHORT).show());
+                    }
+                }
+            });
+        }
+
+        private void showStudentContactDialog(StudentContactResponse.StudentContact student) {
+            if (student == null) {
+                Toast.makeText(this, getString(R.string.no_contact_info), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            // Create dialog view
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_contact_info, null);
+            TextView nameTextView = dialogView.findViewById(R.id.contact_name);
+            TextView phoneTextView = dialogView.findViewById(R.id.contact_phone);
+            TextView emailTextView = dialogView.findViewById(R.id.contact_email);
+            
+            // Set contact information
+            nameTextView.setText(getString(R.string.contact_name, student.getName()));
+            phoneTextView.setText(getString(R.string.contact_phone, student.getPhone()));
+            emailTextView.setText(getString(R.string.contact_email, student.getEmail()));
+            
+            // Show dialog
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.student_contact_info))
+                    .setView(dialogView)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
         }
     }
 

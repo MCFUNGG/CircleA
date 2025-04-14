@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -15,6 +16,9 @@
             android:layout_height="?attr/actionBarSize"
             app:title="Set Available Time Slots"
             app:navigationIcon="@drawable/ic_back"
+            android:background="?attr/colorSurface"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:navigationIconTint="?attr/colorOnSurface"
             style="@style/Widget.Material3.Toolbar.Surface"/>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -74,7 +78,6 @@
                 android:nestedScrollingEnabled="false"/>
 
             <!-- Booking Detail Section -->
-
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/booking_detail_card"
                 android:layout_width="match_parent"
@@ -108,6 +111,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/Widget.Material3.Chip.Assist"/>
+                    
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/view_student_contact_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="View Student Contact"
+                        android:layout_marginTop="16dp"
+                        style="@style/Widget.Material3.Button.OutlinedButton"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -162,7 +173,6 @@
                         android:nestedScrollingEnabled="false"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

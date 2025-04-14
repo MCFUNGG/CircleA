@@ -1020,4 +1020,8 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     public String getStudentId() {
         return studentId;
     }
+
+    public String getTutorId() {
+        return tutorId;
+    }
 }

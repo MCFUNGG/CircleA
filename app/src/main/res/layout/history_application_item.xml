@@ -133,35 +133,6 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>
-
-            <!-- Replace hardcoded text with string resources -->
-            <TextView
-                android:id="@+id/subject_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/subject_label"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/student_level_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/student_level_label"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/fee_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/fee_label"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/district_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/district_label"
-                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -137,6 +137,17 @@
     <string name="exit">Exit</string>
     <string name="set_time_slot">Set Time Slot</string>
     
+    <!-- Post Application Step1 Screen -->
+    <string name="cv_title">CV</string>
+    <string name="select_your_role">Select Your Role</string>
+    <string name="lesson_time">Lesson Time</string>
+    <string name="lessons_per_week">Lessons Per Week</string>
+    <string name="expected_fee_per_hour">Expected Fee Per Hour</string>
+    <string name="fee_symbol">~ $</string>
+    <string name="fee">Fee</string>
+    <string name="district">District</string>
+    <string name="description_no_personal_details">Description (Please do not enter any personal details)</string>
+    
     <!-- Application History Screen -->
     <string name="application_history_title">Application History</string>
     <string name="tutor_applications_history">Tutor Applications</string>
@@ -198,7 +209,6 @@
     <string name="notifications">Notifications</string>
     <string name="messages">Messages</string>
     <string name="bookings">Bookings</string>
-    <string name="my_schedule">My Schedule</string>
     
     <!-- Form Fields -->
     <string name="email">Email</string>
@@ -225,16 +235,21 @@
     <string name="availability">Availability</string>
     <string name="lesson_details">Lesson Details</string>
     <string name="lesson_history">Lesson History</string>
-    <string name="payment_details">Payment Details</string>
     <string name="refund_policy">Refund Policy</string>
     
     <!-- Feedback and Rating -->
+    <string name="rate_tutor_experience">Rate Your Tutor Experience</string>
     <string name="rate_tutor">Rate Tutor</string>
     <string name="rate_student">Rate Student</string>
     <string name="leave_feedback">Leave Feedback</string>
     <string name="feedback_submitted">Feedback submitted successfully</string>
     <string name="rating">Rating</string>
     <string name="reviews">Reviews</string>
+    <string name="your_feedback">Your feedback (optional)</string>
+    <string name="submitting_feedback">Submitting feedback...</string>
+    <string name="lesson_incomplete">Lesson Incomplete</string>
+    <string name="feedback_error">Error submitting feedback</string>
+    <string name="please_rate_tutor">Please rate the tutor</string>
     
     <!-- Network Error Messages -->
     <string name="failed_to_fetch_data">Failed to fetch data</string>
@@ -439,5 +454,56 @@
     <string name="filter_by_price">Filter by Price</string>
     <string name="sort_by_rating">Sort by Rating</string>
     <string name="sort_by_price">Sort by Price</string>
+    
+    <!-- Back Button Dialog -->
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="you_have_unsaved_changes_do_you_want_to_discard_them">You have unsaved changes. Do you want to discard them?</string>
+    <string name="discard">Discard</string>
+    
+    <!-- Payment Notification -->
+    <string name="payment_notification">Payment Notification</string>
+    <string name="payment_details">1. Payment Details</string>
+    <string name="confirmed_lesson_time">Confirmed Lesson Time:</string>
+    <string name="first_lesson_fee">First Lesson Fee:</string>
+    <string name="platform_service_fee">Platform Service Fee:</string>
+    <string name="total_amount">Total Amount:</string>
+    
+    <!-- Bank Transfer -->
+    <string name="bank_transfer">2A.\nBank Transfer</string>
+    <string name="bank_name">Bank of China (Hong Kong)</string>
+    <string name="account_number">Account Number: 1234 5678 9012 3456</string>
+    <string name="account_name">Account Name: Circle A Education</string>
+    
+    <!-- Digital Payment -->
+    <string name="or">OR</string>
+    <string name="digital_payment">2B.\nDigital Payment</string>
+    <string name="alipay_id">Alipay ID: circlea2025</string>
+    <string name="wechat_id">WeChat ID: circlea2025</string>
+    
+    <!-- Receipt Upload -->
+    <string name="upload_receipt_title">3. Upload Receipt</string>
+    <string name="upload_receipt_note">*Please upload a clear photo of your payment receipt</string>
+    <string name="upload_receipt_button">Upload Receipt</string>
+    <string name="upload_receipt_instruction">*After payment, please upload your payment receipt below.</string>
+    
+    <!-- Submit -->
+    <string name="payment_confirmation_note">*After payment confirmation, the tutor contract will be automatically unlocked.</string>
+    <string name="submit_payment_verification">Submit Payment Verification</string>
+    
+    <!-- Student Contact -->
+    <string name="view_student_contact">View Student Contact</string>
+    <string name="student_contact_info">Student Contact Information</string>
+    <string name="payment_not_confirmed">Payment not confirmed yet</string>
+    <string name="contact_name">Name: %s</string>
+    <string name="contact_phone">Phone: %s</string>
+    <string name="contact_email">Email: %s</string>
+    <string name="error_loading_contact">Error loading contact information</string>
+    <string name="no_contact_info">Contact information not available</string>
+    
+    <!-- Tutor Contact -->
+    <string name="view_tutor_contact">View Tutor Contact</string>
+    <string name="tutor_contact_info">Tutor Contact Information</string>
+    <string name="error_loading_tutor_contact">Error loading tutor contact information</string>
+    <string name="tutor_contact_not_available">Tutor contact information not available</string>
 </resources>
 

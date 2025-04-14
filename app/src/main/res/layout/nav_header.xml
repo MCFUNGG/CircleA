@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:id="@+id/menu_header"
+    android:background="#FFFFFF"
     android:padding="16dp">
 
     <LinearLayout

@@ -137,9 +137,9 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
 
     private void updateNextButtonText() {
         if (currentStep == 2) {
-            nextButton.setText("Submit");
+            nextButton.setText(getString(R.string.submit));
         } else {
-            nextButton.setText("Next");
+            nextButton.setText(getString(R.string.next));
         }
     }
 

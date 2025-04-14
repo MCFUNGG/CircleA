@@ -2,6 +2,7 @@ package com.example.circlea.matching.cases.detail;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
+import com.example.circlea.matching.cases.detail.FirstLessonFeedback;
 import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONObject;
@@ -73,6 +75,32 @@ public class LessonStatusDialogManager {
                 .setMessage(context.getString(R.string.by_marking_the_lesson_as_completed_you_ll_proceed_to_the_feedback_process_this_action_cannot_be_undone) + "\n\n" + context.getString(R.string.do_you_want_to_continue))
                 .setPositiveButton(context.getString(R.string.continue_btn), (dialogInterface, i) -> {
                     callback.onLessonComplete();
+                    
+                    // 添加延迟，等待课程状态更新完成后再打开反馈界面
+                    if (context instanceof Activity) {
+                        new android.os.Handler().postDelayed(() -> {
+                            // 判断是否是学生界面，通过检查Activity类型
+                            if (context.getClass().getSimpleName().contains("Student")) {
+                                // 获取当前Activity的实例
+                                Activity activity = (Activity) context;
+                                
+                                // 创建打开反馈界面的Intent
+                                Intent feedbackIntent = new Intent(context, FirstLessonFeedback.class);
+                                
+                                // 如果当前Activity是MatchingCaseDetailStudent，从中获取必要参数
+                                if (context instanceof MatchingCaseDetailStudent) {
+                                    MatchingCaseDetailStudent studentActivity = (MatchingCaseDetailStudent) context;
+                                    feedbackIntent.putExtra("case_id", studentActivity.getCaseId());
+                                    feedbackIntent.putExtra("student_id", studentActivity.getStudentId());
+                                    feedbackIntent.putExtra("tutor_id", studentActivity.getTutorId());
+                                    activity.startActivity(feedbackIntent);
+                                } else {
+                                    // 如果无法直接获取参数，给用户提示
+                                    Toast.makeText(context, "请在状态更新后手动打开反馈界面", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }, 1000); // 延迟1秒
+                    }
                 })
                 .setNegativeButton(context.getString(R.string.cancel), null)
                 .show();

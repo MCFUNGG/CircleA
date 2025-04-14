@@ -6,13 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".home.HomeFragment">
+    tools:context=".home.HomeFragment"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="#FFFFFF">
 
         <!-- Search bar and menu button -->
         <LinearLayout
@@ -23,11 +25,18 @@
 
             <ImageButton
                 android:id="@+id/menuButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:background="@null"
                 android:src="@drawable/ic_menu"
                 android:contentDescription="Menu" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
 
             <EditText
                 android:id="@+id/searchBar"
@@ -35,7 +44,6 @@
                 android:layout_height="40dp"
                 android:hint="Search"
                 android:padding="8dp"
-                android:layout_marginLeft="8dp"
                 android:background="@drawable/rounded_background"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="8dp" />
@@ -45,13 +53,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/horizontalRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="170dp"
             android:orientation="horizontal"
-            android:clipToPadding="false"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
             tools:listitem="@layout/item_horizontal"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center"/>
 
         <!-- Divider line -->
         <View
@@ -125,10 +131,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/verticalRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:clipToPadding="false"
-                android:paddingBottom="16dp"
+                android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_vertical" />
         </LinearLayout>

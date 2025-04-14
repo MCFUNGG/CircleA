@@ -15,7 +15,7 @@
       </SelectionState>
       <SelectionState runConfigName="Home">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-03-19T13:05:58.144133800Z">
+        <DropdownSelection timestamp="2025-04-11T05:47:31.298569800Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\USER\.android\avd\Pixel_7a_API_35.avd" />
@@ -43,6 +43,14 @@
       </SelectionState>
       <SelectionState runConfigName="Login">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-04-11T03:08:03.689100900Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\USER\.android\avd\Pixel_8a_API_35.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
     </selectionStates>
   </component>

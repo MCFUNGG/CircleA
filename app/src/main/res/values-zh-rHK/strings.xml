@@ -91,7 +91,6 @@
     <string name="you_marked_lesson_completed_but_student_marked_incomplete">您將課程標記為已完成，但學生將其標記為未完成。請提供證據以支持您的聲明。</string>
     <string name="you_confirmed_lesson_unfinished_but_other_confirmed_completed">您確認課程未完成，但另一方確認課程已完成。請提供證據以支持您的聲明。</string>
     <string name="evidence_submission_to_be_implemented">證據提交功能將實現</string>
-    <string name="lesson_completed">課程已完成</string>
     <string name="failed_to_update_lesson_status">無法更新課程狀態</string>
     <string name="student_marked_lesson_as_incomplete">學生將課程標記為未完成</string>
     
@@ -140,7 +139,7 @@
     <!-- Application Form Labels -->
     <string name="application_type">申請類型</string>
     <string name="parent_student">家長/學生</string>
-    <string name="tutor">家教</string>
+    <string name="tutor">導師</string>
     <string name="student_level">學生級別</string>
     <string name="fee_per_hour">每小時費用 (港幣)</string>
     <string name="available_districts">可用地區</string>
@@ -151,6 +150,17 @@
     <string name="back">返回</string>
     <string name="exit">退出</string>
     <string name="set_time_slot">設置時間段</string>
+    
+    <!-- Post Application Step1 Screen -->
+    <string name="cv_title">簡歷</string>
+    <string name="select_your_role">選擇您的角色</string>
+    <string name="lesson_time">上課時間</string>
+    <string name="lessons_per_week">每週課程</string>
+    <string name="expected_fee_per_hour">每小時預計費用</string>
+    <string name="fee_symbol">~ $</string>
+    <string name="fee">費用</string>
+    <string name="district">地區</string>
+    <string name="description_no_personal_details">描述（請不要輸入任何個人詳細資料）</string>
 
     <!-- Application History Screen -->
     <string name="application_history_title">申請歷史</string>
@@ -218,7 +228,7 @@
     <string name="update">更新</string>
 
     <!-- Status Messages -->
-    <string name="loading">載入中...</string>
+    <string name="loading">加載中...</string>
     <string name="please_wait">請稍候</string>
     <string name="success">成功</string>
     <string name="failed">失敗</string>
@@ -228,12 +238,11 @@
 
     <!-- Navigation Labels -->
     <string name="home">首頁</string>
-    <string name="profile_text">檔案</string>
-    <string name="settings">設置</string>
+    <string name="profile_text">個人資料</string>
+    <string name="settings">設定</string>
     <string name="notifications">通知</string>
     <string name="messages">訊息</string>
     <string name="bookings">預約</string>
-    <string name="my_schedule">我的日程</string>
 
     <!-- Form Fields -->
     <string name="email">電子郵件</string>
@@ -260,16 +269,22 @@
     <string name="availability">可用性</string>
     <string name="lesson_details">課程詳情</string>
     <string name="lesson_history">課程歷史</string>
-    <string name="payment_details">付款詳情</string>
     <string name="refund_policy">退款政策</string>
 
     <!-- Feedback and Rating -->
+    <string name="rate_tutor_experience">評價導師體驗</string>
     <string name="rate_tutor">評價導師</string>
     <string name="rate_student">評價學生</string>
     <string name="leave_feedback">留下反饋</string>
     <string name="feedback_submitted">反饋提交成功</string>
     <string name="rating">評分</string>
     <string name="reviews">評論</string>
+    <string name="your_feedback">您的反饋（選填）</string>
+    <string name="submitting_feedback">正在提交反饋...</string>
+    <string name="lesson_completed">課程已完成</string>
+    <string name="lesson_incomplete">課程未完成</string>
+    <string name="feedback_error">提交反饋時出錯</string>
+    <string name="please_rate_tutor">請為導師評分</string>
 
     <!-- Network Error Messages -->
     <string name="failed_to_fetch_data">無法獲取數據</string>
@@ -439,4 +454,55 @@
     <string name="filter_by_price">按價格篩選</string>
     <string name="sort_by_rating">按評分排序</string>
     <string name="sort_by_price">按價格排序</string>
+
+    <!-- Back Button Dialog -->
+    <string name="unsaved_changes">未保存的更改</string>
+    <string name="you_have_unsaved_changes_do_you_want_to_discard_them">您有未保存的更改，是否要放弃這些更改？</string>
+    <string name="discard">放弃</string>
+
+    <!-- Payment Notification -->
+    <string name="payment_notification">付款通知書</string>
+    <string name="payment_details">1. 付款詳情</string>
+    <string name="confirmed_lesson_time">已確認的上課時間:</string>
+    <string name="first_lesson_fee">第一堂課費用:</string>
+    <string name="platform_service_fee">平台服務費:</string>
+    <string name="total_amount">總金額:</string>
+    
+    <!-- Bank Transfer -->
+    <string name="bank_transfer">2A.\n銀行轉帳</string>
+    <string name="bank_name">中國銀行 (香港)</string>
+    <string name="account_number">帳戶號碼: 1234 5678 9012 3456</string>
+    <string name="account_name">帳戶名稱: Circle A Education</string>
+    
+    <!-- Digital Payment -->
+    <string name="or">或</string>
+    <string name="digital_payment">2B.\n電子支付</string>
+    <string name="alipay_id">Alipay ID: circlea2025</string>
+    <string name="wechat_id">WeChat ID: circlea2025</string>
+    
+    <!-- Receipt Upload -->
+    <string name="upload_receipt_title">3. 上傳收據</string>
+    <string name="upload_receipt_note">*請上傳付款收據的清晰照片</string>
+    <string name="upload_receipt_button">上傳收據</string>
+    <string name="upload_receipt_instruction">*付款後，請在下面上傳您的付款收據。</string>
+    
+    <!-- Submit -->
+    <string name="payment_confirmation_note">*確認付款後，導師合約將自動解鎖。</string>
+    <string name="submit_payment_verification">提交付款驗證</string>
+
+    <!-- Student Contact -->
+    <string name="view_student_contact">查看學生聯繫方式</string>
+    <string name="student_contact_info">學生聯繫信息</string>
+    <string name="payment_not_confirmed">付款尚未確認</string>
+    <string name="contact_name">姓名: %s</string>
+    <string name="contact_phone">電話: %s</string>
+    <string name="contact_email">電郵: %s</string>
+    <string name="error_loading_contact">加載聯繫信息時出錯</string>
+    <string name="no_contact_info">聯繫信息不可用</string>
+
+    <!-- Tutor Contact -->
+    <string name="view_tutor_contact">查看導師聯繫方式</string>
+    <string name="tutor_contact_info">導師聯繫信息</string>
+    <string name="error_loading_tutor_contact">加載導師聯繫信息時出錯</string>
+    <string name="tutor_contact_not_available">導師聯繫信息不可用</string>
 </resources>
