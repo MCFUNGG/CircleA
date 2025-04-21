@@ -26428,3 +26428,127 @@
 
 )
 
+[20-Apr-2025 22:10:53 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 69
+    [is_tutor] => false
+)
+
+[20-Apr-2025 22:10:53 Europe/Berlin] Processing request with match_id: 69, is_tutor: false
+[20-Apr-2025 22:10:53 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 18
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-17 09:00:00
+                    [end_time] => 2025-04-17 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-11 11:46:39
+                )
+
+        )
+
+)
+
+[20-Apr-2025 22:10:53 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 69
+    [is_tutor] => false
+)
+
+[20-Apr-2025 22:10:53 Europe/Berlin] Processing request with match_id: 69, is_tutor: false
+[20-Apr-2025 22:10:53 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 18
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-17 09:00:00
+                    [end_time] => 2025-04-17 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-11 11:46:39
+                )
+
+        )
+
+)
+
+[21-Apr-2025 12:17:26 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 104
+    [is_tutor] => false
+)
+
+[21-Apr-2025 12:17:26 Europe/Berlin] Processing request with match_id: 104, is_tutor: false
+[21-Apr-2025 12:17:26 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+)
+
+[21-Apr-2025 12:25:22 Europe/Berlin] Received data: Array
+(
+    [match_id] => 104
+    [tutor_id] => 5
+    [slots] => [{"start_time":"2025-04-24 09:00","end_time":"2025-04-24 10:00","status":"available","action":"create"}]
+)
+
+[21-Apr-2025 12:25:22 Europe/Berlin] Decoded slots: Array
+(
+    [0] => Array
+        (
+            [start_time] => 2025-04-24 09:00
+            [end_time] => 2025-04-24 10:00
+            [status] => available
+            [action] => create
+        )
+
+)
+
+[21-Apr-2025 12:25:22 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 104
+    [is_tutor] => true
+)
+
+[21-Apr-2025 12:25:22 Europe/Berlin] Processing request with match_id: 104, is_tutor: true
+[21-Apr-2025 12:25:23 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 22
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-24 09:00:00
+                    [end_time] => 2025-04-24 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-21 18:25:22
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+

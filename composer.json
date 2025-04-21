@@ -1,6 +1,7 @@
 {
     "require": {
         "php": "^8.0",
-        "ext-mysql": "*"
+        "ext-mysql": "*",
+        "kreait/firebase-php": "^5.26"
     }
-} 
+}

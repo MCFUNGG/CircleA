@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-04-14 03:56:44
+-- 產生時間： 2025-04-21 09:25:50
 -- 伺服器版本： 10.4.27-MariaDB
 -- PHP 版本： 8.2.0
 
@@ -75,7 +75,7 @@ INSERT INTO `application` (`app_id`, `member_id`, `app_creator`, `class_level_id
 (81, 1, 'T', 6, '/', 250, NULL, 'A'),
 (98, 1, 'PS', 3, '1', 444, NULL, 'A'),
 (108, 1, 'PS', 1, '', 222, NULL, 'A'),
-(109, 5, 'T', 9, '', 250, NULL, 'A'),
+(109, 5, 'T', 9, 'Ma Wan', 250, NULL, 'A'),
 (110, 3, 'PS', 9, '', 251, NULL, 'A'),
 (111, 3, 'PS', 15, '', 250, NULL, 'A'),
 (112, 1, 'PS', 11, '', 250, NULL, 'P'),
@@ -83,12 +83,12 @@ INSERT INTO `application` (`app_id`, `member_id`, `app_creator`, `class_level_id
 (115, 1, 'PS', 1, '', 250, 1, 'R'),
 (120, 6, 'PS', 15, '', 200, 1, 'A'),
 (121, 5, 'T', 1, '', 200, NULL, 'A'),
-(122, 5, 'T', 15, '', 200, NULL, 'A'),
 (123, 3, 'PS', 9, '', 250, 1, 'A'),
 (124, 5, 'T', 9, '', 200, NULL, 'A'),
 (125, 3, 'PS', 15, '', 200, 1, 'A'),
-(126, 5, 'PS', 1, '', 200, 1, 'P'),
-(127, 3, 'PS', 1, '', 410, 2, 'P');
+(126, 5, 'PS', 1, '', 205, 1, 'A'),
+(127, 3, 'PS', 1, '', 410, 2, 'A'),
+(132, 5, 'T', 15, '', 250, NULL, 'A');
 
 -- --------------------------------------------------------
 
@@ -124,12 +124,12 @@ INSERT INTO `application_date` (`app_Date_id`, `app_id`, `monday_time`, `tuesday
 (18, 115, '1200-1600', '', '', '', '', '', ''),
 (23, 120, '1200-1600', '', '', '', '', '', ''),
 (24, 121, '1200-1600', '', '', '', '', '', ''),
-(25, 122, '1400-1600', '', '', '', '', '', ''),
 (26, 123, '1200-1600', '', '', '', '', '', ''),
 (27, 124, '1400-1600', '', '', '', '', '', ''),
 (28, 125, '1400-1530', '', '', '', '', '', ''),
 (29, 126, '1400 - 1600', '', '', '', '', '', ''),
-(30, 127, '1200-1600', '', '', '', '', '', '');
+(30, 127, '1200-1600', '', '', '', '', '', ''),
+(35, 132, '1500-1600', '', '', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -157,8 +157,6 @@ INSERT INTO `application_district` (`application_district_id`, `app_id`, `distri
 (29, 98, 1),
 (30, 98, 2),
 (46, 108, 1),
-(47, 109, 4),
-(48, 109, 5),
 (49, 110, 2),
 (50, 111, 2),
 (51, 111, 3),
@@ -171,20 +169,22 @@ INSERT INTO `application_district` (`application_district_id`, `app_id`, `distri
 (68, 120, 2),
 (69, 120, 3),
 (70, 121, 5),
-(71, 122, 2),
-(72, 122, 8),
 (73, 123, 8),
 (74, 123, 9),
 (75, 124, 10),
 (76, 124, 11),
 (77, 125, 10),
 (78, 125, 11),
-(79, 126, 1),
-(80, 126, 5),
-(81, 126, 9),
-(82, 126, 12),
-(83, 126, 14),
-(84, 127, 6);
+(84, 127, 6),
+(97, 126, 1),
+(98, 126, 5),
+(99, 126, 9),
+(100, 126, 12),
+(101, 126, 14),
+(110, 109, 4),
+(111, 109, 5),
+(116, 132, 1),
+(117, 132, 2);
 
 -- --------------------------------------------------------
 
@@ -213,8 +213,6 @@ INSERT INTO `application_subject` (`application_subject_id`, `app_id`, `subject_
 (14, 81, '3'),
 (15, 81, '4'),
 (77, 108, '2'),
-(78, 109, '12'),
-(79, 109, '11'),
 (80, 110, '1'),
 (81, 110, '3'),
 (82, 110, '5'),
@@ -231,19 +229,22 @@ INSERT INTO `application_subject` (`application_subject_id`, `app_id`, `subject_
 (102, 121, '1'),
 (103, 121, '3'),
 (104, 121, '5'),
-(105, 122, '1'),
-(106, 122, '2'),
 (107, 123, '1'),
 (108, 123, '2'),
 (109, 124, '1'),
 (110, 124, '3'),
 (111, 125, '1'),
 (112, 125, '2'),
-(113, 126, '1'),
-(114, 126, '3'),
-(115, 126, '5'),
 (116, 127, '1'),
-(117, 127, '3');
+(117, 127, '3'),
+(129, 126, '1'),
+(130, 126, '2'),
+(131, 126, '3'),
+(132, 126, '5'),
+(141, 109, '5'),
+(142, 109, '12'),
+(146, 132, '1'),
+(147, 132, '3');
 
 -- --------------------------------------------------------
 
@@ -329,18 +330,20 @@ CREATE TABLE `cv_data` (
   `cv_score` float DEFAULT 0,
   `cv_path` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `Score` int(3) DEFAULT NULL
+  `last_modified` timestamp NOT NULL DEFAULT current_timestamp(),
+  `Score` int(3) DEFAULT NULL,
+  `status` varchar(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `cv_data`
 --
 
-INSERT INTO `cv_data` (`cv_id`, `member_id`, `contact`, `skills`, `education`, `language`, `other`, `cv_score`, `cv_path`, `created_at`, `Score`) VALUES
-(1, 3, 'CONTACT\nlaukwantingabc1 23@gmal. com', 'Acquired web design skills using\nHTML, Css, and JavaScript.\nLearned basic operations of the Linux\nsystem.', 'Education (IVE)\n2023-2025\nStudied various programming', 'LANGUAGES\nEnglish\nCantonese\nMandarin', 'Engineered a generative A-driven marketplace as part of a school hackathon.\nEmployed Python and JavaScript to build a platform capable of understanding and\nresponding to natural language queries. Integrated OpenAl API to classify user\ninputs (e.g. product search, recipe request) and generate tailored responses.\nImplemented a question-answering systern for recipes, enabling users to ask follow-\nup questions.', 0, '/storage/emulated/0/Android/data/com.example.circlea/files/Pictures/CVs/CV_20250201_175409.jpg', '2025-02-01 17:54:09', NULL),
-(2, 3, 'CONTACT\nlaukwantingabc1 23@gmal. com', 'Acquired web design skills using\nHTML, Css, and JavaScript.\nLearned basic operations of the Linux\nsystem.', 'Education (IVE)\n2023-2025\nStudied various programming', 'LANGUAGES\nEnglish\nCantonese\nMandarin', 'Engineered a generative A-driven marketplace as part of a school hackathon.\nEmployed Python and JavaScript to build a platform capable of understanding and\nresponding to natural language queries. Integrated OpenAl API to classify user\ninputs (e.g. product search, recipe request) and generate tailored responses.\nImplemented a question-answering systern for recipes, enabling users to ask follow-\nup questions.', 0, 'uploads/CV_3_1738432816.jpg', '2025-02-01 18:00:16', NULL),
-(3, 1, 'Email :\nWardiere Inc. / CEO\n123-456-7890\nhello@reallygreatsite.com', 'SKILLS\n• Project Management\n• Public Relations\n• Teamwork\nTime Management\n• Leadership\n• Effective Communication\n• Critical Thinking', 'WARDIERE UNIVERSITY\nBachelor of Business\n• GPA: 3.8 / 4.0', 'LANGUAGES\n• English (Fluent)\n• French (Fluent)\nGerman (Basics)\n• Spanish (Intermediate)\nRICHARD SANCHEZ\nMARKETING MANAGER\nPROFILE\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor\nincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis\nnostrud exercitation. Lorenm ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad\nminim veniam quis nostrud exercitation. Ut enim ad minim veniam quis nostrud\nexercitation.\nWORK EXPERIENCE\nBorcelle Studio\nMarketing Manager & Specialist\n• Develop and execute comprehensive marketing strategies and\ncampaigns that align with the company\'s goals and objectives.\nLead, mentor, and manage a high-performing marketing team,\nfosteringa collaborative and results-driven work environment.\n• Monitor brand consistency across marketing channels and materials.\nFauget Studio\nMarketing Manager & Specialist\n• Create and manage the marketing budget, ensuring efficient\nallocation of resources and optimizing ROI.\n• Oversee market research to identify emerging trends, customer needs,\nand competitor strategies.\nStudio Shodwe\n• Monitor brand consistency across marketing channels and materials.\nMarketing Manager & Specialist\n2030 - PRESENT\nREFERENCE\n• Develop and maintain strong relationships with partners, agencies,\nand vendors to support marketing initiatives.\nEstelle Darcy\nMonitor and maintain brand consistency across all marketing\nchannels and materials.\nWardiere Inc. / CTO', '', 0, 'uploads/CV_1_1738433277.jpg', '2025-02-01 18:07:57', NULL),
-(4, 5, 'cONTACT\nsuCATIoN\n30\nLANG ULOIS\nRICHARD SANCHEZ\nARRETNG wGER\nPROFLE\nwoEK IENCE\ni', 'c', 'g', 'g', 'g', 0, 'uploads/CV_5_1738821808.jpg', '2025-02-06 06:03:28', NULL);
+INSERT INTO `cv_data` (`cv_id`, `member_id`, `contact`, `skills`, `education`, `language`, `other`, `cv_score`, `cv_path`, `created_at`, `last_modified`, `Score`, `status`) VALUES
+(1, 3, 'CONTACT\nlaukwantingabc1 23@gmal. com', 'Acquired web design skills using\nHTML, Css, and JavaScript.\nLearned basic operations of the Linux\nsystem.', 'Education (IVE)\n2023-2025\nStudied various programming', 'LANGUAGES\nEnglish\nCantonese\nMandarin', 'Engineered a generative A-driven marketplace as part of a school hackathon.\nEmployed Python and JavaScript to build a platform capable of understanding and\nresponding to natural language queries. Integrated OpenAl API to classify user\ninputs (e.g. product search, recipe request) and generate tailored responses.\nImplemented a question-answering systern for recipes, enabling users to ask follow-\nup questions.', 0, '/storage/emulated/0/Android/data/com.example.circlea/files/Pictures/CVs/CV_20250201_175409.jpg', '2025-02-01 17:54:09', '2025-04-20 19:21:50', NULL, 'A'),
+(2, 3, 'CONTACT\nlaukwantingabc1 23@gmal. com', 'Acquired web design skills using\nHTML, Css, and JavaScript.\nLearned basic operations of the Linux\nsystem.', 'Education (IVE)\n2023-2025\nStudied various programming香港教育大學', 'LANGUAGES\nEnglish\nCantonese\nMandarin', 'Engineered a generative A-driven marketplace as part of a school hackathon.\nEmployed Python and JavaScript to build a platform capable of understanding and\nresponding to natural language queries. Integrated OpenAl API to classify user\ninputs (e.g. product search, recipe request) and generate tailored responses.\nImplemented a question-answering systern for recipes, enabling users to ask follow-\nup questions.', 0, 'uploads/CV_3_1738432816.jpg', '2025-02-01 18:00:16', '2025-04-20 19:21:50', NULL, 'A'),
+(3, 1, 'Email :\nWardiere Inc. / CEO\n123-456-7890\nhello@reallygreatsite.com', 'SKILLS\n• Project Management\n• Public Relations\n• Teamwork\nTime Management\n• Leadership\n• Effective Communication\n• Critical Thinking', 'WARDIERE UNIVERSITY\nBachelor of Business\n• GPA: 3.8 / 4.0', 'LANGUAGES\n• English (Fluent)\n• French (Fluent)\nGerman (Basics)\n• Spanish (Intermediate)\nRICHARD SANCHEZ\nMARKETING MANAGER\nPROFILE\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor\nincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis\nnostrud exercitation. Lorenm ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad\nminim veniam quis nostrud exercitation. Ut enim ad minim veniam quis nostrud\nexercitation.\nWORK EXPERIENCE\nBorcelle Studio\nMarketing Manager & Specialist\n• Develop and execute comprehensive marketing strategies and\ncampaigns that align with the company\'s goals and objectives.\nLead, mentor, and manage a high-performing marketing team,\nfosteringa collaborative and results-driven work environment.\n• Monitor brand consistency across marketing channels and materials.\nFauget Studio\nMarketing Manager & Specialist\n• Create and manage the marketing budget, ensuring efficient\nallocation of resources and optimizing ROI.\n• Oversee market research to identify emerging trends, customer needs,\nand competitor strategies.\nStudio Shodwe\n• Monitor brand consistency across marketing channels and materials.\nMarketing Manager & Specialist\n2030 - PRESENT\nREFERENCE\n• Develop and maintain strong relationships with partners, agencies,\nand vendors to support marketing initiatives.\nEstelle Darcy\nMonitor and maintain brand consistency across all marketing\nchannels and materials.\nWardiere Inc. / CTO', '', 0, 'uploads/CV_1_1738433277.jpg', '2025-02-01 18:07:57', '2025-04-20 19:21:50', NULL, ''),
+(4, 5, 'cONTACT\nsuCATIoN\n30\nLANG ULOIS\nRICHARD SANCHEZ\nARRETNG wGER\nPROFLE\nwoEK IENCE\ni', 'c', 'HKBU', 'g', 'g', 0, 'uploads/CV_5_1738821808.jpg', '2025-02-06 06:03:28', '2025-04-20 19:21:50', NULL, 'N');
 
 -- --------------------------------------------------------
 
@@ -378,6 +381,28 @@ INSERT INTO `district` (`district_id`, `district_name`, `Latitude`, `Longitude`)
 (16, 'Tsuen Wan', 22.368338682220394, 114.10954504714795),
 (17, 'Kwai Tsing', 22.348248479593146, 114.12604400243906),
 (18, 'Islands', 22.22546337446653, 114.11223391652673);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `fcm_tokens`
+--
+
+CREATE TABLE `fcm_tokens` (
+  `id` int(11) NOT NULL,
+  `member_id` varchar(50) NOT NULL,
+  `token` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `fcm_tokens`
+--
+
+INSERT INTO `fcm_tokens` (`id`, `member_id`, `token`, `created_at`, `updated_at`) VALUES
+(1, '5', 'd4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k', '2025-04-15 13:31:11', '2025-04-21 04:39:10'),
+(2, '3', 'd4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k', '2025-04-15 13:31:50', '2025-04-19 05:29:16');
 
 -- --------------------------------------------------------
 
@@ -456,16 +481,16 @@ INSERT INTO `match` (`match_id`, `tutor_id`, `tutor_app_id`, `ps_id`, `ps_app_id
 (55, '5', '109', '1', '108', '50.00%', 'WPS', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
 (56, '5', '114', '3', '110', '50.00%', 'WPS', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
 (58, '1', '112', '3', '110', '50.00%', 'WPS', 'rejected', 2, '2025-04-11 06:25:00', NULL, NULL, NULL, NULL, NULL, 'T'),
-(59, '5', '', '1', '98', '50.00%', 'WPS', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
 (60, '1', '81', '3', '111', '50.00%', 'WPS', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
-(65, '5', '109', '6', '120', '68%', 'P', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
 (66, '5', '109', '1', '98', '68%', 'WPS', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
 (67, '5', '122', '1', '108', '68%', 'WPS', 'rejected', 2, '2025-04-11 06:24:54', NULL, NULL, NULL, NULL, NULL, 'T'),
 (68, '1', '77', '3', '123', '68%', 'WT', 'approved', 2, '2025-04-11 06:24:58', NULL, NULL, NULL, NULL, NULL, 'PS'),
 (69, '5', '109', '3', '123', '68%', 'A', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
 (70, '1', '77', '5', '', '68%', 'WT', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
-(71, '5', '122', '3', '125', '86%', 'P', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
-(72, '1', '77', '5', '126', '72%', 'WT', 'approved', 2, '2025-04-11 06:24:53', NULL, NULL, NULL, NULL, NULL, 'PS');
+(72, '1', '77', '5', '126', '72%', 'WT', 'approved', 2, '2025-04-11 06:24:53', NULL, NULL, NULL, NULL, NULL, 'PS'),
+(101, '5', '121', '3', '111', '71.28%', 'R', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
+(104, '5', '121', '3', '110', '71.28%', 'P', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
+(105, '5', '124', '3', '125', '71.28%', 'WT', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS');
 
 -- --------------------------------------------------------
 
@@ -528,36 +553,6 @@ INSERT INTO `member_cert` (`member_cert_id`, `member_id`, `cert_file`, `descript
 (63, 6, 'CERT_6_20250213082018_2.jpeg', '', 'P', '2025-02-13 15:20:18'),
 (68, 5, 'CERT_5_20250227085238_1.jpeg', '', 'P', '2025-02-27 15:52:38'),
 (69, 5, 'CERT_5_20250227085238_2.jpeg', '', 'P', '2025-02-27 15:52:38');
-
--- --------------------------------------------------------
-
---
--- 資料表結構 `member_cv`
---
-
-CREATE TABLE `member_cv` (
-  `cv_id` int(11) NOT NULL,
-  `member_id` int(11) NOT NULL,
-  `contact` text DEFAULT NULL,
-  `skills` text DEFAULT NULL,
-  `education` text DEFAULT NULL,
-  `language` text DEFAULT NULL,
-  `other` text DEFAULT NULL,
-  `cv_score` float DEFAULT 0,
-  `cv_path` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `last_modified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `status` varchar(1) NOT NULL DEFAULT 'P'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- 傾印資料表的資料 `member_cv`
---
-
-INSERT INTO `member_cv` (`cv_id`, `member_id`, `contact`, `skills`, `education`, `language`, `other`, `cv_score`, `cv_path`, `created_at`, `last_modified`, `status`) VALUES
-(1, 1, 'w', 'w', 'w', 'w', 'CERTIICATE\nOF ACHIEVEMENT\nTHIS CERTIFICATE IS PRESEND TO:\nRufs Stewatt\nIsabel Mercado\nHopefully this achievement will be the first step towards bigger success.\nkeep trying and give your best\nConnor Hamilton', 0, '', '2025-02-10 05:41:33', '2025-02-11 03:19:04', 'N'),
-(2, 5, 'CONTACT\nlaukwantingabc123@gmail com', 'Acquired web design skills using\nHTML, CSs, and JavaScript.\n•Learned basic operations of the Linux\nsystem,', 'Education (IVE)\nKWAN TING LAU\n2023-2025\nStudied various programming', 'LANGUAGES\nEnglish\nCantonese\nMandarin', 'Engineered a generative A-driven marketplace as part of a school hackathon.\nEmployed Python and JavaScript to build a platform capable of understanding and\nresponding to natural language queries. Integrated OpenAl API to classify user\ninputs (e.g, product search, recipe request) and generate tailored responses.\nImplemented a question-answering system for recipes, enabling users to ask follow-\nup questions.', 0, '', '2025-02-11 03:15:18', '2025-02-27 07:53:41', 'A'),
-(3, 6, 'CONTACT\nlaukwantingabc123@gmal. com', 'Acquired web design skills using\nHTML, CSs, and JavaScript.\nLearned basic operations of the Linux\nsystem,', 'Education (IVE)\n2023-2025\nKWAN TING LAU\nStudied various programming\nJanguages, Including Java, C#, PHP,\nand Python.', 'LANGUAGES\nEnglish\nCantonese\nMandarin', 'SCHOOL HACKATHON\nAl-Powered E-commerce Platform\nEngineered a generative A-driven marketplace as part of a school hackatihon.\nEmployed Python and JavaScript to build a platform capable of understanding and\nresponding to natural language queries. Integrated OpenAl API to classify user\ninputs (e.g. product search, recipe request) and generate tailored responses.\nImplemented a question-answering systern for recipes, enabling users to ask follow-\nup questions', 0, '', '2025-02-12 11:11:18', '2025-02-12 11:15:06', 'A');
 
 -- --------------------------------------------------------
 
@@ -626,16 +621,41 @@ INSERT INTO `member_detail` (`member_detail_id`, `member_id`, `Gender`, `Address
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `notification`
+-- 資料表結構 `notifications`
 --
 
-CREATE TABLE `notification` (
+CREATE TABLE `notifications` (
   `id` int(11) NOT NULL,
-  `user_id` varchar(255) DEFAULT NULL,
-  `message` text DEFAULT NULL,
+  `member_id` varchar(50) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `related_id` int(11) DEFAULT NULL,
   `is_read` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `member_id`, `title`, `message`, `type`, `related_id`, `is_read`, `created_at`) VALUES
+(282, '5', '申請已通過審核', '您的申請已通過管理員審核，現在可以開始使用配對功能。', 'application_approved', 132, 0, '2025-04-21 04:36:59'),
+(283, '5', '申請已通過審核', '您的申請已通過管理員審核，現在可以開始使用配對功能。', 'application_approved', 132, 0, '2025-04-21 04:37:42'),
+(284, '5', '申請已通過審核', '您的申請已通過管理員審核，現在可以開始使用配對功能。', 'application_approved', 132, 0, '2025-04-21 04:39:21'),
+(285, '3', '申請已通過審核', '您的申請已通過管理員審核，現在可以開始使用配對功能。', 'application_approved', 127, 0, '2025-04-21 04:40:16'),
+(286, '5', '新補習請求', 'tsui 向您發送了補習請求', 'new_request', 100, 0, '2025-04-21 04:47:33'),
+(287, '5', '新補習請求', 'tsui 向您發送了補習請求', 'new_request', 101, 0, '2025-04-21 05:02:45'),
+(288, '5', '申請已通過審核', '您的申請已通過管理員審核，現在可以開始使用配對功能。', 'application_approved', 132, 0, '2025-04-21 05:03:36'),
+(289, '5', '申請未通過審核', '很抱歉，您的申請未通過管理員審核。請檢查您的資料是否完整，或聯繫客服了解詳情。', 'application_rejected', 132, 0, '2025-04-21 05:03:41'),
+(290, '5', '申請已通過審核', '您的申請已通過管理員審核，現在可以開始使用配對功能。', 'application_approved', 132, 0, '2025-04-21 05:03:45'),
+(291, '5', 'CV已通過審核', '您的CV已通過管理員審核，現在可以開始使用配對功能。', 'cv_approved', 4, 0, '2025-04-21 05:16:34'),
+(292, '5', 'CV已通過審核', '您的CV已通過管理員審核，現在可以開始使用配對功能。', 'cv_approved', 4, 0, '2025-04-21 05:20:48'),
+(293, '5', 'CV未通過審核', '很抱歉，您的CV未通過管理員審核。請檢查您的CV是否完整，或聯繫客服了解詳情。', 'cv_rejected', 4, 0, '2025-04-21 05:20:52'),
+(294, '5', '新補習請求', 'tsui 向您發送了補習請求', 'new_request', 102, 0, '2025-04-21 05:41:35'),
+(295, '5', '新補習請求', 'tsui 向您發送了補習請求', 'new_request', 103, 0, '2025-04-21 05:49:12'),
+(296, '5', '新補習請求', 'tsui 向您發送了補習請求', 'new_request', 104, 0, '2025-04-21 06:19:03'),
+(297, '5', '新補習請求', 'tsui 向您發送了補習請求', 'new_request', 105, 0, '2025-04-21 06:42:29');
 
 -- --------------------------------------------------------
 
@@ -802,6 +822,13 @@ ALTER TABLE `district`
   ADD PRIMARY KEY (`district_id`);
 
 --
+-- 資料表索引 `fcm_tokens`
+--
+ALTER TABLE `fcm_tokens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_member_id` (`member_id`);
+
+--
 -- 資料表索引 `first_lesson`
 --
 ALTER TABLE `first_lesson`
@@ -837,14 +864,6 @@ ALTER TABLE `member_cert`
   ADD KEY `idx_member_id` (`member_id`);
 
 --
--- 資料表索引 `member_cv`
---
-ALTER TABLE `member_cv`
-  ADD PRIMARY KEY (`cv_id`),
-  ADD UNIQUE KEY `unique_member_cv` (`member_id`),
-  ADD KEY `member_id` (`member_id`);
-
---
 -- 資料表索引 `member_detail`
 --
 ALTER TABLE `member_detail`
@@ -852,10 +871,12 @@ ALTER TABLE `member_detail`
   ADD KEY `idx_member_id_detail` (`member_id`);
 
 --
--- 資料表索引 `notification`
+-- 資料表索引 `notifications`
 --
-ALTER TABLE `notification`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_member_id` (`member_id`),
+  ADD KEY `idx_is_read` (`is_read`);
 
 --
 -- 資料表索引 `payment`
@@ -893,25 +914,25 @@ ALTER TABLE `ads`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `application`
 --
 ALTER TABLE `application`
-  MODIFY `app_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+  MODIFY `app_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `application_date`
 --
 ALTER TABLE `application_date`
-  MODIFY `app_Date_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `app_Date_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `application_district`
 --
 ALTER TABLE `application_district`
-  MODIFY `application_district_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `application_district_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `application_subject`
 --
 ALTER TABLE `application_subject`
-  MODIFY `application_subject_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+  MODIFY `application_subject_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `booking`
@@ -938,6 +959,12 @@ ALTER TABLE `district`
   MODIFY `district_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `fcm_tokens`
+--
+ALTER TABLE `fcm_tokens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `first_lesson`
 --
 ALTER TABLE `first_lesson`
@@ -953,7 +980,7 @@ ALTER TABLE `first_lesson_responses`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `match`
 --
 ALTER TABLE `match`
-  MODIFY `match_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `match_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `member`
@@ -968,22 +995,16 @@ ALTER TABLE `member_cert`
   MODIFY `member_cert_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
--- 使用資料表自動遞增(AUTO_INCREMENT) `member_cv`
---
-ALTER TABLE `member_cv`
-  MODIFY `cv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
 -- 使用資料表自動遞增(AUTO_INCREMENT) `member_detail`
 --
 ALTER TABLE `member_detail`
   MODIFY `member_detail_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
--- 使用資料表自動遞增(AUTO_INCREMENT) `notification`
+-- 使用資料表自動遞增(AUTO_INCREMENT) `notifications`
 --
-ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=298;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `payment`
@@ -1044,12 +1065,6 @@ ALTER TABLE `first_lesson`
 --
 ALTER TABLE `first_lesson_responses`
   ADD CONSTRAINT `fk_first_lesson_responses_booking` FOREIGN KEY (`booking_id`) REFERENCES `booking` (`booking_id`) ON DELETE CASCADE;
-
---
--- 資料表的限制式 `member_cv`
---
-ALTER TABLE `member_cv`
-  ADD CONSTRAINT `member_cv_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`) ON DELETE CASCADE;
 
 --
 -- 資料表的限制式 `payment`

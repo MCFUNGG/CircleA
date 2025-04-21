@@ -1,0 +1,50 @@
+/* Table Styles */
+table {
+    width: 100%; /* Full-width for tables */
+    border-collapse: collapse; /* Eliminate double borders */
+    margin-top: 20px; /* Space between elements */
+  }
+  
+  th, td {
+    padding: 12px; /* Padding for table cells */
+    text-align: left; /* Left alignment for text */
+    border: 1px solid #ddd; /* Light border around cells */
+  }
+  
+  th {
+    background-color: #007bff; /* Header background color */
+    color: white; /* Header text color */
+    font-weight: 600; /* Semi-bold for header */
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2; /* Alternate row background color */
+  }
+  
+  tr:hover {
+    background-color: #e2e6ea; /* Change background on hover */
+  }
+  
+  /* Search Input */
+  input[type="text"] {
+    padding: 10px; /* Padding for search input */
+    width: 70%; /* Width of input */
+    border: 1px solid #ccc; /* Light border for input */
+    border-radius: 5px; /* Rounded corners for input */
+    margin-right: 10px; /* Space between input and button */
+  }
+  
+  .btn-search {
+    padding: 10px 15px; /* Padding for search button */
+    color: white; /* Text color */
+    background-color: #007bff; /* Button background */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s; /* Smooth hover effect */
+  }
+  
+  .btn-search:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+

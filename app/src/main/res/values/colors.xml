@@ -39,4 +39,10 @@
     <color name="red_500">#F44336</color>
     <color name="red_700">#D32F2F</color>
     <color name="colorPrimary">@color/green_500</color>
+    <color name="chip_background_selected">#2196F3</color>
+    <color name="chip_text_color_selected">#FFFFFF</color>
+    <color name="chip_background_normal">#F5F5F5</color>
+    <color name="chip_text_color_normal">#757575</color>
+    <color name="message_read_background">#FFFFFF</color>
+    <color name="message_unread_background">#F5F5F5</color>
 </resources>

@@ -102,7 +102,7 @@
     <string name="dialog_title">標題</string>
     <string name="dialog_message">訊息</string>
     <string name="fill_application_details">填寫申請詳情</string>
-    <string name="application_history">申請歷史</string>
+    <string name="application_history">申請記錄</string>
     
     <!-- Booking-related strings -->
     <string name="student_name">學生姓名</string>
@@ -114,10 +114,8 @@
     <!-- Application History Strings -->
     <string name="failed_to_fetch_ps_applications">無法獲取家長/學生申請</string>
     <string name="failed_to_fetch_tutor_applications">無法獲取家教申請</string>
-    <string name="unknown_error">發生未知錯誤</string>
-    <string name="error_processing_data">處理數據時出錯</string>
     <string name="n_a">不適用</string>
-    <string name="pending">待處理</string>
+    <string name="pending">待審核</string>
     <string name="approved">已批准</string>
     <string name="rejected">已拒絕</string>
 
@@ -208,7 +206,7 @@
 
     <!-- Additional Tutor Booking Strings -->
     <string name="student_label">學生: %s</string>
-    <string name="date_time_format">日期: %s\n時間: %s - %s</string>
+    <string name="date_time_format" formatted="false">日期: %s\n時間: %s - %s</string>
     <string name="accept_booking">接受預約</string>
     <string name="are_you_sure_you_want_to_accept_this_booking_request">您確定要接受此預約請求嗎？</string>
     <string name="reject_booking">拒絕預約</string>
@@ -260,7 +258,6 @@
     <string name="passwords_do_not_match">密碼不匹配</string>
     <string name="session_expired">您的會話已過期。請重新登錄。</string>
     <string name="permission_denied">權限被拒絕</string>
-    <string name="failed_to_fetch_data">獲取數據失敗。</string>
 
     <!-- Tutor/Student Specific -->
     <string name="qualifications">資格</string>
@@ -545,4 +542,11 @@
     <string name="recognition_error">辨識錯誤</string>
     <string name="text_recognition_complete">文字辨識完成</string>
     <string name="image_conversion_failed">圖片轉換失敗</string>
+
+    <!-- Filter strings -->
+    <string name="filter_result_message">找到 %1$d 個匹配結果</string>
+    <string name="filter_reset">過濾器已重置</string>
+    <string name="failed_to_fetch_data">無法獲取數據</string>
+    <string name="unknown_error">未知錯誤</string>
+    <string name="error_processing_data">處理數據時出錯</string>
 </resources>

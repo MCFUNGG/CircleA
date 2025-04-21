@@ -1,0 +1,109 @@
+/* ---------- SIDEBAR ---------- */
+
+#sidebar {
+    grid-area: sidebar;
+    background-color: #1d2634 !important;
+    color: #9799ab;
+    height: 100%;
+    padding: 1rem;
+}
+
+.sidebar-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 20px 20px;
+    margin-bottom: 30px;
+}
+
+.sidebar-title > span {
+    display: none;
+}
+
+.sidebar-brand {
+    color: #ffffff !important;
+    font-size: 1.2rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+}
+
+.sidebar-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.sidebar-list-item {
+    margin-bottom: 0.8rem;
+}
+
+.sidebar-list-item a {
+    color: #9799ab !important;
+    text-decoration: none;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+    gap: 12px;
+}
+
+.sidebar-list-item a:hover,
+.sidebar-list-item a.active {
+    background-color: #2e3646 !important;
+    color: #ffffff !important;
+    border-radius: 4px;
+}
+
+
+/* Sidebar brand */
+.sidebar-brand .material-symbols-outlined {
+    font-size: 28px;
+}
+
+/* Sidebar list items */
+.sidebar-list-item a {
+    color: #9799ab !important;
+    text-decoration: none;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+    gap: 12px;
+}
+
+.sidebar-list-item a .material-symbols-outlined {
+    opacity: 0.8;
+}
+
+.sidebar-list-item a:hover .material-symbols-outlined,
+.sidebar-list-item a.active .material-symbols-outlined {
+    opacity: 1;
+}
+
+#sidebar * {
+
+    box-sizing: border-box;
+}
+
+#sidebar a,
+#sidebar a:hover,
+#sidebar a:focus {
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar-list-item + .sidebar-list-item {
+    margin-top: 0.5rem;
+}
+
+.sidebar-responsive {
+    display: inline !important;
+    position: absolute;
+    z-index: 12 !important;
+}

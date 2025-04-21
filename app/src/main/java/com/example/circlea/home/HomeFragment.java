@@ -28,6 +28,7 @@
     import com.example.circlea.IPConfig;
     import com.example.circlea.R;
     import com.example.circlea.home.TutorProfileActivity;
+    import com.google.firebase.messaging.FirebaseMessaging;
 
     import org.json.JSONArray;
     import org.json.JSONException;
@@ -36,6 +37,7 @@
     import java.io.IOException;
     import java.util.ArrayList;
     import java.util.Collections;
+    import java.util.List;
 
     import okhttp3.Call;
     import okhttp3.Callback;
@@ -54,6 +56,9 @@
         private OkHttpClient client;
         private LinearLayout highRatedSection, tutorApplicationSection, studentApplicationSection;
         private Button btnHighRated, btnTutorApp, btnStudentApp;
+        private View tutorFilterLayout, studentFilterLayout;
+        private FilterHelper tutorFilterHelper, studentFilterHelper;
+        private ArrayList<ApplicationItem> originalTutorApplications, originalStudentApplications;
 
         @Nullable
         @Override
@@ -62,7 +67,16 @@
             if (!isAdded()) {
                 return null;
             }
-
+            //-----------TESTING----------------
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            String token = task.getResult();
+                            Log.d("FCM", "Token: " + token);
+                            // 顯示或保存這個 token
+                        }
+                    });
+            //----------------------------------
             client = new OkHttpClient();
             View view = inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -85,6 +99,17 @@
             HorizontalAdapter horizontalAdapter = new HorizontalAdapter(horizontalData);
             horizontalRecyclerView.setAdapter(horizontalAdapter);
             getAdsData();
+
+            // 初始化過濾器佈局
+            tutorFilterLayout = view.findViewById(R.id.tutor_filter);
+            studentFilterLayout = view.findViewById(R.id.student_filter);
+            
+            // 初始化過濾器助手
+            tutorFilterHelper = new FilterHelper(tutorFilterLayout, getContext());
+            studentFilterHelper = new FilterHelper(studentFilterLayout, getContext());
+            
+            // 設置過濾器監聽器
+            setupFilterListeners();
 
             // Fetch application data first
             fetchHighRatedTutors();
@@ -111,6 +136,10 @@
             btnHighRated = view.findViewById(R.id.btnHighRated);
             btnTutorApp = view.findViewById(R.id.btnTutorApp);
             btnStudentApp = view.findViewById(R.id.btnStudentApp);
+            
+            // 初始化列表數據
+            originalTutorApplications = new ArrayList<>();
+            originalStudentApplications = new ArrayList<>();
         }
 
         private void setupRecyclerViews() {
@@ -150,10 +179,19 @@
 
                 if (v.getId() == R.id.btnHighRated) {
                     showSection(highRatedSection);
+                    // 高评分导师标签不显示过滤器
+                    tutorFilterLayout.setVisibility(View.GONE);
+                    studentFilterLayout.setVisibility(View.GONE);
                 } else if (v.getId() == R.id.btnTutorApp) {
                     showSection(tutorApplicationSection);
+                    // 显示导师应用过滤器
+                    tutorFilterLayout.setVisibility(View.VISIBLE);
+                    studentFilterLayout.setVisibility(View.GONE);
                 } else if (v.getId() == R.id.btnStudentApp) {
                     showSection(studentApplicationSection);
+                    // 显示学生应用过滤器
+                    studentFilterLayout.setVisibility(View.VISIBLE);
+                    tutorFilterLayout.setVisibility(View.GONE);
                 }
             };
 
@@ -351,6 +389,10 @@
                                     if (isAdded()) {
                                         requireActivity().runOnUiThread(() -> {
                                             if (isAdded()) {
+                                                // 更新原始數據列表
+                                                originalTutorApplications.clear();
+                                                originalTutorApplications.addAll(applicationsList);
+                                                
                                                 FindingStudentsAdapter findingStudentsAdapter =
                                                         new FindingStudentsAdapter(applicationsList, requireContext());
                                                 findingStudentsRecyclerView.setAdapter(findingStudentsAdapter);
@@ -460,6 +502,10 @@
                                     if (isAdded()) {
                                         requireActivity().runOnUiThread(() -> {
                                             if (isAdded()) {
+                                                // 更新原始數據列表
+                                                originalStudentApplications.clear();
+                                                originalStudentApplications.addAll(applicationsList);
+                                                
                                                 ApplicationAdapter findingTutorsAdapter =
                                                         new ApplicationAdapter(applicationsList, requireContext());
                                                 findingTutorsRecyclerView.setAdapter(findingTutorsAdapter);
@@ -660,5 +706,216 @@
                     Log.d("HomeFragment", "Adapter set and notified");
                 });
             }
+        }
+
+        /**
+         * 設置過濾器監聽器
+         */
+        private void setupFilterListeners() {
+            // 設置導師過濾器監聽器
+            tutorFilterHelper.setFilterListener(new FilterHelper.FilterListener() {
+                @Override
+                public void onApplyFilter(FilterHelper.FilterCriteria filterCriteria) {
+                    ArrayList<ApplicationItem> filteredItems = filterCriteria.filter(originalTutorApplications);
+                    FindingStudentsAdapter adapter = (FindingStudentsAdapter) findingStudentsRecyclerView.getAdapter();
+                    if (adapter != null) {
+                        adapter.updateData(filteredItems);
+                    }
+                    
+                    // 顯示過濾結果提示
+                    String message = getString(R.string.filter_result_message, filteredItems.size());
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onResetFilter() {
+                    FindingStudentsAdapter adapter = (FindingStudentsAdapter) findingStudentsRecyclerView.getAdapter();
+                    if (adapter != null) {
+                        adapter.updateData(originalTutorApplications);
+                    }
+                    Toast.makeText(getContext(), R.string.filter_reset, Toast.LENGTH_SHORT).show();
+                }
+            });
+            
+            // 設置學生過濾器監聽器
+            studentFilterHelper.setFilterListener(new FilterHelper.FilterListener() {
+                @Override
+                public void onApplyFilter(FilterHelper.FilterCriteria filterCriteria) {
+                    ArrayList<ApplicationItem> filteredItems = filterCriteria.filter(originalStudentApplications);
+                    ApplicationAdapter adapter = (ApplicationAdapter) findingTutorsRecyclerView.getAdapter();
+                    if (adapter != null) {
+                        adapter.updateData(filteredItems);
+                    }
+                    
+                    // 顯示過濾結果提示
+                    String message = getString(R.string.filter_result_message, filteredItems.size());
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onResetFilter() {
+                    ApplicationAdapter adapter = (ApplicationAdapter) findingTutorsRecyclerView.getAdapter();
+                    if (adapter != null) {
+                        adapter.updateData(originalStudentApplications);
+                    }
+                    Toast.makeText(getContext(), R.string.filter_reset, Toast.LENGTH_SHORT).show();
+                }
+            });
+            
+            // 初始化過濾器數據
+            initializeFilterData();
+        }
+        
+        /**
+         * 初始化過濾器數據，包括年級、科目和地區
+         */
+        private void initializeFilterData() {
+            // 從數據庫獲取年級、科目和地區數據
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://" + IPConfig.getIP() + "/FYP/php/get_filter_data.php";
+            
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e(TAG, "獲取過濾數據失敗: " + e.getMessage());
+                    // 失敗時使用默認靜態數據
+                    loadDefaultFilterData();
+                }
+                
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        String jsonResponse = response.body().string();
+                        try {
+                            JSONObject jsonObject = new JSONObject(jsonResponse);
+                            
+                            // 處理年級數據
+                            JSONArray levelsArray = jsonObject.getJSONArray("levels");
+                            List<String> classLevels = new ArrayList<>();
+                            for (int i = 0; i < levelsArray.length(); i++) {
+                                JSONObject levelObj = levelsArray.getJSONObject(i);
+                                classLevels.add(levelObj.getString("class_level_name"));
+                            }
+                            
+                            // 處理科目數據
+                            JSONArray subjectsArray = jsonObject.getJSONArray("subjects");
+                            List<String> subjects = new ArrayList<>();
+                            for (int i = 0; i < subjectsArray.length(); i++) {
+                                JSONObject subjectObj = subjectsArray.getJSONObject(i);
+                                subjects.add(subjectObj.getString("subject_name"));
+                            }
+                            
+                            // 處理地區數據
+                            JSONArray districtsArray = jsonObject.getJSONArray("districts");
+                            List<String> districts = new ArrayList<>();
+                            for (int i = 0; i < districtsArray.length(); i++) {
+                                JSONObject districtObj = districtsArray.getJSONObject(i);
+                                districts.add(districtObj.getString("district_name"));
+                            }
+                            
+                            // 在UI線程更新過濾器
+                            if (isAdded()) {
+                                requireActivity().runOnUiThread(() -> {
+                                    tutorFilterHelper.setClassLevelItems(classLevels);
+                                    studentFilterHelper.setClassLevelItems(classLevels);
+                                    
+                                    tutorFilterHelper.setSubjectItems(subjects);
+                                    studentFilterHelper.setSubjectItems(subjects);
+                                    
+                                    tutorFilterHelper.setDistrictItems(districts);
+                                    studentFilterHelper.setDistrictItems(districts);
+                                    
+                                    Log.d(TAG, "過濾器數據初始化完成（從數據庫）");
+                                });
+                            }
+                            
+                        } catch (JSONException e) {
+                            Log.e(TAG, "解析過濾數據JSON失敗: " + e.getMessage());
+                            // JSON解析失敗時使用默認靜態數據
+                            loadDefaultFilterData();
+                        }
+                    } else {
+                        Log.e(TAG, "獲取過濾數據失敗，狀態碼: " + response.code());
+                        // 請求失敗時使用默認靜態數據
+                        loadDefaultFilterData();
+                    }
+                }
+            });
+        }
+        
+        /**
+         * 加載默認的靜態過濾器數據（作為後備）
+         */
+        private void loadDefaultFilterData() {
+            if (!isAdded()) return;
+            
+            requireActivity().runOnUiThread(() -> {
+                // 初始化年級數據（靜態數據）
+                List<String> classLevels = new ArrayList<>();
+                classLevels.add("Kindergarten - K.1");
+                classLevels.add("Kindergarten - K.2");
+                classLevels.add("Kindergarten - K.3");
+                classLevels.add("Primary school - P.1");
+                classLevels.add("Primary school - P.2");
+                classLevels.add("Primary school - P.3");
+                classLevels.add("Primary school - P.4");
+                classLevels.add("Primary school - P.5");
+                classLevels.add("Primary school - P.6");
+                classLevels.add("Secondary School - F.1");
+                classLevels.add("Secondary School - F.2");
+                classLevels.add("Secondary School - F.3");
+                classLevels.add("Secondary School - F.4");
+                classLevels.add("Secondary School - F.5");
+                classLevels.add("Secondary School - F.6");
+                classLevels.add("University - College freshman");
+                tutorFilterHelper.setClassLevelItems(classLevels);
+                studentFilterHelper.setClassLevelItems(classLevels);
+                
+                // 初始化科目數據（靜態數據）
+                List<String> subjects = new ArrayList<>();
+                subjects.add("Chinese Language");
+                subjects.add("English Language");
+                subjects.add("Mathematics");
+                subjects.add("Physics");
+                subjects.add("Chemistry");
+                subjects.add("Biology");
+                subjects.add("History");
+                subjects.add("Geography");
+                subjects.add("Economics");
+                subjects.add("Music");
+                subjects.add("Visual Arts");
+                subjects.add("Physical Education");
+                tutorFilterHelper.setSubjectItems(subjects);
+                studentFilterHelper.setSubjectItems(subjects);
+                
+                // 初始化地區數據（靜態數據）
+                List<String> districts = new ArrayList<>();
+                districts.add("Central and Western");
+                districts.add("Eastern");
+                districts.add("Southern");
+                districts.add("Wan Chai");
+                districts.add("Kowloon City");
+                districts.add("Yau Tsim Mong");
+                districts.add("Sham Shui Po");
+                districts.add("Wong Tai Sin");
+                districts.add("Kwun Tong");
+                districts.add("Tai Po");
+                districts.add("Yuen Long");
+                districts.add("Tuen Mun");
+                districts.add("North");
+                districts.add("Sai Kung");
+                districts.add("Sha Tin");
+                districts.add("Tsuen Wan");
+                districts.add("Kwai Tsing");
+                districts.add("Islands");
+                tutorFilterHelper.setDistrictItems(districts);
+                studentFilterHelper.setDistrictItems(districts);
+                
+                Log.d(TAG, "過濾器數據初始化完成（使用默認數據）");
+            });
         }
     }

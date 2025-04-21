@@ -215,7 +215,15 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
     @Override
     public int getItemCount() {
-        return data != null ? data.size() : 0;
+        return data.size();
+    }
+
+    /**
+     * 更新適配器數據並刷新顯示
+     */
+    public void updateData(ArrayList<ApplicationItem> newData) {
+        this.data = newData;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

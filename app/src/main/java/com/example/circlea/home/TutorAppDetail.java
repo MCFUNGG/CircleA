@@ -447,8 +447,6 @@ public class TutorAppDetail extends AppCompatActivity {
 
     //post match request from PS
     private void handleApplyConfirmation() {
-
-
         // Get the matching score
         String scoreText = matchingScoreTextView.getText().toString();
         String matchMark = extractScore(scoreText);
@@ -507,21 +505,60 @@ public class TutorAppDetail extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                Log.d("PsSendRequestToT", "Raw response: " + responseData);
+
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
-                    final boolean success = jsonResponse.getBoolean("success");
-                    final String message = jsonResponse.getString("message");
+                    boolean success = jsonResponse.getBoolean("success");
+                    
+                    // Log FCM debug information if available
+                    if (jsonResponse.has("fcm_debug")) {
+                        JSONObject fcmDebug = jsonResponse.getJSONObject("fcm_debug");
+                        Log.d("FCM_Debug", "=== FCM Debug Information ===");
+                        
+                        // Log debug logs if available
+                        if (fcmDebug.has("debug_logs")) {
+                            JSONArray debugLogs = fcmDebug.getJSONArray("debug_logs");
+                            for (int i = 0; i < debugLogs.length(); i++) {
+                                Log.d("FCM_Debug", debugLogs.getString(i));
+                            }
+                        }
+                        
+                        // Log FCM request details
+                        if (fcmDebug.has("fcm_request")) {
+                            Log.d("FCM_Debug", "Request: " + fcmDebug.getJSONObject("fcm_request").toString(2));
+                        }
+                        
+                        // Log FCM response
+                        if (fcmDebug.has("fcm_response")) {
+                            Log.d("FCM_Debug", "Response: " + fcmDebug.get("fcm_response").toString());
+                        }
+                        
+                        // Log any FCM errors
+                        if (fcmDebug.has("fcm_error")) {
+                            Log.e("FCM_Debug", "Error: " + fcmDebug.getString("fcm_error"));
+                        }
+                    }
+
+                    final String message = jsonResponse.optString("message", "Unknown response");
+                    Log.d("PsSendRequestToT", "Success: " + success + ", Message: " + message);
 
                     runOnUiThread(() -> {
-                        Toast.makeText(TutorAppDetail.this, message, Toast.LENGTH_SHORT).show();
                         if (success) {
-                            // Close the dialog and possibly finish the activity
-                            applyDialog.dismiss();
-                            finish(); // Optional: finish the activity if you want to return to previous screen
+                            Toast.makeText(TutorAppDetail.this,
+                                    "Application submitted successfully!",
+                                    Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(TutorAppDetail.this,
+                                    "Failed to submit application: " + message,
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
                 } catch (JSONException e) {
-                    Log.e("PsSendRequestToT", "JSON parsing error: " + e.getMessage());
+                    Log.e("PsSendRequestToT", "JSON parsing error: " + e.getMessage() +
+                            "\nResponse data: " + responseData);
+                    e.printStackTrace();
                     runOnUiThread(() -> {
                         Toast.makeText(TutorAppDetail.this,
                                 "Error processing server response",

@@ -19,6 +19,7 @@ import okhttp3.Response;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circlea.registration.Registration;
+import com.example.circlea.utils.FCMTokenManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +30,7 @@ public class Login extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin,btnRegister;
+    private static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +140,9 @@ public class Login extends AppCompatActivity {
                                 String savedMemberId = sharedPreferences.getString("member_id", null);
                                 Log.d("LoginRequest", "CircleA(sharedPreferences): Saved member ID: " + savedMemberId);
 
+                                // 獲取並保存FCM令牌到服務器
+                                getFCMTokenAndSendToServer(memberID);
+
                                 // Navigate to the main activity
                                 Intent intent = new Intent(Login.this, Home.class);
                                 startActivity(intent);
@@ -151,6 +156,23 @@ public class Login extends AppCompatActivity {
                     Log.e("LoginRequest", "Request failed, response code: " + response.code());
                     runOnUiThread(() -> Toast.makeText(Login.this, "Invalid email or password", Toast.LENGTH_SHORT).show());
                 }
+            }
+        });
+    }
+
+    // 獲取FCM令牌並發送到服務器
+    private void getFCMTokenAndSendToServer(String memberId) {
+        FCMTokenManager.getFCMToken(this, new FCMTokenManager.TokenCallback() {
+            @Override
+            public void onSuccess(String token) {
+                Log.d(TAG, "Successfully retrieved FCM token: " + token);
+                // 將令牌發送到服務器
+                FCMTokenManager.sendTokenToServer(Login.this, memberId, token);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e(TAG, "Failed to get FCM token: " + errorMessage);
             }
         });
     }

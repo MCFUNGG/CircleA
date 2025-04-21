@@ -1,0 +1,259 @@
+[21-Apr-2025 09:12:47 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 105
+    [member_id] => 5
+)
+
+[21-Apr-2025 09:12:47 Europe/Berlin] Error in update_match_status_to_Pending.php: Table 'system001.users' doesn't exist
+[21-Apr-2025 09:16:32 Europe/Berlin] PHP Warning:  require_once(config/database.php): Failed to open stream: No such file or directory in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php on line 7
+[21-Apr-2025 09:16:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'config/database.php' (include_path='D:\xampp\php\PEAR') in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php:7
+Stack trace:
+#0 {main}
+  thrown in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php on line 7
+[21-Apr-2025 09:16:35 Europe/Berlin] PHP Warning:  require_once(config/database.php): Failed to open stream: No such file or directory in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php on line 7
+[21-Apr-2025 09:16:35 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'config/database.php' (include_path='D:\xampp\php\PEAR') in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php:7
+Stack trace:
+#0 {main}
+  thrown in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php on line 7
+[21-Apr-2025 09:22:45 Europe/Berlin] PHP Warning:  require_once(config/database.php): Failed to open stream: No such file or directory in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php on line 7
+[21-Apr-2025 09:22:45 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'config/database.php' (include_path='D:\xampp\php\PEAR') in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php:7
+Stack trace:
+#0 {main}
+  thrown in D:\xampp\htdocs\FYP\php\update_match_status_to_Pending.php on line 7
+[21-Apr-2025 09:30:25 Europe/Berlin] 開始發送 FCM 消息給 token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[21-Apr-2025 09:30:25 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 09:30:25 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 09:30:25 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 09:30:25 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"105"}
+[21-Apr-2025 09:30:25 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 09:30:25 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 09:30:26 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 09:30:26 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"105"}
+[21-Apr-2025 09:30:26 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 09:30:26 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"105"},"android":{"priority":"high"}}}
+[21-Apr-2025 09:30:26 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 09:30:26 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745220627086184%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 09:30:26 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 09:33:06 Europe/Berlin] 開始發送 FCM 消息給 token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[21-Apr-2025 09:33:06 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 09:33:06 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 09:33:06 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 09:33:06 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 09:33:06 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 09:33:06 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 09:33:07 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 09:33:07 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 09:33:07 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 09:33:07 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 09:33:07 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 09:33:07 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745220788105077%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 09:33:07 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 09:49:46 Europe/Berlin] 開始發送 FCM 消息給 token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[21-Apr-2025 09:49:46 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 09:49:46 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 09:49:46 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 09:49:46 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 09:49:46 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 09:49:46 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 09:49:46 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 09:49:46 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 09:49:46 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 09:49:46 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 09:49:47 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 09:49:47 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745221787883566%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 09:49:47 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 09:54:10 Europe/Berlin] 開始發送 FCM 消息給 token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[21-Apr-2025 09:54:10 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 09:54:10 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 09:54:10 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 09:54:10 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 09:54:10 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 09:54:10 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 09:54:10 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 09:54:10 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 09:54:10 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 09:54:10 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 09:54:10 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 09:54:10 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745222051833235%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 09:54:10 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 09:55:09 Europe/Berlin] 開始發送 FCM 消息給 token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[21-Apr-2025 09:55:09 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 09:55:09 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 09:55:09 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 09:55:09 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 09:55:09 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 09:55:09 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 09:55:10 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 09:55:10 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 09:55:10 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 09:55:10 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 09:55:10 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 09:55:10 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745222111183454%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 09:55:10 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 10:02:37 Europe/Berlin] 開始發送 FCM 消息給 token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[21-Apr-2025 10:02:37 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 10:02:37 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 10:02:37 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 10:02:37 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 10:02:37 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 10:02:37 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 10:02:38 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 10:02:38 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 10:02:38 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 10:02:38 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 10:02:38 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 10:02:38 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745222559150924%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 10:02:38 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 10:03:30 Europe/Berlin] 開始發送 FCM 消息給 token: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:03:30 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 10:03:30 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 10:03:30 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 10:03:30 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 10:03:30 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 10:03:30 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 10:03:30 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 10:03:30 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 10:03:30 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 10:03:30 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 10:03:30 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 10:03:30 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745222611432061%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 10:03:30 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 10:06:43 Europe/Berlin] 開始發送 FCM 消息給 token: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:06:43 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 10:06:43 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 10:06:43 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 10:06:43 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 10:06:43 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 10:06:43 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 10:06:44 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 10:06:44 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 10:06:44 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 10:06:44 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 10:06:44 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 10:06:44 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745222805486624%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 10:06:44 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 10:08:00 Europe/Berlin] Processing match_id: 106, member_id: 5
+[21-Apr-2025 10:08:00 Europe/Berlin] Match data: {"match_id":106,"tutor_id":"5","tutor_app_id":"124","ps_id":"3","ps_app_id":"127","match_mark":"71.28%","status":"WT","admin_approval_status":"pending","admin_approved_by":null,"admin_approved_at":null,"video_file":null,"video_mark":null,"video_datetime":null,"app_id":null,"member_id":null,"match_creator":"PS"}
+[21-Apr-2025 10:08:00 Europe/Berlin] Is tutor: true
+[21-Apr-2025 10:08:00 Europe/Berlin] Notification recipient ID: 3
+[21-Apr-2025 10:08:00 Europe/Berlin] Match status updated successfully
+[21-Apr-2025 10:08:00 Europe/Berlin] Notification inserted successfully
+[21-Apr-2025 10:08:00 Europe/Berlin] Found FCM token for recipient: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:08:00 Europe/Berlin] 開始發送 FCM 消息給 token: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:08:00 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 10:08:00 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 10:08:00 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 10:08:00 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 10:08:00 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 10:08:00 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 10:08:00 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 10:08:00 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 10:08:00 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 10:08:00 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 10:08:01 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 10:08:01 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745222881953888%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 10:08:01 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 10:08:01 Europe/Berlin] FCM send result: {"success":true,"response":{"name":"projects\/email-21f78\/messages\/0:1745222881953888%29a932a0f9fd7ecd"},"debug":{"fcm_request":{"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}},"fcm_response":{"name":"projects\/email-21f78\/messages\/0:1745222881953888%29a932a0f9fd7ecd"}}}
+[21-Apr-2025 10:10:19 Europe/Berlin] Processing match_id: 106, member_id: 5
+[21-Apr-2025 10:10:19 Europe/Berlin] Match data: {"match_id":106,"tutor_id":"5","tutor_app_id":"124","ps_id":"3","ps_app_id":"127","match_mark":"71.28%","status":"WT","admin_approval_status":"pending","admin_approved_by":null,"admin_approved_at":null,"video_file":null,"video_mark":null,"video_datetime":null,"app_id":null,"member_id":null,"match_creator":"PS"}
+[21-Apr-2025 10:10:19 Europe/Berlin] Is tutor: true
+[21-Apr-2025 10:10:19 Europe/Berlin] Notification recipient ID: 3
+[21-Apr-2025 10:10:19 Europe/Berlin] Match status updated successfully
+[21-Apr-2025 10:10:19 Europe/Berlin] Notification inserted successfully
+[21-Apr-2025 10:10:19 Europe/Berlin] Found FCM token for recipient: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:10:19 Europe/Berlin] 開始發送 FCM 消息給 token: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:10:19 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 10:10:19 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 10:10:19 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 10:10:19 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 10:10:19 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 10:10:19 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 10:10:19 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 10:10:19 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 10:10:19 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 10:10:19 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 10:10:19 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 10:10:19 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745223020756411%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 10:10:19 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 10:10:19 Europe/Berlin] FCM send result: {"success":true,"response":{"name":"projects\/email-21f78\/messages\/0:1745223020756411%29a932a0f9fd7ecd"},"debug":{"fcm_request":{"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}},"fcm_response":{"name":"projects\/email-21f78\/messages\/0:1745223020756411%29a932a0f9fd7ecd"}}}
+[21-Apr-2025 10:13:14 Europe/Berlin] Processing match_id: 106, member_id: 5
+[21-Apr-2025 10:13:14 Europe/Berlin] Match data: {"match_id":106,"tutor_id":"5","tutor_app_id":"124","ps_id":"3","ps_app_id":"127","match_mark":"71.28%","status":"WT","admin_approval_status":"pending","admin_approved_by":null,"admin_approved_at":null,"video_file":null,"video_mark":null,"video_datetime":null,"app_id":null,"member_id":null,"match_creator":"PS"}
+[21-Apr-2025 10:13:14 Europe/Berlin] Is tutor: true
+[21-Apr-2025 10:13:14 Europe/Berlin] Notification recipient ID: 3
+[21-Apr-2025 10:13:14 Europe/Berlin] Match status updated successfully
+[21-Apr-2025 10:13:14 Europe/Berlin] Notification inserted successfully
+[21-Apr-2025 10:13:14 Europe/Berlin] Found FCM token for recipient: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:13:14 Europe/Berlin] 開始發送 FCM 消息給 token: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:13:14 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 10:13:14 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 10:13:14 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 10:13:14 Europe/Berlin] 額外數據: {"title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","type":"match_accepted","match_id":"106"}
+[21-Apr-2025 10:13:14 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 10:13:14 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 10:13:14 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 10:13:14 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 10:13:14 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 10:13:14 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 10:13:15 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 10:13:15 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745223195988569%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 10:13:15 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 10:13:15 Europe/Berlin] FCM send result: {"success":true,"response":{"name":"projects\/email-21f78\/messages\/0:1745223195988569%29a932a0f9fd7ecd"},"debug":{"fcm_request":{"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}},"fcm_response":{"name":"projects\/email-21f78\/messages\/0:1745223195988569%29a932a0f9fd7ecd"}}}
+[21-Apr-2025 10:19:56 Europe/Berlin] Processing match_id: 106, member_id: 5
+[21-Apr-2025 10:19:56 Europe/Berlin] Match data: {"match_id":106,"tutor_id":"5","tutor_app_id":"124","ps_id":"3","ps_app_id":"127","match_mark":"71.28%","status":"P","admin_approval_status":"pending","admin_approved_by":null,"admin_approved_at":null,"video_file":null,"video_mark":null,"video_datetime":null,"app_id":null,"member_id":null,"match_creator":"PS"}
+[21-Apr-2025 10:19:56 Europe/Berlin] Is tutor: true
+[21-Apr-2025 10:19:56 Europe/Berlin] Notification recipient ID: 3
+[21-Apr-2025 10:19:56 Europe/Berlin] Match status updated successfully
+[21-Apr-2025 10:19:56 Europe/Berlin] Notification inserted successfully
+[21-Apr-2025 10:19:56 Europe/Berlin] Found FCM token for recipient: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:19:56 Europe/Berlin] 開始發送 FCM 消息給 token: dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI
+[21-Apr-2025 10:19:56 Europe/Berlin] 標題: 配對狀態更新
+[21-Apr-2025 10:19:56 Europe/Berlin] 消息: 導師已接受您的配對請求
+[21-Apr-2025 10:19:56 Europe/Berlin] 類型: match_accepted
+[21-Apr-2025 10:19:56 Europe/Berlin] 額外數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 10:19:56 Europe/Berlin] 成功讀取服務帳戶憑證
+[21-Apr-2025 10:19:56 Europe/Berlin] JWT token 生成成功
+[21-Apr-2025 10:19:56 Europe/Berlin] Access token 獲取成功
+[21-Apr-2025 10:19:56 Europe/Berlin] 完整的消息數據: {"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"}
+[21-Apr-2025 10:19:56 Europe/Berlin] FCM URL: https://fcm.googleapis.com/v1/projects/email-21f78/messages:send
+[21-Apr-2025 10:19:56 Europe/Berlin] 發送的 FCM 消息內容: {"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}}
+[21-Apr-2025 10:19:56 Europe/Berlin] FCM 響應狀態碼: 200
+[21-Apr-2025 10:19:56 Europe/Berlin] FCM 響應內容: {
+  "name": "projects/email-21f78/messages/0:1745223597712849%29a932a0f9fd7ecd"
+}
+
+[21-Apr-2025 10:19:56 Europe/Berlin] FCM 消息發送成功
+[21-Apr-2025 10:19:56 Europe/Berlin] FCM send result: {"success":true,"response":{"name":"projects\/email-21f78\/messages\/0:1745223597712849%29a932a0f9fd7ecd"},"debug":{"fcm_request":{"message":{"token":"dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI","data":{"type":"match_accepted","title":"\u914d\u5c0d\u72c0\u614b\u66f4\u65b0","body":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","channel_id":"CircleA_Channel","click_action":"FLUTTER_NOTIFICATION_CLICK","message":"\u5c0e\u5e2b\u5df2\u63a5\u53d7\u60a8\u7684\u914d\u5c0d\u8acb\u6c42","match_id":"106"},"android":{"priority":"high"}}},"fcm_response":{"name":"projects\/email-21f78\/messages\/0:1745223597712849%29a932a0f9fd7ecd"}}}
+[21-Apr-2025 10:19:56 Europe/Berlin] FCM 消息發送成功

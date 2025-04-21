@@ -1,0 +1,62 @@
+.header {
+    grid-area: header;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
+}
+
+
+.header-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.menu-icon {
+    display: none;
+    cursor: pointer;
+}
+
+.menu-icon span {
+    color: #666;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-controls span {
+    color: #666;
+}
+
+.user-email {
+    font-size: 0.9rem;
+}
+
+.logout-link {
+    color: #666;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.logout-link:hover {
+    background-color: #f5f5f5;
+}
+
+/* 響應式設計 */
+@media screen and (max-width: 992px) {
+    .menu-icon {
+        display: block;
+    }
+} 

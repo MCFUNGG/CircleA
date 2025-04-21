@@ -174,7 +174,7 @@
     
     <!-- Additional Tutor Booking Strings -->
     <string name="student_label">Student: %s</string>
-    <string name="date_time_format">Date: %s\nTime: %s - %s</string>
+    <string name="date_time_format" formatted="false">Date: %s\nTime: %s - %s</string>
     <string name="accept_booking">Accept Booking</string>
     <string name="are_you_sure_you_want_to_accept_this_booking_request">Are you sure you want to accept this booking request?</string>
     <string name="reject_booking">Reject Booking</string>
@@ -509,7 +509,6 @@
     <string name="loading_data">Loading Data</string>
     <string name="loading_data_description">We need to fetch some data before proceeding. Please wait or tap Retry if it takes too long.</string>
     <string name="retry">Retry</string>
-    <string name="failed_to_fetch_data">Failed to fetch data.</string>
     
     <!-- Delete Application Confirmation -->
     <string name="delete_application_confirmation_message">您確定要刪除此申請嗎？此操作無法撤銷。</string>
@@ -547,5 +546,14 @@
     <string name="recognition_error">Recognition error</string>
     <string name="text_recognition_complete">Text recognition complete</string>
     <string name="image_conversion_failed">Image conversion failed</string>
+    
+    <!-- Application history -->
+
+    
+    <!-- Filter strings -->
+    <string name="filter_result_message">Found %1$d matching results</string>
+    <string name="filter_reset">Filter reset</string>
+    <string name="failed_to_fetch_data">Failed to fetch data</string>
+
 </resources>
 

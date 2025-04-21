@@ -1,5 +1,8 @@
 package com.example.circlea.matching.request;
 
+import static android.app.PendingIntent.getActivity;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -244,8 +247,12 @@ public class RequestReceivedDetail extends AppCompatActivity {
 }
 
     private void acceptMatchingRequest(String matchId) {
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
+        String memberId = sharedPreferences.getString("member_id", null);
+
         RequestBody formBody = new FormBody.Builder()
                 .add("match_id", matchId)
+                .add("member_id", memberId)
                 .build();
 
         Request request = new Request.Builder()
@@ -264,6 +271,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                Log.d("RequestDetail", "Raw response: " + responseData);
                 try {
                     JSONObject json = new JSONObject(responseData);
                     boolean success = json.getBoolean("success");
@@ -278,6 +286,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
                     });
                 } catch (JSONException e) {
                     Log.e("RequestDetail", "Error parsing JSON response: " + e.getMessage());
+                    Log.e("RequestDetail", "Invalid JSON response content: " + responseData);
                     runOnUiThread(() -> Toast.makeText(RequestReceivedDetail.this,
                             "Error processing response", Toast.LENGTH_SHORT).show());
                 }
@@ -286,10 +295,13 @@ public class RequestReceivedDetail extends AppCompatActivity {
     }
 
     private void  rejectMatchingRequest(String matchId) {
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
+        String memberId = sharedPreferences.getString("member_id", null);
+
         RequestBody formBody = new FormBody.Builder()
                 .add("match_id", matchId)
+                .add("member_id", memberId)
                 .build();
-
         Request request = new Request.Builder()
                 .url("http://"+IPConfig.getIP()+"/FYP/php/update_match_status_to_Reject.php")
                 .post(formBody)

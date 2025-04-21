@@ -24,6 +24,7 @@ import com.example.circlea.application.ParentApplicationFillDetail;
 import com.example.circlea.setting.ScanCV;
 import com.example.circlea.home.HomeFragment;
 import com.example.circlea.setting.SettingFragment;
+import com.example.circlea.message.MessageFragment;
 import com.google.android.material.navigation.NavigationView;
 import androidx.core.view.GravityCompat;
 
@@ -50,6 +51,8 @@ public class Home extends AppCompatActivity {
     public static final String FRAGMENT_HOME = "home";
     public static final String FRAGMENT_SETTING = "setting";
     public static final String FRAGMENT_MATCHING = "matching";
+    public static final String   FRAGMENT_MESSAGE = "message";
+
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -63,7 +66,8 @@ public class Home extends AppCompatActivity {
             R.id.nav_post_application,
             R.id.nav_history_application,
             R.id.nav_create_cv,
-            R.id.nav_history_cv
+            R.id.nav_history_cv,
+            R.id.nav_message
     };
 
     @Override
@@ -79,6 +83,9 @@ public class Home extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+
+        // 處理從其他頁面傳來的 Intent
+        handleIncomingIntent();
 
         // Inflate custom item layouts
         View customViewApplication = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_application, null);
@@ -102,32 +109,38 @@ public class Home extends AppCompatActivity {
             SharedPreferences prefs = getSharedPreferences("FragmentState", MODE_PRIVATE);
             boolean isFirstLaunch = prefs.getBoolean("FIRST_LAUNCH", true);
 
+            // Always load HomeFragment with "all" as default
+            loadFragment(new HomeFragment());  // Remove "all" parameter
+            setCurrentFragment(FRAGMENT_HOME);
+            
             if (isFirstLaunch) {
-                // First time launching the app - use HomeFragment and mark as not first launch anymore
-                loadFragment(new HomeFragment());
-                setCurrentFragment(FRAGMENT_HOME);
+                // Mark as not first launch anymore if it is first launch
                 prefs.edit().putBoolean("FIRST_LAUNCH", false).commit();
                 Log.d("Home", "First launch - loading HomeFragment");
-            } else {
-                // Not first launch, check if we're coming back from a language change
-                String currentFragment = prefs.getString(CURRENT_FRAGMENT_KEY, FRAGMENT_HOME);
-                Log.d("Home", "Not first launch - loading saved fragment: " + currentFragment);
+            }
+        } else {
+            // Not first launch, check if we're coming back from a language change
+            SharedPreferences prefs = getSharedPreferences("FragmentState", MODE_PRIVATE);
+            String currentFragment = prefs.getString(CURRENT_FRAGMENT_KEY, FRAGMENT_HOME);
+            Log.d("Home", "Not first launch - loading saved fragment: " + currentFragment);
 
-                switch (currentFragment) {
-                    case FRAGMENT_APPLICATION:
-                        loadFragment(new ApplicationFragment());
-                        break;
-                    case FRAGMENT_SETTING:
-                        loadFragment(new SettingFragment());
-                        break;
-                    case FRAGMENT_MATCHING:
-                        loadFragment(new Matching());
-                        break;
-                    case FRAGMENT_HOME:
-                    default:
-                        loadFragment(new HomeFragment());
-                        break;
-                }
+            switch (currentFragment) {
+                case FRAGMENT_APPLICATION:
+                    loadFragment(new ApplicationFragment());
+                    break;
+                case FRAGMENT_SETTING:
+                    loadFragment(new SettingFragment());
+                    break;
+                case FRAGMENT_MATCHING:
+                    loadFragment(new Matching());
+                    break;
+                case FRAGMENT_MESSAGE:
+                    loadFragment(new MessageFragment());
+                    break;
+                case FRAGMENT_HOME:
+                default:
+                    loadFragment(new HomeFragment());  // Remove "all" parameter
+                    break;
             }
         }
 
@@ -152,7 +165,7 @@ public class Home extends AppCompatActivity {
 
             // Use if-else statements to select the fragment or start an activity
             if (itemId == R.id.nav_home) {
-                selectedFragment = new HomeFragment();
+                selectedFragment = new HomeFragment();  // Remove "all" parameter
                 setCurrentFragment(FRAGMENT_HOME);
             } else if (itemId == R.id.nav_post_application) {
                 Intent intent = new Intent(this, ParentApplicationFillDetail.class);
@@ -174,6 +187,10 @@ public class Home extends AppCompatActivity {
                 selectedFragment = new Matching();
                 setCurrentFragment(FRAGMENT_MATCHING);
                 drawerLayout.closeDrawer(GravityCompat.START);
+            } else if (itemId == R.id.nav_message) {
+                selectedFragment = new MessageFragment();
+                setCurrentFragment(FRAGMENT_MESSAGE);
+                drawerLayout.closeDrawer(GravityCompat.START);
             } else if (itemId == R.id.nav_application) {
                 selectedFragment = new ApplicationFragment();
                 setCurrentFragment(FRAGMENT_APPLICATION);
@@ -193,6 +210,20 @@ public class Home extends AppCompatActivity {
 
         // setup
         setupAllMenuBadges();
+    }
+
+    private void handleIncomingIntent() {
+        Intent intent = getIntent();
+        String targetFragment = intent.getStringExtra("fragment");
+        
+        if (targetFragment != null && targetFragment.equals("matching")) {
+            Matching matchingFragment = new Matching();
+            Bundle args = new Bundle();
+            args.putBoolean("show_requests", true);
+            matchingFragment.setArguments(args);
+            loadFragment(matchingFragment);
+            setCurrentFragment(FRAGMENT_MATCHING);
+        }
     }
 
     // Add this method to remember the current fragment
@@ -234,7 +265,7 @@ public class Home extends AppCompatActivity {
 
         // Use if-else statements to select the fragment or start an activity
         if (item.getItemId() == R.id.nav_home) {
-            selectedFragment = new HomeFragment();
+            selectedFragment = new HomeFragment();  // Remove "all" parameter
             setCurrentFragment(FRAGMENT_HOME);
         } else if (item.getItemId() == R.id.nav_post_application) {
             Intent intent = new Intent(this, ParentApplicationFillDetail.class);
@@ -255,6 +286,9 @@ public class Home extends AppCompatActivity {
         } else if (item.getItemId() == R.id.nav_matching) {
             selectedFragment = new Matching();
             setCurrentFragment(FRAGMENT_MATCHING);
+        } else if (item.getItemId() == R.id.nav_message) {
+            selectedFragment = new MessageFragment();
+            setCurrentFragment(FRAGMENT_MESSAGE);
         } else if (item.getItemId() == R.id.nav_application) {
             selectedFragment = new ApplicationFragment();
             setCurrentFragment(FRAGMENT_APPLICATION);
@@ -357,9 +391,43 @@ public class Home extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, fragment);
-        transaction.commit();
+        if (fragment == null) {
+            Log.e("Home", "Attempted to load null fragment");
+            return;
+        }
+
+        try {
+            Log.d("Home", "Loading fragment: " + fragment.getClass().getSimpleName());
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            
+            // 添加過渡動畫
+            transaction.setCustomAnimations(
+                android.R.anim.fade_in,
+                android.R.anim.fade_out
+            );
+            
+            // 替換片段
+            transaction.replace(R.id.content_frame, fragment);
+            
+            // 如果不是主頁片段，添加到返回堆棧
+            if (!(fragment instanceof HomeFragment)) {
+                transaction.addToBackStack(null);
+            }
+            
+            transaction.commit();
+            Log.d("Home", "Fragment loaded successfully");
+        } catch (Exception e) {
+            Log.e("Home", "Error loading fragment: " + e.getMessage());
+            // 如果發生錯誤，嘗試加載主頁片段
+            try {
+                FragmentTransaction fallbackTransaction = getSupportFragmentManager().beginTransaction();
+                fallbackTransaction.replace(R.id.content_frame, new HomeFragment());
+                fallbackTransaction.commit();
+                Log.d("Home", "Fallback to HomeFragment successful");
+            } catch (Exception fallbackError) {
+                Log.e("Home", "Critical error: Failed to load fallback fragment: " + fallbackError.getMessage());
+            }
+        }
     }
 
     public void openDrawer() {
