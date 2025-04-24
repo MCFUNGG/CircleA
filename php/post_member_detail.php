@@ -24,8 +24,6 @@ if ($gender_input == 'Male') {
 
 // Connect to the database
 
-or die(json_encode(["success" => false, "message" => "Unable to connect to the database"]));
-
 // Check if the member has an existing version
 $queryVersion = "SELECT version FROM member_detail WHERE member_id = '$memberId' ORDER BY version DESC LIMIT 1";
 $resultVersion = mysqli_query($connect, $queryVersion);

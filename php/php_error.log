@@ -40790,3 +40790,2019 @@ Stack trace:
 
 [23-Apr-2025 20:24:59 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=39
 [23-Apr-2025 20:25:01 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=39
+[23-Apr-2025 20:58:36 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 20:58:36 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 20:58:36 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 20:58:41 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 20:58:41 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[23-Apr-2025 20:58:41 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 20:58:41 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 20:58:41 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 20:58:52 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 20:58:52 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 20:58:52 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 20:58:55 Europe/Berlin] Received data: Array
+(
+    [match_id] => 116
+    [tutor_id] => 5
+    [slots] => [{"start_time":"2025-04-30 09:00","end_time":"2025-04-30 10:00","status":"available","action":"create"}]
+)
+
+[23-Apr-2025 20:58:55 Europe/Berlin] Decoded slots: Array
+(
+    [0] => Array
+        (
+            [start_time] => 2025-04-30 09:00
+            [end_time] => 2025-04-30 10:00
+            [status] => available
+            [action] => create
+        )
+
+)
+
+[23-Apr-2025 20:58:56 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745434737658897%29a932a029a932a0"
+}
+
+[23-Apr-2025 20:58:56 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 20:58:56 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 20:58:56 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 40
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-30 09:00:00
+                    [end_time] => 2025-04-30 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 02:58:55
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 20:58:59 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 20:58:59 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 20:58:59 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 40
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-30 09:00:00
+                    [end_time] => 2025-04-30 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 02:58:55
+                )
+
+        )
+
+)
+
+[23-Apr-2025 20:59:05 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745434746534724%29a932a029a932a0"
+}
+
+[23-Apr-2025 20:59:05 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=40
+[23-Apr-2025 20:59:09 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=40
+[23-Apr-2025 20:59:11 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 20:59:11 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 20:59:11 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 20:59:11 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 20:59:11 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 20:59:11 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:00:04 Europe/Berlin] Received payment data: Array
+(
+    [match_id] => 116
+    [student_id] => 3
+    [amount] => 100.0
+)
+
+[23-Apr-2025 21:00:04 Europe/Berlin] Received files: Array
+(
+    [receipt] => Array
+        (
+            [name] => RECEIPT_1745434804046.jpeg
+            [full_path] => RECEIPT_1745434804046.jpeg
+            [type] => image/jpeg
+            [tmp_name] => D:\xampp\tmp\php777A.tmp
+            [error] => 0
+            [size] => 54960
+        )
+
+)
+
+[23-Apr-2025 21:00:05 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745434806585204%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:00:43 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 21:00:43 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+    [booking_id] => 40
+)
+
+[23-Apr-2025 21:00:46 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=40
+[23-Apr-2025 21:00:47 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:00:47 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:00:47 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:00:47 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:00:47 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:00:47 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:01:07 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=40
+[23-Apr-2025 21:01:09 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:01:09 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:01:09 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:01:09 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:01:09 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:01:09 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:01:22 Europe/Berlin] update_student_first_lesson_status.php started
+[23-Apr-2025 21:01:22 Europe/Berlin] Successfully included db_config.php
+[23-Apr-2025 21:01:22 Europe/Berlin] Database connection successful
+[23-Apr-2025 21:01:22 Europe/Berlin] FCM helper included
+[23-Apr-2025 21:01:22 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => incomplete
+    [reason] => Time management issues
+    [booking_id] => 40
+)
+
+[23-Apr-2025 21:01:22 Europe/Berlin] Transaction started
+[23-Apr-2025 21:01:22 Europe/Berlin] Found booking_id: 40
+[23-Apr-2025 21:01:22 Europe/Berlin] Inserted new record for booking_id: 40
+[23-Apr-2025 21:01:22 Europe/Berlin] Notification inserted for member: 5, type: lesson_status_request
+[23-Apr-2025 21:01:22 Europe/Berlin] Sending FCM to token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[23-Apr-2025 21:01:23 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745434884828102%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:01:23 Europe/Berlin] Transaction committed
+[23-Apr-2025 21:01:23 Europe/Berlin] Sending successful response: {"success":true,"booking_id":40,"status":"waiting","message":"\u60a8\u7684\u72c0\u614b\u5df2\u63d0\u4ea4\u3002\u7b49\u5f85\u5c0e\u5e2b\u56de\u61c9\uff0c\u82e5\u5c0e\u5e2b3\u5929\u5167\u672a\u56de\u61c9\uff0c\u8ab2\u916c\u5c07\u81ea\u52d5\u767c\u9001\u7d66\u5c0e\u5e2b\u3002"}
+[23-Apr-2025 21:01:23 Europe/Berlin] Database connection closed
+[23-Apr-2025 21:01:23 Europe/Berlin] update_student_first_lesson_status.php finished
+[23-Apr-2025 21:01:31 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:01:31 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Time management issues
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:01:31 Europe/Berlin] Error in update_tutor_first_lesson_status.php: Unknown column 'reset_status' in 'field list'
+[23-Apr-2025 21:01:31 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:01:47 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:01:47 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Time management issues
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:01:47 Europe/Berlin] Error in update_tutor_first_lesson_status.php: Unknown column 'reset_status' in 'field list'
+[23-Apr-2025 21:01:47 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:09:53 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:09:53 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Time management issues
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:09:53 Europe/Berlin] Error in update_tutor_first_lesson_status.php: Unknown column 'reset_status' in 'field list'
+[23-Apr-2025 21:09:53 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:10:13 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:10:13 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Emergency situation
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:10:13 Europe/Berlin] Error in update_tutor_first_lesson_status.php: Unknown column 'reset_status' in 'field list'
+[23-Apr-2025 21:10:13 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:12:28 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:12:28 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Time management issues
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:12:28 Europe/Berlin] Error in update_tutor_first_lesson_status.php: Unknown column 'reset_status' in 'field list'
+[23-Apr-2025 21:12:28 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:13:53 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:13:53 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Emergency situation
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:13:53 Europe/Berlin] Created new available time slot for match_id: 116 with time: 09:00:00 - 10:00:00
+[23-Apr-2025 21:13:53 Europe/Berlin] PHP Warning:  file_get_contents(firebase-service-account.json): Failed to open stream: No such file or directory in D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php on line 334
+[23-Apr-2025 21:13:53 Europe/Berlin] Could not read service account credentials
+[23-Apr-2025 21:13:53 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:13:57 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:13:57 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Emergency situation
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:13:57 Europe/Berlin] Error in update_tutor_first_lesson_status.php: No confirmed booking found for match ID: 116
+[23-Apr-2025 21:13:57 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:14:47 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 21:14:47 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 21:14:47 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 41
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:13:53
+                )
+
+        )
+
+)
+
+[23-Apr-2025 21:14:56 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 21:14:56 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 21:14:56 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 41
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:13:53
+                )
+
+        )
+
+)
+
+[23-Apr-2025 21:15:02 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 21:15:02 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[23-Apr-2025 21:15:02 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 21:15:02 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 21:15:02 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 41
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:13:53
+                )
+
+        )
+
+)
+
+[23-Apr-2025 21:15:11 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745435712516032%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:15:11 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=41
+[23-Apr-2025 21:15:15 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:15:15 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:15:15 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:15:16 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:15:16 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:15:16 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:15:28 Europe/Berlin] Received payment data: Array
+(
+    [match_id] => 116
+    [student_id] => 3
+    [amount] => 100.0
+)
+
+[23-Apr-2025 21:15:28 Europe/Berlin] Received files: Array
+(
+    [receipt] => Array
+        (
+            [name] => RECEIPT_1745435727755.jpeg
+            [full_path] => RECEIPT_1745435727755.jpeg
+            [type] => image/jpeg
+            [tmp_name] => D:\xampp\tmp\php8FC2.tmp
+            [error] => 0
+            [size] => 54960
+        )
+
+)
+
+[23-Apr-2025 21:15:29 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745435730349536%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:15:32 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 21:15:32 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+    [booking_id] => 41
+)
+
+[23-Apr-2025 21:15:36 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:15:36 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:15:36 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:15:36 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:15:36 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:15:36 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:15:38 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=41
+[23-Apr-2025 21:15:47 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=41
+[23-Apr-2025 21:15:49 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:15:49 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:15:49 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:15:49 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:15:49 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:15:49 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:15:53 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=41
+[23-Apr-2025 21:16:12 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=41
+[23-Apr-2025 21:17:24 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=41
+[23-Apr-2025 21:17:31 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 21:17:31 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[23-Apr-2025 21:17:31 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=41
+[23-Apr-2025 21:17:43 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=41
+[23-Apr-2025 21:18:25 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:18:25 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => completed
+)
+
+[23-Apr-2025 21:18:25 Europe/Berlin] PHP Warning:  file_get_contents(firebase-service-account.json): Failed to open stream: No such file or directory in D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php on line 334
+[23-Apr-2025 21:18:25 Europe/Berlin] Could not read service account credentials
+[23-Apr-2025 21:18:25 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:18:34 Europe/Berlin] update_student_first_lesson_status.php started
+[23-Apr-2025 21:18:34 Europe/Berlin] Successfully included db_config.php
+[23-Apr-2025 21:18:34 Europe/Berlin] Database connection successful
+[23-Apr-2025 21:18:34 Europe/Berlin] FCM helper included
+[23-Apr-2025 21:18:34 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => completed
+    [booking_id] => 41
+)
+
+[23-Apr-2025 21:18:34 Europe/Berlin] Transaction started
+[23-Apr-2025 21:18:34 Europe/Berlin] Found booking_id: 41
+[23-Apr-2025 21:18:34 Europe/Berlin] Updated record for booking_id: 41
+[23-Apr-2025 21:18:34 Europe/Berlin] Deleted 0 other available bookings for match_id: 116
+[23-Apr-2025 21:18:34 Europe/Berlin] Notification inserted for member: 5, type: lesson_completed
+[23-Apr-2025 21:18:34 Europe/Berlin] Sending FCM to token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[23-Apr-2025 21:18:35 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745435916172833%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:18:35 Europe/Berlin] Transaction committed
+[23-Apr-2025 21:18:35 Europe/Berlin] Sending successful response: {"success":true,"booking_id":41,"status":"completed","message":"\u60a8\u548c\u5c0e\u5e2b\u5747\u5df2\u78ba\u8a8d\u8ab2\u7a0b\u5b8c\u6210\u3002\u8ab2\u916c\u5df2\u767c\u9001\u7d66\u5c0e\u5e2b\u3002\u8acb\u63d0\u4f9b\u53cd\u994b\u8a55\u50f9\u3002"}
+[23-Apr-2025 21:18:35 Europe/Berlin] Database connection closed
+[23-Apr-2025 21:18:35 Europe/Berlin] update_student_first_lesson_status.php finished
+[23-Apr-2025 21:18:40 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:18:40 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:18:40 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:18:40 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:18:40 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:18:40 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:19:39 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:19:39 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:19:39 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:19:42 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 21:19:42 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+    [booking_id] => 41
+)
+
+[23-Apr-2025 21:19:46 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 21:19:46 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 21:19:46 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:20:02 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 21:20:02 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[23-Apr-2025 21:20:02 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 21:20:02 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 21:20:02 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:20:15 Europe/Berlin] Received data: Array
+(
+    [match_id] => 116
+    [tutor_id] => 5
+    [slots] => [{"start_time":"2025-04-30 09:00","end_time":"2025-04-30 10:00","status":"available","action":"create"}]
+)
+
+[23-Apr-2025 21:20:15 Europe/Berlin] Decoded slots: Array
+(
+    [0] => Array
+        (
+            [start_time] => 2025-04-30 09:00
+            [end_time] => 2025-04-30 10:00
+            [status] => available
+            [action] => create
+        )
+
+)
+
+[23-Apr-2025 21:20:16 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745436017513738%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:20:16 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:20:16 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:20:16 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 42
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-30 09:00:00
+                    [end_time] => 2025-04-30 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:20:15
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:20:20 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 21:20:20 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 21:20:20 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 42
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-30 09:00:00
+                    [end_time] => 2025-04-30 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:20:15
+                )
+
+        )
+
+)
+
+[23-Apr-2025 21:20:38 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745436039519888%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:20:38 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[23-Apr-2025 21:20:44 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[23-Apr-2025 21:20:54 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:20:54 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:20:54 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:20:55 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:20:55 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:20:55 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:20:55 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:20:55 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:20:55 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:21:19 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:21:19 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Time management issues
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:21:19 Europe/Berlin] PHP Warning:  file_get_contents(firebase-service-account.json): Failed to open stream: No such file or directory in D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php on line 334
+[23-Apr-2025 21:21:19 Europe/Berlin] Could not read service account credentials
+[23-Apr-2025 21:21:19 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:21:30 Europe/Berlin] update_student_first_lesson_status.php started
+[23-Apr-2025 21:21:30 Europe/Berlin] Successfully included db_config.php
+[23-Apr-2025 21:21:30 Europe/Berlin] Database connection successful
+[23-Apr-2025 21:21:30 Europe/Berlin] FCM helper included
+[23-Apr-2025 21:21:30 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => incomplete
+    [reason] => Time management issues
+    [booking_id] => 42
+)
+
+[23-Apr-2025 21:21:30 Europe/Berlin] Transaction started
+[23-Apr-2025 21:21:30 Europe/Berlin] Found booking_id: 42
+[23-Apr-2025 21:21:30 Europe/Berlin] Updated record for booking_id: 42
+[23-Apr-2025 21:21:30 Europe/Berlin] Notification inserted for member: 5, type: lesson_incomplete
+[23-Apr-2025 21:21:30 Europe/Berlin] Sending FCM to token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[23-Apr-2025 21:21:31 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745436092683363%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:21:31 Europe/Berlin] Transaction committed
+[23-Apr-2025 21:21:31 Europe/Berlin] Sending successful response: {"success":true,"booking_id":42,"status":"both_incomplete","reason":"Time management issues","message":"\u60a8\u548c\u5c0e\u5e2b\u5747\u5df2\u78ba\u8a8d\u8ab2\u7a0b\u672a\u5b8c\u6210\u3002\u8ab2\u916c\u5c07\u9000\u9084\u7d66\u60a8\uff0c\u60a8\u53ef\u4ee5\u91cd\u65b0\u9810\u7d04\u6216\u5c0b\u627e\u65b0\u5c0e\u5e2b\u3002"}
+[23-Apr-2025 21:21:31 Europe/Berlin] Database connection closed
+[23-Apr-2025 21:21:31 Europe/Berlin] update_student_first_lesson_status.php finished
+[23-Apr-2025 21:21:39 Europe/Berlin] update_student_first_lesson_status.php started
+[23-Apr-2025 21:21:39 Europe/Berlin] Successfully included db_config.php
+[23-Apr-2025 21:21:39 Europe/Berlin] Database connection successful
+[23-Apr-2025 21:21:39 Europe/Berlin] FCM helper included
+[23-Apr-2025 21:21:39 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => incomplete
+    [reason] => Time management issues
+    [next_action] => rebook
+    [booking_id] => 42
+)
+
+[23-Apr-2025 21:21:39 Europe/Berlin] Transaction started
+[23-Apr-2025 21:21:39 Europe/Berlin] Found booking_id: 42
+[23-Apr-2025 21:21:39 Europe/Berlin] Updated record for booking_id: 42
+[23-Apr-2025 21:21:39 Europe/Berlin] Notification inserted for member: 5, type: lesson_incomplete
+[23-Apr-2025 21:21:39 Europe/Berlin] Sending FCM to token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[23-Apr-2025 21:21:41 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745436101872349%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:21:41 Europe/Berlin] Transaction committed
+[23-Apr-2025 21:21:41 Europe/Berlin] Sending successful response: {"success":true,"booking_id":42,"status":"both_incomplete","reason":"Time management issues","message":"\u60a8\u548c\u5c0e\u5e2b\u5747\u5df2\u78ba\u8a8d\u8ab2\u7a0b\u672a\u5b8c\u6210\u3002\u8ab2\u916c\u5c07\u9000\u9084\u7d66\u60a8\uff0c\u60a8\u53ef\u4ee5\u91cd\u65b0\u9810\u7d04\u6216\u5c0b\u627e\u65b0\u5c0e\u5e2b\u3002"}
+[23-Apr-2025 21:21:41 Europe/Berlin] Database connection closed
+[23-Apr-2025 21:21:41 Europe/Berlin] update_student_first_lesson_status.php finished
+[23-Apr-2025 21:21:41 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 21:21:41 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[23-Apr-2025 21:21:41 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => false
+)
+
+[23-Apr-2025 21:21:41 Europe/Berlin] Processing request with match_id: 116, is_tutor: false
+[23-Apr-2025 21:21:41 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 42
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-30 09:00:00
+                    [end_time] => 2025-04-30 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:20:15
+                )
+
+            [1] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+)
+
+[23-Apr-2025 21:21:49 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:21:49 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:21:49 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 42
+                    [tutor_id] => 5
+                    [start_time] => 2025-04-30 09:00:00
+                    [end_time] => 2025-04-30 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:20:15
+                )
+
+            [1] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:22:04 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745436125801613%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:22:05 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[23-Apr-2025 21:22:08 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:22:08 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:22:08 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:22:08 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:22:08 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:22:08 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:22:24 Europe/Berlin] update_tutor_first_lesson_status.php started
+[23-Apr-2025 21:22:24 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => incomplete
+    [reason] => Time management issues
+    [next_action] => rebook
+)
+
+[23-Apr-2025 21:22:24 Europe/Berlin] PHP Warning:  file_get_contents(firebase-service-account.json): Failed to open stream: No such file or directory in D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php on line 334
+[23-Apr-2025 21:22:24 Europe/Berlin] Could not read service account credentials
+[23-Apr-2025 21:22:24 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[23-Apr-2025 21:22:34 Europe/Berlin] update_student_first_lesson_status.php started
+[23-Apr-2025 21:22:34 Europe/Berlin] Successfully included db_config.php
+[23-Apr-2025 21:22:34 Europe/Berlin] Database connection successful
+[23-Apr-2025 21:22:34 Europe/Berlin] FCM helper included
+[23-Apr-2025 21:22:34 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => completed
+    [booking_id] => 42
+)
+
+[23-Apr-2025 21:22:34 Europe/Berlin] Transaction started
+[23-Apr-2025 21:22:34 Europe/Berlin] Found booking_id: 42
+[23-Apr-2025 21:22:34 Europe/Berlin] Updated record for booking_id: 42
+[23-Apr-2025 21:22:34 Europe/Berlin] Notification inserted for member: 5, type: lesson_conflict
+[23-Apr-2025 21:22:34 Europe/Berlin] Sending FCM to token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[23-Apr-2025 21:22:35 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745436156357465%29a932a029a932a0"
+}
+
+[23-Apr-2025 21:22:35 Europe/Berlin] Transaction committed
+[23-Apr-2025 21:22:35 Europe/Berlin] Sending successful response: {"success":true,"booking_id":42,"status":"conflict","message":"\u5c0e\u5e2b\u6a19\u8a18\u8ab2\u7a0b\u70ba\u672a\u5b8c\u6210\uff0c\u4f46\u60a8\u6a19\u8a18\u70ba\u5df2\u5b8c\u6210\u3002 \u6b64\u722d\u8b70\u5c07\u7531\u7ba1\u7406\u54e1\u8655\u7406\u3002\u8acb\u63d0\u4f9b\u8b49\u64da\uff08\u622a\u5716\/\u901a\u8a0a\u8a18\u9304\uff09\u7d66\u7ba1\u7406\u54e1\u3002"}
+[23-Apr-2025 21:22:35 Europe/Berlin] Database connection closed
+[23-Apr-2025 21:22:35 Europe/Berlin] update_student_first_lesson_status.php finished
+[23-Apr-2025 21:22:39 Europe/Berlin] check_tutor_response.php started
+[23-Apr-2025 21:22:39 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+    [booking_id] => 42
+)
+
+[23-Apr-2025 21:22:51 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:22:51 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:22:51 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[23-Apr-2025 21:22:51 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[23-Apr-2025 21:22:51 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[23-Apr-2025 21:22:51 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 06:30:41 Europe/Berlin] check_tutor_response.php started
+[24-Apr-2025 06:30:41 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[24-Apr-2025 06:30:41 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 06:31:57 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 06:31:57 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 06:31:57 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 06:31:57 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 06:31:57 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 06:31:57 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 06:31:57 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 06:31:57 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 06:31:57 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 06:39:56 Europe/Berlin] check_tutor_response.php started
+[24-Apr-2025 06:39:56 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[24-Apr-2025 06:39:56 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 06:46:41 Europe/Berlin] check_tutor_response.php started
+[24-Apr-2025 06:46:41 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[24-Apr-2025 06:46:41 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 06:54:45 Europe/Berlin] check_tutor_response.php started
+[24-Apr-2025 06:54:45 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[24-Apr-2025 06:54:46 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 06:59:25 Europe/Berlin] check_tutor_response.php started
+[24-Apr-2025 06:59:25 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[24-Apr-2025 06:59:26 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 07:01:54 Europe/Berlin] check_tutor_response.php started
+[24-Apr-2025 07:01:54 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [check_both_incomplete] => true
+)
+
+[24-Apr-2025 07:01:54 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 07:04:41 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 07:05:30 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 07:11:36 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 16:26:51 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 16:26:52 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 16:26:52 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 16:26:52 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 16:26:52 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 16:26:52 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 16:26:52 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 16:26:52 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 16:26:52 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 16:26:52 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 16:27:09 Europe/Berlin] Received payment data: Array
+(
+    [match_id] => 116
+    [student_id] => 3
+    [amount] => 475.0
+)
+
+[24-Apr-2025 16:27:09 Europe/Berlin] Received files: Array
+(
+    [receipt] => Array
+        (
+            [name] => RECEIPT_1745504827126.jpeg
+            [full_path] => RECEIPT_1745504827126.jpeg
+            [type] => image/jpeg
+            [tmp_name] => D:\xampp\tmp\phpEB34.tmp
+            [error] => 0
+            [size] => 54960
+        )
+
+)
+
+[24-Apr-2025 16:27:10 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745504830212357%29a932a029a932a0"
+}
+
+[24-Apr-2025 16:27:15 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 16:27:18 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 16:27:18 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 16:27:18 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 16:27:18 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 16:27:18 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 16:27:18 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 16:36:08 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 16:36:10 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 16:36:10 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 16:36:10 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 16:36:10 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 16:36:10 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 16:36:10 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 16:36:14 Europe/Berlin] update_tutor_first_lesson_status.php started
+[24-Apr-2025 16:36:14 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => completed
+)
+
+[24-Apr-2025 16:36:18 Europe/Berlin] update_student_first_lesson_status.php started
+[24-Apr-2025 16:36:18 Europe/Berlin] Successfully included db_config.php
+[24-Apr-2025 16:36:18 Europe/Berlin] Database connection successful
+[24-Apr-2025 16:36:18 Europe/Berlin] FCM helper included
+[24-Apr-2025 16:36:18 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => completed
+    [booking_id] => 42
+)
+
+[24-Apr-2025 16:36:18 Europe/Berlin] Transaction started
+[24-Apr-2025 16:36:18 Europe/Berlin] Found booking_id: 42
+[24-Apr-2025 16:43:42 Europe/Berlin] PHP Warning:  Uncaught mysqli_sql_exception: MySQL server has gone away in D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php:100
+Stack trace:
+#0 D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php(100): mysqli_stmt->execute()
+#1 {main}
+  thrown in D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php on line 100
+[24-Apr-2025 16:43:42 Europe/Berlin] PHP Fatal error:  Maximum execution time of 120 seconds exceeded in D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php on line 279
+[24-Apr-2025 16:43:42 Europe/Berlin] PHP Warning:  Uncaught mysqli_sql_exception: MySQL server has gone away in D:\xampp\htdocs\FYP\php\update_student_first_lesson_status.php:236
+Stack trace:
+#0 D:\xampp\htdocs\FYP\php\update_student_first_lesson_status.php(236): mysqli_stmt->execute()
+#1 {main}
+  thrown in D:\xampp\htdocs\FYP\php\update_student_first_lesson_status.php on line 236
+[24-Apr-2025 16:43:42 Europe/Berlin] PHP Fatal error:  Maximum execution time of 120 seconds exceeded in D:\xampp\htdocs\FYP\php\update_student_first_lesson_status.php on line 417
+[24-Apr-2025 17:22:24 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 17:22:27 Europe/Berlin] update_student_first_lesson_status.php started
+[24-Apr-2025 17:22:27 Europe/Berlin] Successfully included db_config.php
+[24-Apr-2025 17:22:27 Europe/Berlin] Database connection successful
+[24-Apr-2025 17:22:27 Europe/Berlin] FCM helper included
+[24-Apr-2025 17:22:27 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => completed
+    [booking_id] => 42
+)
+
+[24-Apr-2025 17:22:27 Europe/Berlin] Transaction started
+[24-Apr-2025 17:22:27 Europe/Berlin] Found booking_id: 42
+[24-Apr-2025 17:22:27 Europe/Berlin] Inserted new record for booking_id: 42
+[24-Apr-2025 17:22:27 Europe/Berlin] Notification inserted for member: 5, type: lesson_status_request
+[24-Apr-2025 17:22:27 Europe/Berlin] Sending FCM to token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[24-Apr-2025 17:22:27 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745508147739204%29a932a029a932a0"
+}
+
+[24-Apr-2025 17:22:27 Europe/Berlin] Transaction committed
+[24-Apr-2025 17:22:27 Europe/Berlin] Sending successful response: {"success":true,"booking_id":42,"status":"waiting","message":"\u60a8\u7684\u72c0\u614b\u5df2\u63d0\u4ea4\u3002\u7b49\u5f85\u5c0e\u5e2b\u56de\u61c9\uff0c\u82e5\u5c0e\u5e2b3\u5929\u5167\u672a\u56de\u61c9\uff0c\u8ab2\u916c\u5c07\u81ea\u52d5\u767c\u9001\u7d66\u5c0e\u5e2b\u3002"}
+[24-Apr-2025 17:22:27 Europe/Berlin] Database connection closed
+[24-Apr-2025 17:22:27 Europe/Berlin] update_student_first_lesson_status.php finished
+[24-Apr-2025 17:24:52 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 17:27:38 Europe/Berlin] update_student_first_lesson_status.php started
+[24-Apr-2025 17:27:38 Europe/Berlin] Successfully included db_config.php
+[24-Apr-2025 17:27:38 Europe/Berlin] Database connection successful
+[24-Apr-2025 17:27:38 Europe/Berlin] FCM helper included
+[24-Apr-2025 17:27:38 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => completed
+    [booking_id] => 42
+)
+
+[24-Apr-2025 17:27:38 Europe/Berlin] Transaction started
+[24-Apr-2025 17:27:38 Europe/Berlin] Found booking_id: 42
+[24-Apr-2025 17:27:38 Europe/Berlin] Updated record for booking_id: 42
+[24-Apr-2025 17:27:38 Europe/Berlin] Notification inserted for member: 5, type: lesson_status_request
+[24-Apr-2025 17:27:38 Europe/Berlin] Sending FCM to token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[24-Apr-2025 17:27:38 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745508458915227%29a932a029a932a0"
+}
+
+[24-Apr-2025 17:27:38 Europe/Berlin] Transaction committed
+[24-Apr-2025 17:27:38 Europe/Berlin] Sending successful response: {"success":true,"booking_id":42,"status":"waiting","message":"\u60a8\u7684\u72c0\u614b\u5df2\u63d0\u4ea4\u3002\u7b49\u5f85\u5c0e\u5e2b\u56de\u61c9\uff0c\u82e5\u5c0e\u5e2b3\u5929\u5167\u672a\u56de\u61c9\uff0c\u8ab2\u916c\u5c07\u81ea\u52d5\u767c\u9001\u7d66\u5c0e\u5e2b\u3002"}
+[24-Apr-2025 17:27:38 Europe/Berlin] Database connection closed
+[24-Apr-2025 17:27:38 Europe/Berlin] update_student_first_lesson_status.php finished
+[24-Apr-2025 18:24:27 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 18:24:29 Europe/Berlin] update_student_first_lesson_status.php started
+[24-Apr-2025 18:24:29 Europe/Berlin] Successfully included db_config.php
+[24-Apr-2025 18:24:29 Europe/Berlin] Database connection successful
+[24-Apr-2025 18:24:29 Europe/Berlin] FCM helper included
+[24-Apr-2025 18:24:29 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [student_id] => 3
+    [status] => completed
+    [booking_id] => 42
+)
+
+[24-Apr-2025 18:24:29 Europe/Berlin] Transaction started
+[24-Apr-2025 18:24:29 Europe/Berlin] Found booking_id: 42
+[24-Apr-2025 18:24:29 Europe/Berlin] Updated record for booking_id: 42
+[24-Apr-2025 18:24:29 Europe/Berlin] Notification inserted for member: 5, type: lesson_status_request
+[24-Apr-2025 18:24:29 Europe/Berlin] Sending FCM to token: d4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k
+[24-Apr-2025 18:24:30 Europe/Berlin] FCM send result: {
+  "name": "projects/email-21f78/messages/0:1745511870044419%29a932a029a932a0"
+}
+
+[24-Apr-2025 18:24:30 Europe/Berlin] Transaction committed
+[24-Apr-2025 18:24:30 Europe/Berlin] Sending successful response: {"success":true,"booking_id":42,"status":"waiting","message":"\u60a8\u7684\u72c0\u614b\u5df2\u63d0\u4ea4\u3002\u7b49\u5f85\u5c0e\u5e2b\u56de\u61c9\uff0c\u82e5\u5c0e\u5e2b3\u5929\u5167\u672a\u56de\u61c9\uff0c\u8ab2\u916c\u5c07\u81ea\u52d5\u767c\u9001\u7d66\u5c0e\u5e2b\u3002"}
+[24-Apr-2025 18:24:30 Europe/Berlin] Database connection closed
+[24-Apr-2025 18:24:30 Europe/Berlin] update_student_first_lesson_status.php finished
+[24-Apr-2025 18:28:31 Europe/Berlin] get_first_lesson_status.php called with: match_id=116, student_id=3, booking_id=42
+[24-Apr-2025 18:28:39 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 18:28:39 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 18:28:39 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 18:28:39 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 18:28:39 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 18:28:40 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 18:28:40 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 18:28:40 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 18:28:40 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 18:28:40 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 18:28:40 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 18:28:40 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+            [0] => Array
+                (
+                    [slot_id] => 43
+                    [tutor_id] => 5
+                    [start_time] => 0000-00-00 09:00:00
+                    [end_time] => 0000-00-00 10:00:00
+                    [status] => available
+                    [student_id] => 
+                    [created_at] => 2025-04-24 03:21:41
+                )
+
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
+[24-Apr-2025 18:28:44 Europe/Berlin] update_tutor_first_lesson_status.php started
+[24-Apr-2025 18:28:44 Europe/Berlin] Received data: Array
+(
+    [case_id] => 116
+    [tutor_id] => 5
+    [status] => completed
+)
+
+[24-Apr-2025 18:28:44 Europe/Berlin] Deleted 1 other available bookings for match_id: 116
+[24-Apr-2025 18:28:44 Europe/Berlin] PHP Warning:  file_get_contents(firebase-service-account.json): Failed to open stream: No such file or directory in D:\xampp\htdocs\FYP\php\update_tutor_first_lesson_status.php on line 334
+[24-Apr-2025 18:28:44 Europe/Berlin] Could not read service account credentials
+[24-Apr-2025 18:28:44 Europe/Berlin] update_tutor_first_lesson_status.php finished
+[24-Apr-2025 18:28:45 Europe/Berlin] Received POST data: Array
+(
+    [match_id] => 116
+    [is_tutor] => true
+)
+
+[24-Apr-2025 18:28:45 Europe/Berlin] Processing request with match_id: 116, is_tutor: true
+[24-Apr-2025 18:28:45 Europe/Berlin] Sending response: Array
+(
+    [success] => 1
+    [message] => Data retrieved successfully
+    [slots] => Array
+        (
+        )
+
+    [requests] => Array
+        (
+        )
+
+)
+
