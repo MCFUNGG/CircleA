@@ -37,6 +37,12 @@ public class LessonStatusDialogManager {
         void onLessonIncomplete(String reason, String action);
         void onSubmitIncompleteStatus(String reason);
     }
+    
+    // 添加新的回調接口，專門用於both_incomplete情況
+    public interface OnLessonStatusDialogCallback {
+        void onLessonComplete();
+        void onLessonIncomplete(String action);
+    }
 
     public LessonStatusDialogManager(Context context, LessonStatusCallback callback, boolean isTutor) {
         this.context = context;
@@ -213,6 +219,61 @@ public class LessonStatusDialogManager {
             findOtherTutorButton.setOnClickListener(v -> {
                 dialog.dismiss();
                 callback.onLessonIncomplete(reason, "find_other_tutor");
+            });
+
+            dialog.show();
+        }
+    }
+    
+    // 添加新方法處理雙方均標記為未完成的情況
+    public void showBothIncompleteDialog(String reason, OnLessonStatusDialogCallback callback) {
+        // 為學生顯示選項
+        if (!isTutor) {
+            View view = LayoutInflater.from(context).inflate(R.layout.dialog_next_steps, null);
+            MaterialButton rebookButton = view.findViewById(R.id.btn_rebook);
+            MaterialButton findOtherTutorButton = view.findViewById(R.id.btn_find_other_tutor);
+
+            rebookButton.setText(context.getString(R.string.rebook_lesson));
+            findOtherTutorButton.setText(context.getString(R.string.find_other_tutor));
+            findOtherTutorButton.setVisibility(View.VISIBLE);
+
+            AlertDialog dialog = new AlertDialog.Builder(context)
+                    .setTitle(context.getString(R.string.lesson_incomplete_title))
+                    .setMessage(context.getString(R.string.both_incomplete_message) + "\n\n" + context.getString(R.string.reason) + ": " + reason)
+                    .setView(view)
+                    .setCancelable(false)
+                    .create();
+
+            rebookButton.setOnClickListener(v -> {
+                dialog.dismiss();
+                callback.onLessonIncomplete("rebook");
+            });
+
+            findOtherTutorButton.setOnClickListener(v -> {
+                dialog.dismiss();
+                callback.onLessonIncomplete("find_other_tutor");
+            });
+
+            dialog.show();
+        } else {
+            // 為導師顯示提供新時間的選項
+            View view = LayoutInflater.from(context).inflate(R.layout.dialog_next_steps, null);
+            MaterialButton rebookButton = view.findViewById(R.id.btn_rebook);
+            MaterialButton findOtherTutorButton = view.findViewById(R.id.btn_find_other_tutor);
+
+            rebookButton.setText(context.getString(R.string.provide_new_time_slot));
+            findOtherTutorButton.setVisibility(View.GONE);
+
+            AlertDialog dialog = new AlertDialog.Builder(context)
+                    .setTitle(context.getString(R.string.lesson_incomplete_title))
+                    .setMessage(context.getString(R.string.both_incomplete_tutor_message))
+                    .setView(view)
+                    .setCancelable(false)
+                    .create();
+
+            rebookButton.setOnClickListener(v -> {
+                dialog.dismiss();
+                callback.onLessonIncomplete("provide_new_time_slot");
             });
 
             dialog.show();

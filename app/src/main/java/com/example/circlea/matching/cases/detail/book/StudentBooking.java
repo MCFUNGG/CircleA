@@ -65,18 +65,18 @@ public class StudentBooking extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.student_booking);
-        
+
         // 获取匹配ID
         caseId = getIntent().getStringExtra("case_id");
-        
+
         // 从SharedPreferences获取学生ID
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", Context.MODE_PRIVATE);
         studentId = sharedPreferences.getString("member_id", "");
-        
+
         initializeViews();
         setupToolbar();
         setupRecyclerView();
-        
+
         // 先加载预约状态，然后在回调中检查第一堂课状态
         loadBookingStatus();
     }
@@ -90,15 +90,15 @@ public class StudentBooking extends AppCompatActivity {
         bookingStatusCard = findViewById(R.id.booking_status_card);
         viewTutorContactButton = findViewById(R.id.view_tutor_contact_button);
         submitFeedbackButton = findViewById(R.id.submit_feedback_button);
-        
+
         timeSlots = new ArrayList<>();
-        
+
         // 设置查看导师联系方式按钮点击事件
         viewTutorContactButton.setOnClickListener(v -> getTutorContact());
-        
+
         // 设置提交反馈按钮点击事件
         submitFeedbackButton.setOnClickListener(v -> openFeedbackPage());
-        
+
         // 初始时隐藏导师联系方式按钮和反馈按钮
         viewTutorContactButton.setVisibility(View.GONE);
         submitFeedbackButton.setVisibility(View.GONE);
@@ -106,12 +106,12 @@ public class StudentBooking extends AppCompatActivity {
 
     private void setupToolbar() {
         setSupportActionBar(topAppBar);
-        
+
         // Enable back button and set its appearance
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        
+
         // Setup back button click listener
         topAppBar.setNavigationOnClickListener(v -> onBackPressed());
     }
@@ -121,46 +121,46 @@ public class StudentBooking extends AppCompatActivity {
         timeSlotsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         timeSlotsRecyclerView.setAdapter(timeSlotAdapter);
     }
-    
+
     // 加载预约状态
     private void loadBookingStatus() {
         if (caseId == null || studentId == null) {
             Toast.makeText(this, "无效的预约信息", Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         OkHttpClient client = new OkHttpClient();
-        
+
         // 创建请求体
         RequestBody formBody = new FormBody.Builder()
                 .add("match_id", caseId)
                 .add("student_id", studentId)
                 .build();
-        
+
         // 构建请求
         String url = "http://" + IPConfig.getIP() + "/FYP/php/get_booking_status.php";
         Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)
                 .build();
-        
+
         // 发送请求
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("Network", "Failed to load booking status: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(StudentBooking.this, 
+                runOnUiThread(() -> Toast.makeText(StudentBooking.this,
                         "无法加载预约状态", Toast.LENGTH_SHORT).show());
             }
-            
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d("Response", "Booking status: " + responseData);
-                
+
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
-                    
+
                     if (jsonResponse.getBoolean("success")) {
                         JSONObject bookingData = jsonResponse.getJSONObject("booking");
                         String status = bookingData.getString("status");
@@ -168,9 +168,9 @@ public class StudentBooking extends AppCompatActivity {
                         bookingId = bookingData.getString("booking_id");
                         String tutorName = bookingData.getString("tutor_name");
                         String dateTime = bookingData.getString("formatted_date_time");
-                        
+
                         runOnUiThread(() -> updateBookingUI(status, tutorName, dateTime));
-                        
+
                         // 加载完预约状态后，再检查第一堂课状态
                         checkFirstLessonStatus();
                     } else {
@@ -186,24 +186,24 @@ public class StudentBooking extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     Log.e("Parse", "Failed to parse booking status: " + e.getMessage());
-                    runOnUiThread(() -> Toast.makeText(StudentBooking.this, 
+                    runOnUiThread(() -> Toast.makeText(StudentBooking.this,
                             "解析预约状态时出错", Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
-    
+
     // 更新UI显示预约状态
     private void updateBookingUI(String status, String tutorName, String dateTime) {
         bookingStatusCard.setVisibility(View.VISIBLE);
-        
+
         // 设置导师名称和预约时间
         bookingTutorName.setText("Tutor: " + tutorName);
         bookingDateTime.setText("Schedule: " + dateTime);
-        
+
         // 调试日志
         Log.d(TAG, "更新UI状态: status = " + status);
-        
+
         if ("confirmed".equals(status.toLowerCase())) {
             statusChip.setText(status);
             statusChip.setChipBackgroundColorResource(com.google.android.material.R.color.design_default_color_on_secondary);
@@ -216,19 +216,19 @@ public class StudentBooking extends AppCompatActivity {
         } else if ("completed".equals(status.toLowerCase())) {
             // 如果状态是completed，直接设置为课程已完成
             Log.d(TAG, "状态为completed，设置为课程已完成");
-            
+
             try {
                 // 显示完成状态
                 statusChip.setText(R.string.lesson_completed);
                 // 使用一个明显的颜色来显示完成状态
                 statusChip.setChipBackgroundColorResource(com.google.android.material.R.color.design_default_color_on_secondary);
                 statusChip.setTextColor(getResources().getColor(android.R.color.white, null));
-                
+
                 // 修改按钮文本，明确表示这是给反馈的按钮
                 submitFeedbackButton.setText(R.string.rate_tutor_experience);
                 // 显示反馈按钮
                 submitFeedbackButton.setVisibility(View.VISIBLE);
-                
+
                 Log.d(TAG, "课程完成状态设置完毕: 文本=" + getResources().getString(R.string.lesson_completed));
             } catch (Exception e) {
                 Log.e(TAG, "更新状态芯片时出错: " + e.getMessage(), e);
@@ -239,7 +239,7 @@ public class StudentBooking extends AppCompatActivity {
             viewTutorContactButton.setVisibility(View.GONE);
         }
     }
-    
+
     // 检查第一堂课的状态
     private void checkFirstLessonStatus() {
         if (caseId == null || studentId == null || bookingId == null) {
@@ -247,52 +247,52 @@ public class StudentBooking extends AppCompatActivity {
             Log.e(TAG, "caseId: " + caseId + ", studentId: " + studentId + ", bookingId: " + bookingId);
             return;
         }
-        
+
         OkHttpClient client = new OkHttpClient();
-        
+
         // 创建请求体
         RequestBody formBody = new FormBody.Builder()
                 .add("match_id", caseId)
                 .add("student_id", studentId)
                 .add("booking_id", bookingId)
                 .build();
-        
+
         // 构建请求
         String url = "http://" + IPConfig.getIP() + "/FYP/php/get_first_lesson_status.php";
         Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)
                 .build();
-        
+
         Log.d(TAG, "Checking first lesson status for booking_id: " + bookingId);
-        
+
         // 发送请求
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG, "Failed to check first lesson status: " + e.getMessage());
             }
-            
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d(TAG, "First lesson status response: " + responseData);
-                
+
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
-                    
+
                     if (jsonResponse.getBoolean("success")) {
                         JSONObject statusData = jsonResponse.getJSONObject("data");
                         String student_status = statusData.optString("student_status", "");
                         String tutor_status = statusData.optString("tutor_status", "");
                         String bothCompleted = statusData.optString("both_completed", "false");
                         String feedbackSubmitted = statusData.optString("feedback_submitted", "false");
-                        
+
                         Log.d(TAG, "详细课程状态: student_status = " + student_status);
                         Log.d(TAG, "详细课程状态: tutor_status = " + tutor_status);
                         Log.d(TAG, "详细课程状态: both_completed = " + bothCompleted);
                         Log.d(TAG, "详细课程状态: feedback_submitted = " + feedbackSubmitted);
-                        
+
                         runOnUiThread(() -> {
                             // 如果双方都已完成并且学生还没有提交反馈
                             if ("true".equals(bothCompleted) && "false".equals(feedbackSubmitted)) {
@@ -303,12 +303,12 @@ public class StudentBooking extends AppCompatActivity {
                                     // 使用一个更明显的颜色（绿色）来显示完成状态
                                     statusChip.setChipBackgroundColorResource(com.google.android.material.R.color.design_default_color_on_secondary);
                                     statusChip.setTextColor(getResources().getColor(android.R.color.white, null));
-                                    
+
                                     // 修改按钮文本，明确表示这是给反馈的按钮
                                     submitFeedbackButton.setText(R.string.rate_tutor_experience);
                                     // 显示反馈按钮
                                     submitFeedbackButton.setVisibility(View.VISIBLE);
-                                    
+
                                     Log.d(TAG, "课程完成状态设置完毕: 文本=" + getResources().getString(R.string.lesson_completed));
                                 } catch (Exception e) {
                                     Log.e(TAG, "更新状态芯片时出错: " + e.getMessage(), e);
@@ -328,46 +328,46 @@ public class StudentBooking extends AppCompatActivity {
             }
         });
     }
-    
+
     // 获取导师联系方式
     private void getTutorContact() {
         if (tutorId == null) {
             Toast.makeText(this, getString(R.string.error_loading_tutor_contact), Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         OkHttpClient client = new OkHttpClient();
-        
+
         // 创建请求体
         RequestBody formBody = new FormBody.Builder()
                 .add("tutor_id", tutorId)
                 .build();
-        
+
         // 构建请求
         String url = "http://" + IPConfig.getIP() + "/FYP/php/get_tutor_contact.php";
         Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)
                 .build();
-        
+
         // 发送请求
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("Network", "Failed to load tutor contact: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(StudentBooking.this, 
+                runOnUiThread(() -> Toast.makeText(StudentBooking.this,
                         getString(R.string.error_loading_tutor_contact), Toast.LENGTH_SHORT).show());
             }
-            
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d("Response", "Tutor contact: " + responseData);
-                
+
                 try {
                     Gson gson = new Gson();
                     TutorContactResponse contactResponse = gson.fromJson(responseData, TutorContactResponse.class);
-                    
+
                     runOnUiThread(() -> {
                         if (contactResponse.isSuccess()) {
                             // 显示导师联系方式对话框
@@ -379,31 +379,31 @@ public class StudentBooking extends AppCompatActivity {
                     });
                 } catch (Exception e) {
                     Log.e("Parse", "Failed to parse tutor contact: " + e.getMessage());
-                    runOnUiThread(() -> Toast.makeText(StudentBooking.this, 
+                    runOnUiThread(() -> Toast.makeText(StudentBooking.this,
                             getString(R.string.error_loading_tutor_contact), Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
-    
+
     // 显示导师联系方式对话框
     private void showTutorContactDialog(TutorContactResponse.TutorContact tutor) {
         if (tutor == null) {
             Toast.makeText(this, getString(R.string.tutor_contact_not_available), Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         // 创建对话框视图
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_contact_info, null);
         TextView nameTextView = dialogView.findViewById(R.id.contact_name);
         TextView phoneTextView = dialogView.findViewById(R.id.contact_phone);
         TextView emailTextView = dialogView.findViewById(R.id.contact_email);
-        
+
         // 设置联系信息
         nameTextView.setText(getString(R.string.contact_name, tutor.getName()));
         phoneTextView.setText(getString(R.string.contact_phone, tutor.getPhone()));
         emailTextView.setText(getString(R.string.contact_email, tutor.getEmail()));
-        
+
         // 显示对话框
         new MaterialAlertDialogBuilder(this)
                 .setTitle(getString(R.string.tutor_contact_info))
@@ -411,14 +411,14 @@ public class StudentBooking extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
-    
+
     // 打开反馈页面
     private void openFeedbackPage() {
         if (caseId == null || studentId == null || tutorId == null) {
             Toast.makeText(this, R.string.feedback_error, Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         // 创建Intent跳转到FirstLessonFeedback页面
         Intent intent = new Intent(this, FirstLessonFeedback.class);
         // 传递必要参数

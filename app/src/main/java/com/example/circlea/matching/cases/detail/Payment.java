@@ -65,7 +65,7 @@ public class Payment extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment);
-
+        Log.d("CurrentJava", "Payment");
         initializeViews();
         setupToolbar();
         processIntentData();
@@ -149,8 +149,23 @@ public class Payment extends AppCompatActivity {
     private long calculateDurationInMinutes(String startTime, String endTime) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-            long diff = sdf.parse(endTime).getTime() - sdf.parse(startTime).getTime();
-            return diff / (60 * 1000);
+            
+            // 檢查是否只包含時間部分 (HH:mm:ss)
+            if (startTime.matches("\\d{2}:\\d{2}:\\d{2}")) {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                long startMillis = timeFormat.parse(startTime).getTime();
+                long endMillis = timeFormat.parse(endTime).getTime();
+                
+                // 如果結束時間小於開始時間，表示跨天
+                if (endMillis < startMillis) {
+                    endMillis += 24 * 60 * 60 * 1000; // 加上一天的毫秒數
+                }
+                
+                return (endMillis - startMillis) / (60 * 1000);
+            } else {
+                long diff = sdf.parse(endTime).getTime() - sdf.parse(startTime).getTime();
+                return diff / (60 * 1000);
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error calculating duration: " + e.getMessage());
             return 0;
@@ -159,9 +174,16 @@ public class Payment extends AppCompatActivity {
 
     private String formatDateTime(String dateTime) {
         try {
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-            SimpleDateFormat outputFormat = new SimpleDateFormat("d MMM yyyy, HH:mm", Locale.getDefault());
-            return outputFormat.format(inputFormat.parse(dateTime));
+            // 檢查是否只包含時間部分 (HH:mm:ss)
+            if (dateTime.matches("\\d{2}:\\d{2}:\\d{2}")) {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                return outputFormat.format(timeFormat.parse(dateTime));
+            } else {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+                SimpleDateFormat outputFormat = new SimpleDateFormat("d MMM yyyy, HH:mm", Locale.getDefault());
+                return outputFormat.format(inputFormat.parse(dateTime));
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error formatting datetime: " + e.getMessage());
             return dateTime;
@@ -170,9 +192,16 @@ public class Payment extends AppCompatActivity {
 
     private String formatTime(String dateTime) {
         try {
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-            return outputFormat.format(inputFormat.parse(dateTime));
+            // 檢查是否只包含時間部分 (HH:mm:ss)
+            if (dateTime.matches("\\d{2}:\\d{2}:\\d{2}")) {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                return outputFormat.format(timeFormat.parse(dateTime));
+            } else {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+                SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                return outputFormat.format(inputFormat.parse(dateTime));
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error formatting time: " + e.getMessage());
             return dateTime;

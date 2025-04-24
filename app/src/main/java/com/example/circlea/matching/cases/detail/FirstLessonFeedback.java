@@ -1,6 +1,7 @@
 package com.example.circlea.matching.cases.detail;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RatingBar;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,18 +22,74 @@ public class FirstLessonFeedback extends AppCompatActivity {
     private String matchId;
     private String studentId;
     private String tutorId;
+    private String tutorAppId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.first_lesson_feedback);
-
+        Log.d("CurrentJava", "FirstLessonFeedback");
         // Get data from intent
         matchId = getIntent().getStringExtra("case_id");
         studentId = getIntent().getStringExtra("student_id");
         tutorId = getIntent().getStringExtra("tutor_id");
 
-        initializeViews();
+        getTutorAppId();
+    }
+
+    private void getTutorAppId() {
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("match_id", matchId)
+                .build();
+
+        Request request = new Request.Builder()
+                .url("http://" + IPConfig.getIP() + "/FYP/php/get_tutor_application_by_match_id.php")
+                .post(formBody)
+                .build();
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("FirstLessonFeedback", "Failed to get tutor_app_id: " + e.getMessage());
+                runOnUiThread(() -> {
+                    Toast.makeText(FirstLessonFeedback.this, "Failed to load necessary data", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    String responseData = response.body().string();
+                    JSONObject jsonResponse = new JSONObject(responseData);
+                    Log.d("FirstLessonFeedback", "getTutorAppId response: " + responseData);
+
+                    if (jsonResponse.getBoolean("success")) {
+                        JSONObject data = jsonResponse.getJSONArray("data").getJSONObject(0);
+                        tutorAppId = data.getString("app_id");
+                        Log.d("FirstLessonFeedback", "Got tutor_app_id: " + tutorAppId);
+                        
+                        runOnUiThread(() -> initializeViews());
+                    } else {
+                        String message = jsonResponse.optString("message", "Failed to get application data");
+                        Log.e("FirstLessonFeedback", message);
+                        runOnUiThread(() -> {
+                            Toast.makeText(FirstLessonFeedback.this, message, Toast.LENGTH_SHORT).show();
+                            finish();
+                        });
+                    }
+                } catch (Exception e) {
+                    Log.e("FirstLessonFeedback", "Error parsing response: " + e.getMessage());
+                    runOnUiThread(() -> {
+                        Toast.makeText(FirstLessonFeedback.this, "Error loading data", Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+                }
+            }
+        });
     }
 
     private void initializeViews() {
@@ -67,14 +124,19 @@ public class FirstLessonFeedback extends AppCompatActivity {
     }
 
     private void submitFeedback(float rating, String feedback) {
+        if (tutorAppId == null) {
+            Toast.makeText(this, "Missing application data, please try again", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         OkHttpClient client = new OkHttpClient();
 
         RequestBody formBody = new FormBody.Builder()
-                .add("match_id", matchId)
-                .add("student_id", studentId)
-                .add("tutor_id", tutorId)
-                .add("rating", String.valueOf(rating))
-                .add("feedback", feedback)
+                .add("member_id", studentId)
+                .add("application_id", tutorAppId)
+                .add("role", "parent")
+                .add("rate_score", String.valueOf(rating))
+                .add("comment", feedback)
                 .build();
 
         Request request = new Request.Builder()

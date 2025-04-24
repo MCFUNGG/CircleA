@@ -26,15 +26,24 @@ if (!$match_id || !$tutor_id) {
     exit;
 }
 
-// Query to get booking requests
+// 添加調試日誌
+error_log("match_id: " . $match_id . ", tutor_id: " . $tutor_id);
+
+// Query to get booking requests - 修改查詢以優先返回confirmed狀態的記錄
 $query = "SELECT b.*, m.username as student_name
           FROM booking b
           JOIN member m ON b.student_id = m.member_id
           WHERE b.match_id = ? 
           AND b.tutor_id = ?
-          AND (b.status = 'pending' OR b.status = 'confirmed')
-          ORDER BY b.status = 'confirmed' DESC, 
-                   b.created_at DESC";
+          ORDER BY 
+            CASE 
+                WHEN b.status = 'confirmed' THEN 1
+                WHEN b.status = 'conflict' THEN 2
+                WHEN b.status = 'completed' THEN 3
+                WHEN b.status = 'pending' THEN 4
+                ELSE 5
+            END,
+            b.created_at DESC";
 
 $stmt = $connect->prepare($query);
 if (!$stmt) {
@@ -76,6 +85,10 @@ while ($row = $result->fetch_assoc()) {
         'end_time' => $end_time,
         'status' => $row['status']
     ];
+    
+    // 添加調試日誌
+    error_log("Booking: ID=" . $row['booking_id'] . ", Status=" . $row['status'] . 
+              ", StartTime=" . $start_time . ", EndTime=" . $end_time);
 }
 
 if (empty($requests)) {

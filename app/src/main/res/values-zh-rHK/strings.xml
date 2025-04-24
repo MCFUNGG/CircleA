@@ -549,4 +549,24 @@
     <string name="failed_to_fetch_data">無法獲取數據</string>
     <string name="unknown_error">未知錯誤</string>
     <string name="error_processing_data">處理數據時出錯</string>
+
+    <!-- Find Other Tutor Strings -->
+    <string name="both_incomplete_message">您和導師均已確認課程未完成。課酬將退還至您的帳戶。</string>
+    <string name="both_incomplete_tutor_message">您和學生均已確認課程未完成。請提供新的可用時間段。</string>
+    <string name="lesson_incomplete_title">課程未完成</string>
+    <string name="reason">原因</string>
+
+    <!-- Student Payment Status -->
+    <string name="payment_status">付款狀態</string>
+    <string name="student_payment_not_submitted">尚未提交</string>
+    <string name="student_payment_pending">等待驗證</string>
+    <string name="student_payment_confirmed">付款已確認</string>
+    <string name="student_payment_rejected">付款被拒絕</string>
+    <string name="check_payment_status">檢查</string>
+    <string name="payment_has_been_confirmed">付款已經確認</string>
+    <string name="failed_to_check_payment_status">檢查付款狀態失敗</string>
+    <string name="missing_required_information">缺少必要資訊</string>
+
+    <!-- Conflict Status -->
+    <string name="waiting_admin_process">等待管理員處理衝突狀態</string>
 </resources>

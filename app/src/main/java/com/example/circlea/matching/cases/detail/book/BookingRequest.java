@@ -86,16 +86,25 @@
 
         // Helper method to check if the request is pending
         public boolean isPending() {
-            return "pending".equalsIgnoreCase(status);
+            return "pending".equals(status);
         }
 
         // Helper method to check if the request is confirmed
         public boolean isConfirmed() {
-            return "confirmed".equalsIgnoreCase(status);
+            return "confirmed".equals(status);
         }
 
         // Helper method to check if the request is rejected
         public boolean isRejected() {
             return "rejected".equalsIgnoreCase(status);
+        }
+
+        // Helper method to check if the request is conflict
+        public boolean isConflict() {
+            return "conflict".equals(status);
+        }
+
+        public boolean isCompleted() {
+            return "completed".equals(status);
         }
     }

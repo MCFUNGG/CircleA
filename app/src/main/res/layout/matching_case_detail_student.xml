@@ -17,201 +17,207 @@
                 style="@style/Widget.Material3.Toolbar.Surface"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="match_parent">
 
-                <!-- Status Card -->
-                <com.google.android.material.card.MaterialCardView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="2dp"
-                    style="@style/Widget.Material3.CardView.Elevated">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                    <LinearLayout
+                    <!-- Status Card -->
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                        android:layout_marginBottom="16dp"
+                        app:cardElevation="2dp"
+                        style="@style/Widget.Material3.CardView.Elevated">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="First Lesson"
+                                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                                    android:textColor="?attr/colorPrimary"/>
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/status_lesson"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Status"
+                                    app:chipBackgroundColor="@color/material_dynamic_neutral90"
+                                    style="@style/Widget.Material3.Chip.Assist"/>
+                            </LinearLayout>
 
                             <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="0dp"
+                                android:id="@+id/status_text"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="First Lesson"
-                                android:textAppearance="?attr/textAppearanceTitleMedium"
-                                android:textColor="?attr/colorPrimary"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/status_lesson"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Status"
-                                app:chipBackgroundColor="@color/material_dynamic_neutral90"
-                                style="@style/Widget.Material3.Chip.Assist"/>
+                                android:layout_marginTop="8dp"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"/>
                         </LinearLayout>
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/status_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textAppearance="?attr/textAppearanceBodyLarge"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-                <!-- Payment Card -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/payment_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone"
-                    app:cardElevation="2dp"
-                    style="@style/Widget.Material3.CardView.Elevated">
-
-                    <LinearLayout
+                    </com.google.android.material.card.MaterialCardView>
+                    <!-- Payment Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/payment_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone"
+                        app:cardElevation="2dp"
+                        style="@style/Widget.Material3.CardView.Elevated">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Payment Required"
+                                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                                    android:textColor="?attr/colorError"/>
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/status_payment"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="not submit yet"
+                                    app:chipBackgroundColor="@color/material_dynamic_neutral90"
+                                    style="@style/Widget.Material3.Chip.Assist"/>
+
+                            </LinearLayout>
 
                             <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Payment Required"
-                                android:textAppearance="?attr/textAppearanceTitleMedium"
-                                android:textColor="?attr/colorError"/>
+                                android:layout_marginTop="8dp"
+                                android:text="Please complete the payment before your first lesson."
+                                android:textAppearance="?attr/textAppearanceBodyMedium"/>
 
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/status_payment"
-                                android:layout_width="wrap_content"
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/payment_button"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="not submit yet"
-                                app:chipBackgroundColor="@color/material_dynamic_neutral90"
-                                style="@style/Widget.Material3.Chip.Assist"/>
-
+                                android:layout_marginTop="16dp"
+                                android:text="Go to Payment"
+                                app:icon="@drawable/ic_payment"
+                                style="@style/Widget.Material3.Button"/>
                         </LinearLayout>
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Please complete the payment before your first lesson."
-                            android:textAppearance="?attr/textAppearanceBodyMedium"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/payment_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:text="Go to Payment"
-                            app:icon="@drawable/ic_payment"
-                            style="@style/Widget.Material3.Button"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/tutor_contact_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone"
-                    app:cardElevation="2dp"
-                    style="@style/Widget.Material3.CardView.Elevated">
-
-                    <LinearLayout
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/tutor_contact_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone"
+                        app:cardElevation="2dp"
+                        style="@style/Widget.Material3.CardView.Elevated">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Tutor Contact"
+                                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                                    android:textColor="?attr/colorPrimary"/>
+                            </LinearLayout>
 
                             <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="0dp"
+                                android:id="@+id/tutor_name"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Tutor Contact"
-                                android:textAppearance="?attr/textAppearanceTitleMedium"
-                                android:textColor="?attr/colorPrimary"/>
+                                android:layout_marginTop="8dp"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tutor_phone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tutor_email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"/>
                         </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/finish_lesson_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:padding="16dp"
+                        android:text="Update Lesson Status"
+                        android:textSize="16sp"
+                        android:visibility="gone"
+                        app:cornerRadius="12dp"
+                        app:icon="@drawable/ic_update_status"
+                        app:iconGravity="textStart"
+                        app:iconPadding="12dp"
+                        app:iconSize="24dp"
+                        app:iconTint="@color/white"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:textColor="@color/white"
+                        style="@style/Widget.Material3.Button"/>
 
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tutor_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textAppearance="?attr/textAppearanceBodyLarge"/>
+                    <!-- Time Slots RecyclerView -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/time_slots_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"/>
 
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tutor_phone"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"/>
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tutor_email"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/finish_lesson_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:padding="16dp"
-                    android:text="Update Lesson Status"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_update_status"
-                    app:iconGravity="textStart"
-                    app:iconPadding="12dp"
-                    app:iconSize="24dp"
-                    app:iconTint="@color/white"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:textColor="@color/white"
-                    style="@style/Widget.Material3.Button"/>
-
-                <!-- Time Slots RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/time_slots_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"/>
-
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/send_request_button"
@@ -219,7 +225,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
-            android:text="Send Booking Request"
+            android:text="Booking Confirm"
             app:icon="@drawable/ic_send"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

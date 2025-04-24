@@ -42,7 +42,6 @@
     <string name="error_preparing_data">Error preparing data: </string>
     
     <string name="failed_to_process_response">Failed to process response</string>
-    <string name="error_processing_response">Error processing response</string>
     <string name="this_slot_is_not_pending_for_response">This slot is not pending for response</string>
     <string name="student_request_for_time_slot">Student request for time slot on %1$s from %2$s to %3$s</string>
     <string name="booking_request">Booking Request</string>
@@ -554,6 +553,30 @@
     <string name="filter_result_message">Found %1$d matching results</string>
     <string name="filter_reset">Filter reset</string>
     <string name="failed_to_fetch_data">Failed to fetch data</string>
+    
+    <!-- New strings added from the code block -->
+    <string name="lesson_incomplete_title">課程未完成</string>
+    <string name="both_incomplete_message">Both you and the tutor have confirmed that the lesson was not completed. The fee will be refunded to your account.</string>
+    <string name="both_incomplete_tutor_message">Both you and the student have confirmed that the lesson was not completed. Please provide new available time slots.</string>
+    <string name="reason">Reason</string>
+    
+    <!-- Student Payment Status -->
+    <string name="payment_status">Payment Status</string>
+    <string name="student_payment_not_submitted">Not Submitted</string>
+    <string name="student_payment_pending">Pending Verification</string>
+    <string name="student_payment_confirmed">Payment Verified</string>
+    <string name="student_payment_rejected">Payment Rejected</string>
+    <string name="check_payment_status">Check</string>
+    <string name="payment_has_been_confirmed">Payment has been confirmed</string>
+    <string name="failed_to_check_payment_status">Failed to check payment status</string>
+    <string name="missing_required_information">Missing required information</string>
+    <string name="error_processing_response">Error processing response</string>
+    
+    <!-- Conflict Status -->
+    <string name="waiting_admin_process">Waiting for admin to process conflict status</string>
+    
+    <!-- Completed Status -->
+    <string name="lesson_completed_message">The lesson has been completed successfully. Thank you for your service.</string>
 
 </resources>
 

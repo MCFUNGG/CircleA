@@ -67,7 +67,7 @@ try {
 
     // Update the slot with student's booking request
     $updateQuery = "UPDATE booking 
-                   SET status = 'pending',
+                   SET status = 'confirmed',
                        student_id = ?,
                        updated_at = NOW()
                    WHERE booking_id = ? 
@@ -134,8 +134,8 @@ try {
     $studentName = $matchDetails['student_name'];
     
     // Insert notification into database
-    $notificationTitle = "新的預約時間請求";
-    $notificationMessage = "{$studentName} 向您請求預約時間 {$timeSlotFormatted}，請查看並確認。";
+    $notificationTitle = "新的預約時間已被選擇";
+    $notificationMessage = "{$studentName} 向選擇預約時間 {$timeSlotFormatted}，請查看並確認。";
     $notificationType = "new_request";
     
     $insertNotificationQuery = "INSERT INTO notifications (member_id, title, message, type, related_id, is_read, created_at) 

@@ -20,6 +20,7 @@ import com.example.circlea.R;
 import com.example.circlea.home.PSAppDetail;
 import com.example.circlea.matching.cases.detail.CaseDetailMenu;
 import com.example.circlea.matching.cases.detail.MatchingCaseDetailStudent;
+import com.example.circlea.matching.cases.detail.book.TutorBooking;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +45,11 @@ public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapte
         void onItemClick(MatchingCase matchingCase, int position);
     }
 
+    // 介面用於 isTimeSlotConfirmed 的回調
+    interface ConfirmSlotCallback {
+        void onResult(boolean hasConfirmedSlot);
+    }
+
     public MatchingCaseAdapter(Context context, List<MatchingCase> cases) {
         this.context = context;
         this.cases = cases;
@@ -65,12 +71,9 @@ public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapte
         MatchingCase matchingCase = cases.get(position);
         SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
         String currentMemberId = sharedPreferences.getString("member_id", "");
-
+        Log.d("CurrentJava", "MatchingCaseAdapter");
         // Set fee
         holder.feeTv.setText("HK$" + matchingCase.getFee() + "/hr");
-
-
-
 
         // Set status and its background color
         String status = matchingCase.getStatus();
@@ -114,6 +117,7 @@ public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapte
         } else {
             holder.profileIcon.setImageResource(R.drawable.circle_background);
         }
+
         // Set click listener
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -123,23 +127,70 @@ public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapte
                     // Check user role
                     if (currentMemberId.equals(matchingCase.getTutorId())) {
                         // User is tutor - can set available slots
-                        Intent intent = new Intent(context, CaseDetailMenu.class);
+                        Intent intent = new Intent(context, TutorBooking.class);
                         intent.putExtra("case_id", matchingCase.getMatchId());
                         intent.putExtra("is_tutor", true);
                         intent.putExtra("lessonFee", matchingCase.getFee());
                         context.startActivity(intent);
                     } else if (currentMemberId.equals(matchingCase.getPsId())) {
-                        // User is student - show available slots or waiting message
-                        // TODO: Check if tutor has created time slots
-
-                        showStudentOptionsDialog(matchingCase);
+                        // User is student - always go to detail page first, then check time slot status there
+                        Intent intent = new Intent(context, MatchingCaseDetailStudent.class);
+                        intent.putExtra("case_id", matchingCase.getMatchId());
+                        intent.putExtra("is_tutor", false);
+                        intent.putExtra("tutor_id", matchingCase.getTutorId());
+                        intent.putExtra("lessonFee", matchingCase.getFee());
+                        
+                        // Pass time slot check responsibility to detail page
+                        context.startActivity(intent);
                     }
                 }
             }
         });
     }
 
+    private void isTimeSlotConfirmed(String matchId, ConfirmSlotCallback callback) {
+        OkHttpClient client = new OkHttpClient();
 
+        RequestBody formBody = new FormBody.Builder()
+                .add("match_id", matchId)
+                .build();
+
+        String url = "http://" + IPConfig.getIP() + "/FYP/php/check_confirmed_time_slot.php";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("MatchingCaseAdapter", "Failed to check confirmed slots: " + e.getMessage());
+                ((Activity) context).runOnUiThread(() -> {
+                    callback.onResult(false);
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                try {
+                    JSONObject jsonResponse = new JSONObject(responseData);
+                    boolean hasConfirmedSlot = jsonResponse.optBoolean("has_confirmed_slot", false);
+                    Log.d("MatchingCaseAdapter", "Confirmed slot check result: " + hasConfirmedSlot);
+
+                    ((Activity) context).runOnUiThread(() -> {
+                        callback.onResult(hasConfirmedSlot);
+                    });
+                } catch (Exception e) {
+                    Log.e("MatchingCaseAdapter", "Error parsing confirmed slot response: " + e.getMessage());
+                    ((Activity) context).runOnUiThread(() -> {
+                        callback.onResult(false);
+                    });
+                }
+            }
+        });
+    }
 
     private void showStudentOptionsDialog(MatchingCase matchingCase) {
         // First, check if there are any available slots
@@ -178,11 +229,11 @@ public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapte
                             Intent intent = new Intent(context, MatchingCaseDetailStudent.class);
                             intent.putExtra("case_id", matchingCase.getMatchId());
                             intent.putExtra("is_tutor", false);
-                            intent.putExtra("tutor_id",matchingCase.getTutorId());
-                            intent.putExtra("lessonFee",matchingCase.getFee());
-                                Log.d("MatchingCaseAdapter",
-                                    " case_id: "+matchingCase.getMatchId()+
-                                    " lesson Fee: $"+matchingCase.getFee()
+                            intent.putExtra("tutor_id", matchingCase.getTutorId());
+                            intent.putExtra("lessonFee", matchingCase.getFee());
+                            Log.d("MatchingCaseAdapter",
+                                    " case_id: " + matchingCase.getMatchId() +
+                                            " lesson Fee: $" + matchingCase.getFee()
                             );
 
                             context.startActivity(intent);

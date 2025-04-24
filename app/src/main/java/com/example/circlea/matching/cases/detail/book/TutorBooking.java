@@ -4,7 +4,9 @@
     import android.content.Context;
     import android.content.SharedPreferences;
     import android.content.res.ColorStateList;
+    import android.graphics.Color;
     import android.os.Bundle;
+    import android.os.Handler;
     import android.util.Log;
     import android.view.LayoutInflater;
     import android.view.View;
@@ -20,6 +22,7 @@
     import androidx.core.content.ContextCompat;
     import androidx.recyclerview.widget.LinearLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
+    import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
     import com.example.circlea.IPConfig;
     import com.example.circlea.R;
@@ -72,12 +75,13 @@
         private View bookingRequestsCard;
         private TextView availableTimeSlotsTitle;
         private MaterialToolbar topAppBar;
+        private SwipeRefreshLayout swipeRefreshLayout;
 
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.booking_tutor);
-
+            Log.d("CurrentJava", "TutorBooking");
             // Get tutor ID from SharedPreferences
             SharedPreferences sharedPreferences = getSharedPreferences("CircleA", Context.MODE_PRIVATE);
             tutorId = sharedPreferences.getString("member_id", "");
@@ -86,6 +90,7 @@
             caseId = getIntent().getStringExtra("case_id");
 
             initializeViews();
+            setupSwipeRefresh();
             getStudentBookingRequest();
         }
 
@@ -104,7 +109,6 @@
             MaterialButton selectDateButton = findViewById(R.id.select_date_button);
             ExtendedFloatingActionButton saveSlotsButton = findViewById(R.id.save_slots_button);
             timeSlotsRecyclerView = findViewById(R.id.time_slots_recycler_view);
-            MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
             bookingRequestsRecyclerView = findViewById(R.id.booking_requests_recycler_view);
             bookingRequestsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             bookingRequests = new ArrayList<>();
@@ -116,6 +120,7 @@
             bookingDateTime = findViewById(R.id.booking_date_time);
             bookingStatus = findViewById(R.id.booking_status);
             bookingRequestsCard = findViewById(R.id.booking_requests_card);
+            swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
             // Setup RecyclerView
             timeSlotsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -126,9 +131,6 @@
             availableTimeSlotsTitle = findViewById(R.id.available_time_slots_title);
             selectedDate = Calendar.getInstance();
 
-            topAppBar = findViewById(R.id.topAppBar);  // Initialize toolbar reference
-            bookingRequestsRecyclerView = findViewById(R.id.booking_requests_recycler_view);
-
             // Setup click listeners
             selectDateButton.setOnClickListener(v -> showDatePicker());
             saveSlotsButton.setOnClickListener(v -> saveAvailableSlots());
@@ -137,6 +139,36 @@
 
             MaterialButton viewStudentContactButton = findViewById(R.id.view_student_contact_button);
             viewStudentContactButton.setOnClickListener(v -> getStudentContact());
+        }
+        
+        private void setupSwipeRefresh() {
+            swipeRefreshLayout.setColorSchemeResources(
+                R.color.primary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark
+            );
+            
+            swipeRefreshLayout.setOnRefreshListener(this::refreshContent);
+        }
+        
+        private void refreshContent() {
+            Log.d("TutorBooking", "Refreshing content...");
+            
+            // 清空現有數據
+            timeSlots.clear();
+            bookingRequests.clear();
+            
+            // 重新加載數據
+            getStudentBookingRequest();
+            loadExistingTimeSlots();
+            
+            // 延遲一點時間後停止刷新動畫
+            new Handler().postDelayed(() -> {
+                if (swipeRefreshLayout != null) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }, 1000);
         }
 
         private void getStudentBookingRequest() {
@@ -164,6 +196,9 @@
                 finish(); // Close activity if tutorId is invalid
                 return;
             }
+
+            // 首先檢查是否有衝突狀態
+            checkForLessonStatusConflict();
 
             RequestBody formBody = formBodyBuilder.build();
 
@@ -210,18 +245,177 @@
             });
         }
 
+        // 添加新方法：檢查課程狀態是否有衝突
+        private void checkForLessonStatusConflict() {
+            OkHttpClient client = new OkHttpClient();
+
+            Log.d("TutorBooking", "Checking for lesson status conflict for match_id: " + caseId + ", tutor_id: " + tutorId);
+
+            RequestBody formBody = new FormBody.Builder()
+                    .add("match_id", caseId)
+                    .add("tutor_id", tutorId)
+                    .build();
+
+            String url = "http://" + IPConfig.getIP() + "/FYP/php/check_booking_status.php";
+            
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(formBody)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("TutorBooking", "Failed to check lesson status: " + e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d("TutorBooking", "Lesson status check response: " + responseData);
+                    
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseData);
+                        if (jsonResponse.getBoolean("success") && jsonResponse.getBoolean("has_booking")) {
+                            JSONObject booking = jsonResponse.getJSONObject("booking");
+                            String status = booking.getString("status");
+                            
+                            if ("conflict".equals(status)) {
+                                // 如果有衝突狀態，更新UI顯示衝突信息，隱藏時間槽
+                                runOnUiThread(() -> {
+                                    // 顯示預約詳情，隱藏時間槽視圖
+                                    topAppBar.setTitle(getString(R.string.booking_detail));
+
+                                    // 隱藏"可用時間槽"標題和部分
+                                    availableTimeSlotsTitle.setVisibility(View.GONE);
+                                    findViewById(R.id.add_slot_card).setVisibility(View.GONE);
+                                    timeSlotsRecyclerView.setVisibility(View.GONE);
+                                    findViewById(R.id.save_slots_button).setVisibility(View.GONE);
+
+                                    // 顯示衝突信息對話框
+                                    new AlertDialog.Builder(TutorBooking.this)
+                                            .setTitle(getString(R.string.status_conflict))
+                                            .setMessage(getString(R.string.waiting_admin_process))
+                                            .setPositiveButton(getString(R.string.ok), null)
+                                            .show();
+                                });
+                                
+                                // 獲取並顯示預約詳情
+                                fetchConfirmedBooking();
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e("TutorBooking", "Error checking lesson status: " + e.getMessage());
+                    }
+                }
+            });
+        }
+
+        // 添加新方法：直接獲取確認狀態的預約
+        private void fetchConfirmedBooking() {
+            OkHttpClient client = new OkHttpClient();
+
+            Log.d("TutorBooking", "Getting confirmed booking for match_id: " + caseId + ", tutor_id: " + tutorId);
+
+            // 檢查必要參數
+            if (caseId == null || caseId.isEmpty() || tutorId == null || tutorId.isEmpty()) {
+                Log.e("TutorBooking", "Invalid case_id or tutor_id");
+                runOnUiThread(() -> Toast.makeText(this, getString(R.string.missing_required_information), Toast.LENGTH_SHORT).show());
+                return;
+            }
+
+            RequestBody formBody = new FormBody.Builder()
+                    .add("match_id", caseId)
+                    .add("tutor_id", tutorId)
+                    .build();
+
+            String url = "http://" + IPConfig.getIP() + "/FYP/php/get_booking_requests.php";
+            
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(formBody)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("TutorBooking", "Failed to get confirmed booking: " + e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d("TutorBooking", "Confirmed booking response: " + responseData);
+                    
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseData);
+                        if (jsonResponse.getBoolean("success")) {
+                            JSONArray requests = jsonResponse.getJSONArray("requests");
+                            
+                            for (int i = 0; i < requests.length(); i++) {
+                                JSONObject request = requests.getJSONObject(i);
+                                String status = request.getString("status");
+                                
+                                if ("confirmed".equals(status) || "conflict".equals(status)) {
+                                    // 找到確認或衝突狀態的預約，在UI中顯示
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+                                    
+                                    Calendar startTime = Calendar.getInstance();
+                                    startTime.setTime(sdf.parse(request.getString("start_time")));
+                                    
+                                    Calendar endTime = Calendar.getInstance();
+                                    endTime.setTime(sdf.parse(request.getString("end_time")));
+                                    
+                                    final BookingRequest bookingRequest = new BookingRequest(
+                                            request.getString("booking_id"),
+                                            request.getString("student_id"),
+                                            request.getString("student_name"),
+                                            startTime,
+                                            endTime,
+                                            status
+                                    );
+                                    
+                                    runOnUiThread(() -> {
+                                        showBookingDetail(bookingRequest);
+                                        bookingDetailCard.setVisibility(View.VISIBLE);
+                                        findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
+                                        findViewById(R.id.update_lesson_status_button).setVisibility(View.VISIBLE);
+                                        
+                                        // 隱藏預約請求部分
+                                        findViewById(R.id.booking_requests_title).setVisibility(View.GONE);
+                                        bookingRequestsCard.setVisibility(View.GONE);
+                                        findViewById(R.id.booking_requests_divider).setVisibility(View.GONE);
+                                    });
+                                    
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e("TutorBooking", "Error processing confirmed booking: " + e.getMessage());
+                    }
+                }
+            });
+        }
+
         private void processBookingRequests(JSONArray requestsArray) {
             runOnUiThread(() -> {
                 try {
                     bookingRequests.clear();
                     boolean hasConfirmedBooking = false;
+                    boolean hasConflictBooking = false;
+                    boolean hasCompletedBooking = false;
                     BookingRequest confirmedRequest = null;
+                    BookingRequest conflictRequest = null;
+                    BookingRequest completedRequest = null;
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
                     for (int i = 0; i < requestsArray.length(); i++) {
                         JSONObject requestObject = requestsArray.getJSONObject(i);
                         String status = requestObject.getString("status");
+                        
+                        Log.d("TutorBooking", "Processing booking: status = " + status);
 
                         // Parse request data
                         Calendar startTime = Calendar.getInstance();
@@ -238,58 +432,139 @@
                                 endTime,
                                 status
                         );
-                        if (!hasConfirmedBooking) {
+                        
+                        if (!hasConfirmedBooking && !hasConflictBooking && !hasCompletedBooking) {
                             loadExistingTimeSlots();
                         }
+                        
                         if (status.equals("confirmed")) {
                             hasConfirmedBooking = true;
                             confirmedRequest = request;
+                        } else if (status.equals("conflict")) {
+                            hasConflictBooking = true;
+                            conflictRequest = request;
+                        } else if (status.equals("completed")) {
+                            hasCompletedBooking = true;
+                            completedRequest = request;
+                            Log.d("TutorBooking", "Found completed booking: " + request.getRequestId());
                         } else if (status.equals("pending")) {
                             bookingRequests.add(request);
                         }
                     }
 
-                    // Update UI based on booking status
-                    if (hasConfirmedBooking && confirmedRequest != null) {
-                        // Show booking detail and hide everything else
-                        showBookingDetail(confirmedRequest);
-
-                        // Set toolbar title
+                    // 優先處理衝突狀態
+                    if (hasConflictBooking && conflictRequest != null) {
+                        // 顯示衝突狀態的預約詳情
+                        showBookingDetail(conflictRequest);
+                        
+                        // 設置工具欄標題
                         topAppBar.setTitle(getString(R.string.booking_detail));
 
-                        // Hide "Available Time Slots" title and section
+                        // 隱藏"可用時間槽"標題和部分
+                        availableTimeSlotsTitle.setVisibility(View.GONE);
+                        findViewById(R.id.add_slot_card).setVisibility(View.GONE);
+                        timeSlotsRecyclerView.setVisibility(View.GONE);
+                        findViewById(R.id.save_slots_button).setVisibility(View.GONE);
+
+                        // 隱藏預約請求部分
+                        findViewById(R.id.booking_requests_title).setVisibility(View.GONE);
+                        bookingRequestsCard.setVisibility(View.GONE);
+
+                        // 顯示預約詳情部分
+                        bookingDetailCard.setVisibility(View.VISIBLE);
+                        
+                        // 衝突狀態下隱藏更新課程狀態按鈕
+                        findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
+                        findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
+
+                        // 隱藏分隔線
+                        findViewById(R.id.booking_requests_divider).setVisibility(View.GONE);
+                        
+                        // 顯示衝突狀態對話框
+                        new AlertDialog.Builder(this)
+                                .setTitle(getString(R.string.status_conflict))
+                                .setMessage(getString(R.string.waiting_admin_process))
+                                .setPositiveButton(getString(R.string.ok), null)
+                                .show();
+                    }
+                    // 處理已完成狀態
+                    else if (hasCompletedBooking && completedRequest != null) {
+                        Log.d("TutorBooking", "Showing completed status UI");
+                        
+                        // 顯示已完成的預約詳情
+                        showBookingDetail(completedRequest);
+                        
+                        // 設置工具欄標題
+                        topAppBar.setTitle(getString(R.string.booking_detail));
+
+                        // 隱藏"可用時間槽"標題和部分
+                        availableTimeSlotsTitle.setVisibility(View.GONE);
+                        findViewById(R.id.add_slot_card).setVisibility(View.GONE);
+                        timeSlotsRecyclerView.setVisibility(View.GONE);
+                        findViewById(R.id.save_slots_button).setVisibility(View.GONE);
+
+                        // 隱藏預約請求部分
+                        findViewById(R.id.booking_requests_title).setVisibility(View.GONE);
+                        bookingRequestsCard.setVisibility(View.GONE);
+
+                        // 顯示預約詳情部分
+                        bookingDetailCard.setVisibility(View.VISIBLE);
+                        
+                        // 完成狀態下隱藏更新課程狀態按鈕
+                        findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
+                        findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
+
+                        // 隱藏分隔線
+                        findViewById(R.id.booking_requests_divider).setVisibility(View.GONE);
+                        
+                        // 顯示完成狀態對話框
+                        new AlertDialog.Builder(this)
+                                .setTitle(getString(R.string.lesson_completed))
+                                .setMessage(getString(R.string.lesson_completed_message))
+                                .setPositiveButton(getString(R.string.ok), null)
+                                .show();
+                    }
+                    // 如果沒有衝突或已完成狀態，再處理確認狀態
+                    else if (hasConfirmedBooking && confirmedRequest != null) {
+                        // 顯示預約詳情並隱藏其他內容
+                        showBookingDetail(confirmedRequest);
+
+                        // 設置工具欄標題
+                        topAppBar.setTitle(getString(R.string.booking_detail));
+
+                        // 隱藏"可用時間槽"標題和部分
                         availableTimeSlotsTitle.setVisibility(View.GONE);
                         findViewById(R.id.add_slot_card).setVisibility(View.GONE);
                         timeSlotsRecyclerView.setVisibility(View.GONE);
 
-                        // Hide booking requests section
+                        // 隱藏預約請求部分
                         findViewById(R.id.booking_requests_title).setVisibility(View.GONE);
                         bookingRequestsCard.setVisibility(View.GONE);
 
-                        // Hide save button
+                        // 隱藏保存按鈕
                         findViewById(R.id.save_slots_button).setVisibility(View.GONE);
 
-                        // Show booking detail section
+                        // 顯示預約詳情部分
                         bookingDetailCard.setVisibility(View.VISIBLE);
                         findViewById(R.id.update_lesson_status_button).setVisibility(View.VISIBLE);
 
-                        // Hide dividers
+                        // 隱藏分隔線
                         findViewById(R.id.booking_requests_divider).setVisibility(View.GONE);
 
                     } else {
-                        // Show time slots and requests, hide booking detail
+                        // 顯示時間槽和請求，隱藏預約詳情
                         topAppBar.setTitle(getString(R.string.set_available_time_slots));
                         findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
-                        // Show time slots section
+                        // 顯示時間槽部分
                         availableTimeSlotsTitle.setVisibility(View.VISIBLE);
                         findViewById(R.id.add_slot_card).setVisibility(View.VISIBLE);
                         timeSlotsRecyclerView.setVisibility(View.VISIBLE);
                         findViewById(R.id.save_slots_button).setVisibility(View.VISIBLE);
 
-                        // Hide booking detail section
+                        // 隱藏預約詳情部分
                         bookingDetailCard.setVisibility(View.GONE);
 
-                        // Show booking requests section
+                        // 顯示預約請求部分
                         findViewById(R.id.booking_requests_title).setVisibility(View.VISIBLE);
                         bookingRequestsCard.setVisibility(
                                 bookingRequests.isEmpty() ? View.GONE : View.VISIBLE
@@ -298,7 +573,7 @@
                                 bookingRequests.isEmpty() ? View.VISIBLE : View.GONE
                         );
 
-                        // Show all dividers
+                        // 顯示所有分隔線
                         for (int i = 0; i < ((ViewGroup) findViewById(android.R.id.content)).getChildCount(); i++) {
                             View child = ((ViewGroup) findViewById(android.R.id.content)).getChildAt(i);
                             if (child instanceof MaterialDivider) {
@@ -316,6 +591,7 @@
                 }
             });
         }
+        
         private void showBookingDetail(BookingRequest request) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -329,15 +605,149 @@
                                timeFormat.format(request.getEndTime().getTime()));
             bookingDateTime.setText(dateTimeText);
 
-            // Set status chip appearance
-            bookingStatus.setText(request.getStatus());
-            int backgroundColor = ContextCompat.getColor(this, R.color.success_container);
-            int textColor = ContextCompat.getColor(this, R.color.success);
+            // 設置狀態標籤外觀
+            String status = request.getStatus();
+            bookingStatus.setText(status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase());
+            
+            int backgroundColor, textColor;
+            if ("conflict".equalsIgnoreCase(status)) {
+                // 使用錯誤顏色表示衝突
+                backgroundColor = ContextCompat.getColor(this, R.color.error_container);
+                textColor = ContextCompat.getColor(this, R.color.error);
+                
+                // 確保顯示付款狀態區塊
+                findViewById(R.id.payment_status_layout).setVisibility(View.VISIBLE);
+                
+                // 衝突狀態下隱藏更新課程狀態按鈕
+                findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
+                Log.d("TutorBooking", "showBookingDetail: 衝突狀態，隱藏按鈕");
+            } else if ("completed".equalsIgnoreCase(status)) {
+                // 使用成功顏色表示完成狀態
+                backgroundColor = ContextCompat.getColor(this, R.color.success_container);
+                textColor = ContextCompat.getColor(this, R.color.success);
+                
+                // 確保顯示付款狀態區塊
+                findViewById(R.id.payment_status_layout).setVisibility(View.VISIBLE);
+                
+                // 完成狀態下隱藏更新課程狀態按鈕
+                findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
+                Log.d("TutorBooking", "showBookingDetail: 已完成狀態，隱藏按鈕");
+            } else {
+                // 其他狀態（已確認等）使用綠色
+                backgroundColor = ContextCompat.getColor(this, R.color.success_container);
+                textColor = ContextCompat.getColor(this, R.color.success);
+            }
+            
             bookingStatus.setChipBackgroundColor(ColorStateList.valueOf(backgroundColor));
             bookingStatus.setTextColor(textColor);
+            
+            // 檢查和顯示付款狀態
+            checkPaymentStatus(request.getRequestId());
 
             bookingDetailCard.setVisibility(View.VISIBLE);
             findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
+        }
+
+        // 添加檢查付款狀態的方法
+        private void checkPaymentStatus(String bookingId) {
+            OkHttpClient client = new OkHttpClient();
+            
+            RequestBody formBody = new FormBody.Builder()
+                    .add("booking_id", bookingId)
+                    .build();
+                    
+            // 使用導師專用的付款狀態檢查PHP
+            String url = "http://" + IPConfig.getIP() + "/FYP/php/get_payment_status_for_tutor.php";
+            Log.d("Payment", "Checking payment status for booking ID: " + bookingId);
+            
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(formBody)
+                    .build();
+                    
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("Payment", "Failed to check payment status: " + e.getMessage());
+                    runOnUiThread(() -> {
+                        Toast.makeText(TutorBooking.this, 
+                                getString(R.string.failed_to_check_payment_status), 
+                                Toast.LENGTH_SHORT).show();
+                    });
+                }
+                
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.d("Payment", "Payment status response: " + responseData);
+                    
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseData);
+                        if (jsonResponse.getBoolean("success")) {
+                            String paymentStatus = jsonResponse.getString("status");
+                            String bookingStatus = jsonResponse.optString("booking_status", "");
+                            
+                            // 詳細記錄付款資訊
+                            Log.d("Payment", "Parsed payment status: " + paymentStatus);
+                            Log.d("Payment", "Booking status from response: " + bookingStatus);
+                            if (jsonResponse.has("payment_id")) {
+                                Log.d("Payment", "Payment ID: " + jsonResponse.getString("payment_id"));
+                            }
+                            if (jsonResponse.has("payment_date")) {
+                                Log.d("Payment", "Payment date: " + jsonResponse.getString("payment_date"));
+                            }
+                            if (jsonResponse.has("message")) {
+                                Log.d("Payment", "Message: " + jsonResponse.getString("message"));
+                            }
+                            
+                            runOnUiThread(() -> {
+                                // 查找付款狀態顯示元素
+                                Chip paymentStatusChip = findViewById(R.id.student_payment_status);
+                                if (paymentStatusChip != null) {
+                                    // 根據付款狀態設置合適的文字和樣式
+                                    if ("verified".equalsIgnoreCase(paymentStatus) || 
+                                        "confirmed".equalsIgnoreCase(paymentStatus)) {
+                                        // 處理已驗證和已確認狀態
+                                        Log.d("Payment", "Setting chip to Payment Verified");
+                                        paymentStatusChip.setText("Payment Verified");
+                                        paymentStatusChip.setChipBackgroundColor(ColorStateList.valueOf(
+                                                ContextCompat.getColor(TutorBooking.this, R.color.success_container)));
+                                        paymentStatusChip.setTextColor(
+                                                ContextCompat.getColor(TutorBooking.this, R.color.success));
+                                    } else if ("submitted".equalsIgnoreCase(paymentStatus)) {
+                                        Log.d("Payment", "Setting chip to Payment Submitted");
+                                        paymentStatusChip.setText("Payment Submitted");
+                                        paymentStatusChip.setChipBackgroundColor(ColorStateList.valueOf(
+                                                ContextCompat.getColor(TutorBooking.this, R.color.primary_container)));
+                                        paymentStatusChip.setTextColor(
+                                                ContextCompat.getColor(TutorBooking.this, R.color.primary));
+                                    } else {
+                                        Log.d("Payment", "Setting chip to Not Submitted");
+                                        paymentStatusChip.setText("Not Submitted");
+                                        paymentStatusChip.setChipBackgroundColor(ColorStateList.valueOf(
+                                                Color.LTGRAY));
+                                        paymentStatusChip.setTextColor(
+                                                Color.DKGRAY);
+                                    }
+                                } else {
+                                    Log.e("Payment", "Payment status chip not found in layout (id: student_payment_status)");
+                                }
+                                
+                                // 確保付款狀態區域顯示
+                                View paymentStatusLayout = findViewById(R.id.payment_status_layout);
+                                if (paymentStatusLayout != null) {
+                                    paymentStatusLayout.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        } else {
+                            Log.e("Payment", "API returned success=false: " + 
+                                    jsonResponse.optString("message", "No error message provided"));
+                        }
+                    } catch (Exception e) {
+                        Log.e("Payment", "Error processing payment status: " + e.getMessage(), e);
+                    }
+                }
+            });
         }
 
         @Override
@@ -797,7 +1207,6 @@
                     R.id.btn_reason_time,
                     R.id.btn_reason_other
             };
-
             for (int id : buttonIds) {
                 MaterialButton button = view.findViewById(id);
                 button.setOnClickListener(v -> {
@@ -1095,5 +1504,13 @@
                     .setPositiveButton(android.R.string.ok, null)
                     .show();
         }
+
+        @Override
+        protected void onResume() {
+            super.onResume();
+            // 在onResume中刷新內容
+            refreshContent();
+        }
     }
+
 

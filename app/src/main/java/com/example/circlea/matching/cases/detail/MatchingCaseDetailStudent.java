@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
@@ -31,6 +33,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -61,13 +64,15 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     private MaterialTextView tutorName;
     private MaterialTextView tutorPhone;
     private MaterialTextView tutorEmail;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private String currentBookingId;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.matching_case_detail_student);
-
+            Log.d("CurrentJava", "MatchingCaseDetailStudent");
         // Get student ID from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", Context.MODE_PRIVATE);
         studentId = sharedPreferences.getString("member_id", "");
@@ -82,6 +87,34 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         dialogManager = new LessonStatusDialogManager(this, this, false);
 
         initializeViews();
+        
+        // 強制隱藏更新課程狀態按鈕 - 直接在onCreate中設置，最高優先級
+        if (finishLessonButton != null) {
+            Log.d("ButtonDebug", "Forcing button hide in onCreate");
+            finishLessonButton.setVisibility(View.GONE);
+            finishLessonButton.setEnabled(false);
+            
+            // 確保在UI渲染後再次檢查並隱藏按鈕
+            new Handler().post(() -> {
+                if (finishLessonButton != null) {
+                    Log.d("ButtonDebug", "Post handler button hide in onCreate");
+                    finishLessonButton.setVisibility(View.GONE);
+                    finishLessonButton.setEnabled(false);
+                }
+            });
+        }
+        
+        // 檢查Intent中是否帶有衝突狀態標記
+        boolean hasConflictStatus = getIntent().getBooleanExtra("has_conflict_status", false);
+        if (hasConflictStatus) {
+            Log.d("ConflictUI", "Conflict status detected from intent");
+            // 使用延遲執行確保UI元素已初始化
+            new Handler().post(() -> {
+                checkAndHideButtonForConflict();
+            });
+        }
+        
+        setupSwipeRefresh();
         checkExistingRequest();
     }
 
@@ -93,6 +126,8 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         paymentCard = findViewById(R.id.payment_card);
         paymentButton = findViewById(R.id.payment_button);
         finishLessonButton = findViewById(R.id.finish_lesson_button);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        
         // Setup RecyclerView
         timeSlotsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         timeSlots = new ArrayList<>();
@@ -114,8 +149,164 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         tutorPhone = findViewById(R.id.tutor_phone);
         tutorEmail = findViewById(R.id.tutor_email);
     }
+    
+    private void setupSwipeRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(
+            R.color.primary,
+            android.R.color.holo_green_dark,
+            android.R.color.holo_orange_dark,
+            android.R.color.holo_blue_dark
+        );
+        
+        swipeRefreshLayout.setOnRefreshListener(this::refreshContent);
+    }
+    
+    private void refreshContent() {
+        Log.d("MatchingCaseDetailStudent", "Refreshing content...");
+        
+        // 清空現有數據
+        timeSlots.clear();
+        
+        // 重新加載數據
+        checkExistingRequest();
+        
+        // 如果已有確認的時間槽，檢查支付狀態和課程狀態
+        boolean hasConfirmedSlot = getIntent().getBooleanExtra("has_confirmed_slot", false);
+        if (hasConfirmedSlot) {
+            checkPaymentStatus();
+            checkLessonStatus();
+        }
+        
+        // 延遲一點時間後停止刷新動畫
+        new Handler().postDelayed(() -> {
+            if (swipeRefreshLayout != null) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 1500);
+    }
 
     private void checkExistingRequest() {
+        // 首先，嘗試直接檢查數據庫中的預約狀態
+        checkBookingStatus();
+    }
+    
+    private void checkBookingStatus() {
+        OkHttpClient client = new OkHttpClient();
+
+        // 創建表單數據
+        RequestBody formBody = new FormBody.Builder()
+                .add("match_id", caseId)
+                .add("student_id", studentId)
+                .add("check_all_statuses", "true") // 請求檢查所有狀態
+                .add("check_is_new_match", "true") // 添加新標誌，檢查是否為新匹配
+                .build();
+                
+        String url = "http://" + IPConfig.getIP() + "/FYP/php/check_booking_status.php";
+        Log.d("BookingStatus", "Sending request to: " + url);
+        Log.d("BookingStatus", "With params - match_id: " + caseId + ", student_id: " + studentId);
+                
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+                
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("BookingStatus", "Failed to check booking status: " + e.getMessage(), e);
+                // 如果無法檢查狀態，回退到原有流程
+                checkExistingRequestOriginal();
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d("BookingStatus", "Response code: " + response.code());
+                Log.d("BookingStatus", "Response body: " + responseData);
+                
+                try {
+                    JSONObject jsonResponse = new JSONObject(responseData);
+                    boolean success = jsonResponse.getBoolean("success");
+                    
+                    // 檢查是否為新匹配
+                    boolean isNewMatch = jsonResponse.optBoolean("is_new_match", false);
+                    
+                    Log.d("BookingStatus", "Response success: " + success + ", isNewMatch: " + isNewMatch);
+                    
+                    // 如果是新匹配，直接加載所有可用時間段
+                    if (success && isNewMatch) {
+                        Log.d("BookingStatus", "This is a new match, loading all available time slots");
+                        runOnUiThread(() -> {
+                            // 清空任何可能存在的pending預約
+                            timeSlots.clear();
+                            loadTimeSlots();
+                        });
+                        return;
+                    }
+                    
+                    if (success) {
+                        boolean hasBooking = jsonResponse.getBoolean("has_booking");
+                        Log.d("BookingStatus", "Has booking: " + hasBooking);
+                        
+                        if (hasBooking) {
+                            // 有預約，根據響應中的數據處理
+                            JSONObject bookingData = jsonResponse.getJSONObject("booking");
+                            
+                            // 直接顯示詳情頁面
+                            runOnUiThread(() -> {
+                                try {
+                                    // 檢查是否有force_detail_view字段
+                                    boolean forceDetailView = bookingData.optBoolean("force_detail_view", false);
+                                    String status = bookingData.getString("status");
+                                    String startTime = bookingData.getString("start_time");
+                                    String endTime = bookingData.getString("end_time");
+                                    
+                                    // 保存booking_id
+                                    currentBookingId = bookingData.getString("booking_id");
+                                    
+                                    // 計算時長和費用
+                                    long durationInMinutes = calculateDurationInMinutes(startTime, endTime);
+                                    double totalLessonFee = calculateLessonFee(durationInMinutes, lessonFeePerHr);
+                                    
+                                    // 優先處理conflict狀態
+                                    if ("conflict".equalsIgnoreCase(status)) {
+                                        Log.d("BookingStatus", "Conflict status detected, showing conflict UI");
+                                        statusText.setText("There is a status conflict for your lesson at:\n" +
+                                                formatDateTime(startTime) + " - " + formatTime(endTime));
+                                        showConflictUI();
+                                    } else if (forceDetailView || "completed".equalsIgnoreCase(status)) {
+                                        Log.d("BookingStatus", "Forcing detail view based on status or flag");
+                                        showCompletedUI(startTime, endTime, totalLessonFee);
+                                    } else {
+                                        // 將數據傳遞給原有的處理邏輯
+                                        showStudentRequestStatus(bookingData);
+                                    }
+                                } catch (Exception e) {
+                                    Log.e("BookingStatus", "Error processing booking data: " + e.getMessage(), e);
+                                    checkExistingRequestOriginal();
+                                }
+                            });
+                        } else {
+                            // 沒有預約，繼續標準流程
+                            Log.d("BookingStatus", "No booking found, proceeding with standard flow");
+                            checkExistingRequestOriginal();
+                        }
+                    } else {
+                        // API調用失敗，繼續標準流程
+                        String message = jsonResponse.optString("message", "Unknown error");
+                        Log.e("BookingStatus", "API call failed: " + message);
+                        checkExistingRequestOriginal();
+                    }
+                } catch (Exception e) {
+                    Log.e("BookingStatus", "Error parsing response: " + e.getMessage(), e);
+                    checkExistingRequestOriginal(); // 回退到標準流程
+                }
+            }
+        });
+    }
+    
+    // 原來的請求檢查方法，作為備份
+    private void checkExistingRequestOriginal() {
         OkHttpClient client = new OkHttpClient();
 
         RequestBody formBody = new FormBody.Builder()
@@ -145,7 +336,25 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                     JSONObject jsonResponse = new JSONObject(responseData);
                     if (jsonResponse.getBoolean("has_request")) {
                         JSONObject requestData = jsonResponse.getJSONObject("request_data");
+                        
+                        // 檢查是否為衝突狀態，如果是，直接顯示衝突UI
+                        String status = requestData.optString("status", "");
+                        if ("conflict".equalsIgnoreCase(status)) {
+                            Log.d("BookingStatus", "Conflict status detected in checkExistingRequestOriginal");
+                            String startTime = requestData.getString("start_time");
+                            String endTime = requestData.getString("end_time");
+                            
+                            // 保存booking_id
+                            currentBookingId = requestData.optString("booking_id", "");
+                            
+                            runOnUiThread(() -> {
+                                statusText.setText("There is a status conflict for your lesson at:\n" +
+                                        formatDateTime(startTime) + " - " + formatTime(endTime));
+                                showConflictUI();
+                            });
+                        } else {
                         runOnUiThread(() -> showStudentRequestStatus(requestData));
+                        }
                     } else {
                         loadTimeSlots(); // No existing request, load available slots
                     }
@@ -254,6 +463,21 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
             String startTime = slotObject.getString("start_time");
             String endTime = slotObject.getString("end_time");
             String status = slotObject.getString("status");
+            
+            // 保存booking_id作为成员变量
+            currentBookingId = slotObject.optString("booking_id", null);
+            Log.d("BookingInfo", "Current booking ID: " + currentBookingId);
+
+            // 檢查force_detail_view標志
+            boolean forceDetailView = slotObject.optBoolean("force_detail_view", false);
+            if (forceDetailView) {
+                Log.d("BookingInfo", "Force detail view flag detected - showing detail view");
+                // 如果標志為true，直接顯示已完成的詳情視圖，無論當前狀態是什麼
+                long durationInMinutes = calculateDurationInMinutes(startTime, endTime);
+                double totalLessonFee = calculateLessonFee(durationInMinutes, lessonFeePerHr);
+                showCompletedUI(startTime, endTime, totalLessonFee);
+                return;
+            }
 
             // Calculate duration and fee
             long durationInMinutes = calculateDurationInMinutes(startTime, endTime);
@@ -277,6 +501,10 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                     statusMessage = "Your first lesson was completed at:";
                     showCompletedUI(startTime, endTime, totalLessonFee);  // New method
                     break;
+                case "conflict":
+                    statusMessage = "There is a status conflict for your lesson at:";
+                    showConflictUI();  // Use our new method
+                    break;
                 default:
                     statusMessage = "Status of your booking request:";
                     showDefaultUI();
@@ -299,10 +527,21 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     private void checkLessonStatus() {
         OkHttpClient client = new OkHttpClient();
 
-        RequestBody formBody = new FormBody.Builder()
+        // 构建请求表单
+        FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("match_id", caseId)
-                .add("student_id", studentId)
-                .build();
+                .add("student_id", studentId);
+
+        // 如果存在当前booking_id，添加到请求中
+        String currentBookingId = getCurrentBookingId();
+        if (currentBookingId != null && !currentBookingId.isEmpty()) {
+            formBuilder.add("booking_id", currentBookingId);
+            Log.d("LessonStatus", "Checking lesson status with booking_id: " + currentBookingId);
+        } else {
+            Log.d("LessonStatus", "Checking lesson status without booking_id");
+        }
+
+        RequestBody formBody = formBuilder.build();
 
         Request request = new Request.Builder()
                 .url("http://" + IPConfig.getIP() + "/FYP/php/get_first_lesson_status.php")
@@ -318,12 +557,15 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                Log.d("LessonStatus", "Response: " + responseData);
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
                     if (jsonResponse.getBoolean("success")) {
                         JSONObject lessonData = jsonResponse.getJSONObject("data");
                         String lessonStatus = lessonData.getString("status");
                         runOnUiThread(() -> updateLessonStatusChip(lessonStatus));
+                    } else {
+                        Log.e("LessonStatus", "Error in response: " + jsonResponse.getString("message"));
                     }
                 } catch (Exception e) {
                     Log.e("Lesson", "Error processing lesson status: " + e.getMessage());
@@ -332,10 +574,34 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         });
     }
 
+    // 获取当前活动的booking_id
+    private String getCurrentBookingId() {
+        // 首先检查成员变量
+        if (currentBookingId != null && !currentBookingId.isEmpty()) {
+            return currentBookingId;
+        }
+        
+        // 从Intent获取，如果已传递
+        String bookingId = getIntent().getStringExtra("booking_id");
+        if (bookingId != null && !bookingId.isEmpty()) {
+            currentBookingId = bookingId; // 保存到成员变量
+            return bookingId;
+        }
+        
+        return null;
+    }
+
     // Add this method to update the lesson status chip
     private void updateLessonStatusChip(String status) {
         com.google.android.material.chip.Chip statusChip = findViewById(R.id.status_lesson);
         MaterialButton finishLessonButton = findViewById(R.id.finish_lesson_button);
+
+        // 無論如何，首先檢查當前狀態，如果是衝突狀態，強制隱藏按鈕
+        if ("conflict".equals(status.toLowerCase()) && finishLessonButton != null) {
+            finishLessonButton.setVisibility(View.GONE);
+            finishLessonButton.setEnabled(false);
+            Log.d("ConflictUI", "Forcing button hide in updateLessonStatusChip");
+        }
 
         if (statusChip != null) {
             statusChip.setVisibility(View.VISIBLE);
@@ -351,6 +617,16 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                     textColor = ContextCompat.getColor(this, R.color.success);
                     if (finishLessonButton != null) {
                         finishLessonButton.setVisibility(View.GONE);
+                    }
+                    break;
+                case "conflict":
+                    statusText = "Conflict";
+                    backgroundColor = ContextCompat.getColor(this, R.color.error_container);
+                    textColor = ContextCompat.getColor(this, R.color.error);
+                    // 再次確保隱藏按鈕（雙重保險）
+                    if (finishLessonButton != null) {
+                        finishLessonButton.setVisibility(View.GONE);
+                        finishLessonButton.setEnabled(false);
                     }
                     break;
                 case "incomplete":
@@ -372,11 +648,86 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     }
 
     private long calculateDurationInMinutes(String startTime, String endTime) {
+        Log.d("Payment", "calculateDurationInMinutes(String startTime, String endTime)\nstartTime: "+startTime+"\nendTime: "+endTime);
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-            long diff = sdf.parse(endTime).getTime() - sdf.parse(startTime).getTime();
-            return diff / (60 * 1000); // Convert to minutes
+            // 檢查是否只包含時間部分 (HH:mm:ss)
+            if (startTime.matches("\\d{2}:\\d{2}:\\d{2}")) {
+                Log.d("Payment", "匹配到時間格式 HH:mm:ss");
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                Date startDate = timeFormat.parse(startTime);
+                Date endDate = timeFormat.parse(endTime);
+                
+                if (startDate == null || endDate == null) {
+                    Log.e("Payment", "解析時間失敗，startDate或endDate為null");
+                    return 0;
+                }
+                
+                long startMillis = startDate.getTime();
+                long endMillis = endDate.getTime();
+                
+                Log.d("Payment", "startMillis: " + startMillis + ", endMillis: " + endMillis);
+                
+                // 如果結束時間小於開始時間，表示跨天
+                if (endMillis < startMillis) {
+                    endMillis += 24 * 60 * 60 * 1000; // 加上一天的毫秒數
+                    Log.d("Payment", "時間跨天, 新的endMillis: " + endMillis);
+                }
+                
+                long diffMinutes = (endMillis - startMillis) / (60 * 1000);
+                Log.d("Payment", "a: " + diffMinutes); // 正確計算的分鐘數
+                return diffMinutes;
+            } 
+            // 檢查是否為 HH:mm 格式
+            else if (startTime.matches("\\d{2}:\\d{2}")) {
+                Log.d("Payment", "匹配到時間格式 HH:mm");
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                Date startDate = timeFormat.parse(startTime);
+                Date endDate = timeFormat.parse(endTime);
+                
+                if (startDate == null || endDate == null) {
+                    Log.e("Payment", "解析時間失敗，startDate或endDate為null");
+                    return 0;
+                }
+                
+                long startMillis = startDate.getTime();
+                long endMillis = endDate.getTime();
+                
+                Log.d("Payment", "startMillis: " + startMillis + ", endMillis: " + endMillis);
+                
+                // 如果結束時間小於開始時間，表示跨天
+                if (endMillis < startMillis) {
+                    endMillis += 24 * 60 * 60 * 1000; // 加上一天的毫秒數
+                    Log.d("Payment", "時間跨天, 新的endMillis: " + endMillis);
+                }
+                
+                long diffMinutes = (endMillis - startMillis) / (60 * 1000);
+                Log.d("Payment", "a: " + diffMinutes); // 正確計算的分鐘數
+                return diffMinutes;
+            }
+            else {
+                Log.d("Payment", "使用完整日期時間格式: yyyy-MM-dd HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+                Date startDate = sdf.parse(startTime);
+                Date endDate = sdf.parse(endTime);
+                
+                if (startDate == null || endDate == null) {
+                    Log.e("Payment", "解析日期時間失敗，startDate或endDate為null");
+                    return 0;
+                }
+                
+                long startMillis = startDate.getTime();
+                long endMillis = endDate.getTime();
+                
+                Log.d("Payment", "startMillis: " + startMillis + ", endMillis: " + endMillis);
+                
+                long diff = endMillis - startMillis;
+                long diffMinutes = diff / (60 * 1000);
+                Log.d("Payment", "a: "+ diffMinutes); // Convert to minutes
+                return diffMinutes;
+            }
         } catch (Exception e) {
+            Log.e("Payment", "時間計算錯誤: " + e.getMessage(), e);
+            Log.d("Payment", "b: 0");
             return 0;
         }
     }
@@ -401,6 +752,13 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
             intent.putExtra("lessonFeePerHr", lessonFeePerHr);
             intent.putExtra("startTime", startTime);
             intent.putExtra("endTime", endTime);
+            
+            // 添加booking_id到Intent
+            if (currentBookingId != null && !currentBookingId.isEmpty()) {
+                intent.putExtra("booking_id", currentBookingId);
+                Log.d("BookingInfo", "Sending booking_id to Payment: " + currentBookingId);
+            }
+            
             startActivity(intent);
         });
     }
@@ -408,10 +766,21 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     private void checkPaymentStatus() {
         OkHttpClient client = new OkHttpClient();
 
-        RequestBody formBody = new FormBody.Builder()
+        // 构建请求表单
+        FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("match_id", caseId)
-                .add("student_id", studentId)
-                .build();
+                .add("student_id", studentId);
+
+        // 如果存在当前booking_id，添加到请求中
+        String bookingId = getCurrentBookingId();
+        if (bookingId != null && !bookingId.isEmpty()) {
+            formBuilder.add("booking_id", bookingId);
+            Log.d("PaymentStatus", "Checking payment status with booking_id: " + bookingId);
+        } else {
+            Log.d("PaymentStatus", "Checking payment status without booking_id");
+        }
+
+        RequestBody formBody = formBuilder.build();
 
         Request request = new Request.Builder()
                 .url("http://" + IPConfig.getIP() + "/FYP/php/get_payment_status.php")
@@ -430,6 +799,7 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                Log.d("PaymentStatus", "Response: " + responseData);
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
                     if (jsonResponse.getBoolean("success")) {
@@ -437,8 +807,6 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                         String status = paymentData.optString("status", "not_submitted");
                         String statusText = paymentData.optString("status_text", "Payment Required");
                         String receiptPath = paymentData.optString("receipt_path", null);
-
-
 
                         Log.d("Payment", "Status: " + status); // Add debug logging
                         Log.d("Payment", "Payment proof: " + receiptPath); // Add debug logging
@@ -454,6 +822,9 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         });
     }
     private void updatePaymentUI(String status, String statusText, String receiptPath) {
+        // 檢查是否存在衝突狀態，並強制隱藏按鈕
+        checkAndHideButtonForConflict();
+        
         com.google.android.material.chip.Chip statusChip = findViewById(R.id.status_payment);
         MaterialButton paymentButton = findViewById(R.id.payment_button);
 
@@ -463,12 +834,39 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
             int backgroundColor;
             int textColor;
 
+            // 衝突狀態檢查提前 - 最高優先級處理
+            if (findViewById(R.id.status_lesson) != null &&
+                ((com.google.android.material.chip.Chip)findViewById(R.id.status_lesson)).getText().toString().equals("Conflict")) {
+                if (finishLessonButton != null) {
+                    Log.d("ConflictUI", "Force hiding button in updatePaymentUI due to conflict status");
+                    finishLessonButton.setVisibility(View.GONE);
+                    finishLessonButton.setEnabled(false);
+                    
+                    // 確保在UI刷新後也保持按鈕隱藏
+                    new Handler().post(() -> {
+                        if (finishLessonButton != null) {
+                            finishLessonButton.setVisibility(View.GONE);
+                            finishLessonButton.setEnabled(false);
+                        }
+                    });
+                }
+            }
+
             // First check if lesson is completed
             if (findViewById(R.id.status_lesson) != null &&
                     ((com.google.android.material.chip.Chip)findViewById(R.id.status_lesson)).getText().toString().equals("Completed")) {
                 // If lesson is completed, always hide the finish lesson button
                 if (finishLessonButton != null) {
                     finishLessonButton.setVisibility(View.GONE);
+                }
+            }
+            
+            // 如果是衝突狀態，強制隱藏finish button
+            if (findViewById(R.id.status_lesson) != null &&
+                ((com.google.android.material.chip.Chip)findViewById(R.id.status_lesson)).getText().toString().equals("Conflict")) {
+                if (finishLessonButton != null) {
+                    finishLessonButton.setVisibility(View.GONE);
+                    finishLessonButton.setEnabled(false);
                 }
             }
 
@@ -495,6 +893,20 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                     // Show tutor contact for completed status as well
                     if (tutorId != null && !tutorId.isEmpty()) {
                         getTutorContact(tutorId);
+                    }
+                    break;
+
+                case "verified":  // Add this case for conflict situations
+                    backgroundColor = ContextCompat.getColor(this, R.color.success_container);
+                    textColor = ContextCompat.getColor(this, R.color.success);
+                    paymentButton.setVisibility(View.GONE);
+                    finishLessonButton.setVisibility(View.GONE);
+                    // For conflict status with verified payment, show tutor contact
+                    if (findViewById(R.id.status_lesson) != null &&
+                        ((com.google.android.material.chip.Chip)findViewById(R.id.status_lesson)).getText().toString().equals("Conflict")) {
+                        if (tutorId != null && !tutorId.isEmpty()) {
+                            getTutorContact(tutorId);
+                        }
                     }
                     break;
 
@@ -610,6 +1022,19 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
 
     // Add handleFinishLesson method if not already present
     private void handleFinishLesson() {
+        // 檢查是否為衝突狀態
+        com.google.android.material.chip.Chip statusChip = findViewById(R.id.status_lesson);
+        if (statusChip != null && "Conflict".equals(statusChip.getText().toString())) {
+            Log.d("ButtonDebug", "Blocked showing dialog due to conflict status");
+            // 如果是衝突狀態，強制隱藏按鈕而不顯示對話框
+            if (finishLessonButton != null) {
+                finishLessonButton.setVisibility(View.GONE);
+                finishLessonButton.setEnabled(false);
+            }
+            return;
+        }
+        
+        // 只有非衝突狀態才顯示對話框
         dialogManager.showLessonStatusDialog();
     }
 
@@ -621,10 +1046,30 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
 
     @Override
     public void onLessonIncomplete(String reason, String action) {
-        submitLessonStatusWithAction("incomplete", reason, action);
+        Log.d("LessonStatus", "onLessonIncomplete called with reason: " + reason + ", action: " + action);
+        
+        if ("find_other_tutor".equals(action)) {
+            // 對於"尋找其他導師"選項，直接調用cancelBookingAndFindOtherTutor方法
+            cancelBookingAndFindOtherTutor();
+        } else {
+            // 對於其他選項（如"rebook"），使用submitLessonStatusWithAction方法
+            submitLessonStatusWithAction("incomplete", reason, action);
+        }
     }
+    
     private void submitLessonStatusWithAction(String status, String reason, String action) {
         OkHttpClient client = new OkHttpClient();
+        
+        Log.d("LessonStatus", "Preparing to send status: " + status + ", action: " + action);
+        
+        // 確保在狀態為 incomplete 時提供有效的 reason
+        if ("incomplete".equals(status) && (reason == null || reason.trim().isEmpty())) {
+            Log.e("LessonStatus", "Reason is required for incomplete status");
+            runOnUiThread(() -> {
+                Toast.makeText(this, getString(R.string.please_enter_a_reason), Toast.LENGTH_SHORT).show();
+            });
+            return;
+        }
 
         FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("case_id", caseId)
@@ -637,9 +1082,18 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         if (action != null) {
             formBuilder.add("next_action", action);
         }
+        
+        // 添加booking_id參數
+        String bookingId = getCurrentBookingId();
+        if (bookingId != null && !bookingId.isEmpty()) {
+            formBuilder.add("booking_id", bookingId);
+        }
+        
+        String url = "http://" + IPConfig.getIP() + "/FYP/php/update_student_first_lesson_status.php";
+        Log.d("LessonStatus", "Request URL: " + url);
 
         Request request = new Request.Builder()
-                .url("http://" + IPConfig.getIP() + "/FYP/php/update_student_first_lesson_status.php")
+                .url(url)
                 .post(formBuilder.build())
                 .build();
 
@@ -648,19 +1102,38 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
             public void onFailure(Call call, IOException e) {
                 Log.e("LessonStatus", "Network failure: " + e.getMessage());
                 runOnUiThread(() -> Toast.makeText(MatchingCaseDetailStudent.this,
-                        "Failed to update status", Toast.LENGTH_SHORT).show());
+                        "Failed to update status: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.d("LessonStatus", "Response: " + responseData);
+                Log.d("LessonStatus", "Response code: " + response.code());
+                Log.d("LessonStatus", "Response data: " + responseData);
+                
+                // 檢查響應是否為空
+                if (responseData == null || responseData.trim().isEmpty()) {
+                    Log.e("LessonStatus", "Empty response from server");
+                    runOnUiThread(() -> Toast.makeText(MatchingCaseDetailStudent.this,
+                            "Server returned empty response", Toast.LENGTH_SHORT).show());
+                    return;
+                }
+                
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
                     boolean success = jsonResponse.getBoolean("success");
+                    
+                    // 檢查響應是否包含所需字段
+                    if (!jsonResponse.has("status")) {
+                        Log.e("LessonStatus", "Response missing 'status' field");
+                        runOnUiThread(() -> Toast.makeText(MatchingCaseDetailStudent.this,
+                                "Server response missing required fields", Toast.LENGTH_SHORT).show());
+                        return;
+                    }
+                    
                     String responseStatus = jsonResponse.getString("status");
-                    String message = jsonResponse.getString("message");
-
+                    String message = jsonResponse.optString("message", "Status updated");
+                    
                     runOnUiThread(() -> {
                         if (!success) {
                             Toast.makeText(MatchingCaseDetailStudent.this,
@@ -677,6 +1150,9 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                                 if ("rebook".equals(action)) {
                                     // Reset booking status and reload UI
                                     resetBookingStatusAndReload(reason);
+                                } else if ("find_other_tutor".equals(action)) {
+                                    // 直接處理尋找其他導師的情況
+                                    cancelBookingAndFindOtherTutor();
                                 } else {
                                     showBothIncompleteDialog(reason);
                                 }
@@ -685,7 +1161,7 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                                 showWaitingDialog();
                                 break;
                             case "conflict":
-                                showConflictDialog();
+                                showConflictUI();
                                 break;
                             case "completed":
                                 checkExistingRequest(); // Refresh the entire UI state
@@ -700,14 +1176,40 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                     });
                 } catch (Exception e) {
                     Log.e("LessonStatus", "Error processing response: " + e.getMessage());
-                    runOnUiThread(() -> Toast.makeText(MatchingCaseDetailStudent.this,
-                            "Error processing response", Toast.LENGTH_SHORT).show());
+                    Log.e("LessonStatus", "Response was: " + responseData);
+                    runOnUiThread(() -> {
+                        try {
+                            // 嘗試使用更簡單的方式提取錯誤信息
+                            String errorMessage = "Error processing response";
+                            
+                            // 嘗試以不同的方式解析JSON
+                            try {
+                                JSONObject errorJson = new JSONObject(responseData);
+                                if (errorJson.has("message")) {
+                                    errorMessage = errorJson.getString("message");
+                                }
+                            } catch (Exception jsonEx) {
+                                // 檢查是否為HTML錯誤頁面
+                                if (responseData.contains("<html") || responseData.contains("<!DOCTYPE")) {
+                                    errorMessage = "Server returned HTML instead of JSON";
+                                }
+                            }
+                            
+                            Toast.makeText(MatchingCaseDetailStudent.this,
+                                    errorMessage, Toast.LENGTH_LONG).show();
+                        } catch (Exception showEx) {
+                            // 確保至少能顯示一些錯誤消息
+                            Toast.makeText(MatchingCaseDetailStudent.this,
+                                    "Unknown error when processing response", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
     }
 
     private void resetBookingStatusAndReload(String reason) {
+        Log.d("LessonStatus","running resetBookingStatusAndReload()");
         OkHttpClient client = new OkHttpClient();
 
         RequestBody formBody = new FormBody.Builder()
@@ -779,42 +1281,65 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     private void cancelBookingAndFindOtherTutor() {
         OkHttpClient client = new OkHttpClient();
 
-        RequestBody formBody = new FormBody.Builder()
+        // 確保傳遞booking_id，以便伺服器能夠準確定位需要取消的記錄
+        String bookingId = getCurrentBookingId();
+        
+        FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("case_id", caseId)
                 .add("student_id", studentId)
-                .add("action", "cancel")
-                .build();
+                .add("action", "find_other_tutor");
+                
+        if (bookingId != null && !bookingId.isEmpty()) {
+            formBuilder.add("booking_id", bookingId);
+        }
+        
+        RequestBody formBody = formBuilder.build();
+        
+        Log.d("FindOtherTutor", "Sending request with case_id: " + caseId + 
+                                 ", student_id: " + studentId + 
+                                 ", booking_id: " + (bookingId != null ? bookingId : "null"));
 
         Request request = new Request.Builder()
-                .url("http://" + IPConfig.getIP() + "/FYP/php/cancel_booking.php")
+                .url("http://" + IPConfig.getIP() + "/FYP/php/cancel_booking_and_find_other_tutor.php")
                 .post(formBody)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.e("FindOtherTutor", "Request failed: " + e.getMessage());
                 runOnUiThread(() -> Toast.makeText(MatchingCaseDetailStudent.this,
-                        "Failed to cancel booking", Toast.LENGTH_SHORT).show());
+                        "Failed to process your request. Please try again.", Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     String responseData = response.body().string();
+                    Log.d("FindOtherTutor", "Response: " + responseData);
+                    
                     JSONObject jsonResponse = new JSONObject(responseData);
                     final boolean success = jsonResponse.getBoolean("success");
+                    final String message = jsonResponse.optString("message", "Operation completed");
 
                     runOnUiThread(() -> {
                         if (success) {
-                            Toast.makeText(MatchingCaseDetailStudent.this,
-                                    "Booking cancelled successfully", Toast.LENGTH_SHORT).show();
-                            finish(); // Return to previous screen
+                            new AlertDialog.Builder(MatchingCaseDetailStudent.this)
+                                    .setTitle("操作成功")
+                                    .setMessage("課程已取消，您現在可以尋找其他導師。")
+                                    .setPositiveButton("返回列表", (dialog, which) -> {
+                                        setResult(RESULT_OK); // 設置結果代碼，通知前一個頁面刷新
+                                        finish(); // 返回前一個頁面
+                                    })
+                                    .setCancelable(false)
+                                    .show();
                         } else {
                             Toast.makeText(MatchingCaseDetailStudent.this,
-                                    "Failed to cancel booking", Toast.LENGTH_SHORT).show();
+                                    message, Toast.LENGTH_SHORT).show();
                         }
                     });
                 } catch (Exception e) {
+                    Log.e("FindOtherTutor", "Error processing response: " + e.getMessage());
                     runOnUiThread(() -> Toast.makeText(MatchingCaseDetailStudent.this,
                             "Error processing response", Toast.LENGTH_SHORT).show());
                 }
@@ -866,6 +1391,78 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         checkPaymentStatus();
     }
 
+    private void showConflictUI() {
+        Log.d("ConflictUI", "Setting up conflict UI");
+        
+        // Show status text and payment card
+        statusText.setVisibility(View.VISIBLE);
+        paymentCard.setVisibility(View.VISIBLE);
+
+        // Hide booking-related UI
+        sendRequestButton.setVisibility(View.GONE);
+        timeSlotsRecyclerView.setVisibility(View.GONE);
+
+        // Update lesson status to conflict
+        updateLessonStatusChip("conflict");
+
+        // 強制隱藏更新課程狀態按鈕 - 無條件隱藏
+        if (finishLessonButton != null) {
+            finishLessonButton.setVisibility(View.GONE);
+            finishLessonButton.setEnabled(false);
+        }
+
+        // 確保在UI刷新後也保持按鈕隱藏
+        runOnUiThread(() -> {
+            if (finishLessonButton != null) {
+                finishLessonButton.setVisibility(View.GONE);
+                finishLessonButton.setEnabled(false);
+            }
+        });
+        
+        // 新增：使用Handler延遲確保在UI渲染完成後隱藏按鈕
+        new Handler().post(() -> {
+            if (finishLessonButton != null) {
+                Log.d("ConflictUI", "Post-rendering button hide in showConflictUI");
+                finishLessonButton.setVisibility(View.GONE);
+                finishLessonButton.setEnabled(false);
+            }
+        });
+        
+        // 再次使用延遲執行確保按鈕隱藏（更高保障）
+        new Handler().postDelayed(() -> {
+            if (finishLessonButton != null) {
+                Log.d("ConflictUI", "Delayed post-rendering button hide in showConflictUI");
+                finishLessonButton.setVisibility(View.GONE);
+                finishLessonButton.setEnabled(false);
+            }
+        }, 500); // 延遲500毫秒執行
+
+        // 立即檢查支付狀態，這對於顯示支付信息是必要的
+        // 注意這裡特意將checkPaymentStatus放在前面，這樣支付UI會先更新
+        checkPaymentStatus();
+        
+        // 顯示導師聯繫方式
+        if (tutorId != null && !tutorId.isEmpty()) {
+            getTutorContact(tutorId);
+        } else {
+            Log.w("ConflictUI", "No tutor ID available for contact display");
+        }
+        
+        // 確保支付卡片和其組件可見
+        runOnUiThread(() -> {
+            if (paymentCard != null) {
+                paymentCard.setVisibility(View.VISIBLE);
+                
+                com.google.android.material.chip.Chip paymentStatusChip = findViewById(R.id.status_payment);
+                if (paymentStatusChip != null) {
+                    paymentStatusChip.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        
+        // 顯示衝突狀態對話框，解釋衝突情況
+        showConflictDialog();
+    }
 
     private void showRejectedUI() {
         sendRequestButton.setVisibility(View.VISIBLE);
@@ -902,8 +1499,8 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         }
 
         new AlertDialog.Builder(this)
-                .setTitle("Confirm Request")
-                .setMessage("Do you want to request this time slot?\n" +
+                .setTitle("Booking Confirm")
+                .setMessage("Do you want to book this time slot?\n" +
                         selectedSlot.getDateString() + "\n" +
                         selectedSlot.getTimeString())
                 .setPositiveButton("Confirm", (dialog, which) -> sendSlotRequest(selectedSlot))
@@ -978,7 +1575,15 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
 
     @Override
     public void onSubmitIncompleteStatus(String reason) {
-        // Remove this method as we're using submitLessonStatusWithAction
+        // 確保 reason 不為空
+        if (reason == null || reason.trim().isEmpty()) {
+            runOnUiThread(() -> {
+                Toast.makeText(this, getString(R.string.please_enter_a_reason), Toast.LENGTH_SHORT).show();
+            });
+            return;
+        }
+        
+        // 使用非空的 reason 調用 submitLessonStatusWithAction
         submitLessonStatusWithAction("incomplete", reason, null);
     }
 
@@ -991,14 +1596,18 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     }
 
     private void showBothIncompleteDialog(String reason) {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.status_matched_student))
-                .setMessage(getString(R.string.both_marked_incomplete))
-                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
-                    // Show next step options directly
-                    dialogManager.showNextStepsDialog(reason);
-                })
-                .show();
+        dialogManager.showBothIncompleteDialog(reason, new LessonStatusDialogManager.OnLessonStatusDialogCallback() {
+            @Override
+            public void onLessonComplete() {
+                // Not used here
+            }
+
+            @Override
+            public void onLessonIncomplete(String action) {
+                // Handle the chosen action
+                submitLessonStatusWithAction("incomplete", reason, action);
+            }
+        });
     }
 
     private void showConflictDialog() {
@@ -1006,10 +1615,10 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                 .setTitle(getString(R.string.status_conflict_student))
                 .setMessage(getString(R.string.student_conflict_message))
                 .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
-                    // TODO: Implement evidence submission
-                    Toast.makeText(this, getString(R.string.evidence_submission_to_be_implemented),
-                            Toast.LENGTH_SHORT).show();
+                    // 對話框關閉後無需執行特殊操作
+                    Log.d("ConflictStatus", "User acknowledged conflict status");
                 })
+                .setCancelable(false)  // 強制用戶確認信息
                 .show();
     }
 
@@ -1023,5 +1632,66 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
 
     public String getTutorId() {
         return tutorId;
+    }
+
+    private void checkAndHideButtonForConflict() {
+        // 檢查當前狀態芯片是否顯示"Conflict"
+        com.google.android.material.chip.Chip statusChip = findViewById(R.id.status_lesson);
+        if (statusChip != null && "Conflict".equals(statusChip.getText().toString())) {
+            // 如果是衝突狀態，確保按鈕隱藏
+            if (finishLessonButton != null) {
+                Log.d("ConflictUI", "Hiding button in checkAndHideButtonForConflict method");
+                finishLessonButton.setVisibility(View.GONE);
+                finishLessonButton.setEnabled(false);
+                
+                // 確保在UI刷新後也保持按鈕隱藏（立即執行）
+                runOnUiThread(() -> {
+                    if (finishLessonButton != null) {
+                        finishLessonButton.setVisibility(View.GONE);
+                        finishLessonButton.setEnabled(false);
+                    }
+                });
+                
+                // 使用Handler確保在UI渲染完成後隱藏按鈕
+                new Handler().post(() -> {
+                    if (finishLessonButton != null) {
+                        Log.d("ConflictUI", "Post handler hiding button in checkAndHideButtonForConflict");
+                        finishLessonButton.setVisibility(View.GONE);
+                        finishLessonButton.setEnabled(false);
+                    }
+                });
+                
+                // 延遲500毫秒再次檢查並隱藏按鈕
+                new Handler().postDelayed(() -> {
+                    if (finishLessonButton != null && statusChip != null && 
+                        "Conflict".equals(statusChip.getText().toString())) {
+                        Log.d("ConflictUI", "Delayed hiding button in checkAndHideButtonForConflict");
+                        finishLessonButton.setVisibility(View.GONE);
+                        finishLessonButton.setEnabled(false);
+                    }
+                }, 500);
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // 檢查狀態晶片，如果是衝突狀態，強制隱藏按鈕
+        com.google.android.material.chip.Chip statusChip = findViewById(R.id.status_lesson);
+        if (statusChip != null && "Conflict".equals(statusChip.getText().toString())) {
+            Log.d("ButtonDebug", "Hiding button in onResume due to conflict status");
+            if (finishLessonButton != null) {
+                finishLessonButton.setVisibility(View.GONE);
+                finishLessonButton.setEnabled(false);
+            }
+        }
+        
+        // 檢查當前頁面是否處於衝突UI
+        if (statusChip != null && "Conflict".equals(statusChip.getText().toString())) {
+            Log.d("ButtonDebug", "Conflict status detected in onResume, showing conflict UI");
+            showConflictUI();
+        }
     }
 }
