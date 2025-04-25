@@ -71,6 +71,7 @@
     <string name="you_confirmed_lesson_unfinished_but_other_confirmed_completed">You confirmed the lesson was unfinished, but the other party confirmed it was completed. Please provide evidence to support your claim.</string>
     <string name="evidence_submission_to_be_implemented">Evidence submission to be implemented</string>
     <string name="lesson_completed">Lesson Completed</string>
+    <string name="lesson_completed_message">课程已成功完成。感谢您的参与！</string>
     <string name="failed_to_update_lesson_status">Failed to update lesson status</string>
     <string name="student_marked_lesson_as_incomplete">Student marked lesson as incomplete</string>
     
@@ -105,6 +106,7 @@
     <string name="pending">Pending</string>
     <string name="approved">Approved</string>
     <string name="rejected">Rejected</string>
+    <string name="completed">Completed</string>
     
     <!-- ParentApplicationFillDetail Strings -->
     <string name="error_fetching_data">Error fetching data</string>
@@ -198,7 +200,6 @@
     <string name="please_wait">Please wait</string>
     <string name="success">Success</string>
     <string name="failed">Failed</string>
-    <string name="completed">Completed</string>
     <string name="incomplete">Incomplete</string>
     <string name="confirmed">Confirmed</string>
     
@@ -576,7 +577,6 @@
     <string name="waiting_admin_process">Waiting for admin to process conflict status</string>
     
     <!-- Completed Status -->
-    <string name="lesson_completed_message">The lesson has been completed successfully. Thank you for your service.</string>
 
 </resources>
 

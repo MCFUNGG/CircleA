@@ -352,6 +352,7 @@ public class ApplicationHistory extends AppCompatActivity {
         String fee = data.optString("feePerHr", getString(R.string.n_a));
         String status = data.optString("status", getString(R.string.n_a));
         String description = data.optString("description", "");
+        boolean isCompleted = data.optBoolean("is_completed", false);
 
         // Process arrays
         JSONArray subjectNamesArray = data.optJSONArray("subject_names");
@@ -371,28 +372,44 @@ public class ApplicationHistory extends AppCompatActivity {
 
         // Handle status
         TextView statusTextView = applicationView.findViewById(R.id.status_tv);
-        if (status.equals("P")) {
+        if (isCompleted) {
+            statusTextView.setText(getString(R.string.completed));
+            statusTextView.setBackgroundResource(R.drawable.status_completed_pill);
+            // 已完成应用不可点击
+            applicationView.setOnClickListener(null);
+            applicationView.setAlpha(0.7f); // 设置透明度以表示不可点击
+        } else if (status.equals("P")) {
             statusTextView.setText(getString(R.string.pending));
             statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
+            // 添加点击监听器来打开编辑对话框
+            setupClickListener(applicationView, appId, studentLevel, subjectsStr, districtsStr, fee, description, status);
         } else if (status.equals("A")) {
             statusTextView.setText(getString(R.string.approved));
             statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
+            // 添加点击监听器来打开编辑对话框
+            setupClickListener(applicationView, appId, studentLevel, subjectsStr, districtsStr, fee, description, status);
         } else if (status.equals("R")) {
             statusTextView.setText(getString(R.string.rejected));
             statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
+            // 添加点击监听器来打开编辑对话框
+            setupClickListener(applicationView, appId, studentLevel, subjectsStr, districtsStr, fee, description, status);
         }
 
-        // Add click listener to open edit dialog
+        applicationsContainer.addView(applicationView);
+        }
+
+    // 提取点击监听器逻辑到单独的方法
+    private void setupClickListener(View applicationView, String appId, String studentLevel, 
+                                   String subjectsStr, String districtsStr, String fee, 
+                                   String description, String status) {
         applicationView.setOnClickListener(v -> {
             if (subjects == null || districts == null || studentLevels == null) {
-                // 如果數據尚未加載完成，顯示進度對話框並重新加載
+                // 如果数据尚未加载完成，显示进度对话框并重新加载
                 showDataLoadingDialog(appId, studentLevel, subjectsStr, districtsStr, fee, description, status);
                 return;
             }
             showEditDialog(appId, studentLevel, subjectsStr, districtsStr, fee, description, status);
         });
-
-        applicationsContainer.addView(applicationView);
     }
 
     // 顯示數據加載中的對話框，並嘗試重新獲取數據

@@ -17,11 +17,11 @@ $matchMark = trim($_POST["match_mark"]);
 
 // 獲取導師名稱，用於通知內容
 $tutor_name = "";
-$query_tutor_name = "SELECT m.name FROM member m WHERE m.member_id = '$tutorId'";
+$query_tutor_name = "SELECT m.username FROM member m WHERE m.member_id = '$tutorId'";
 $result_tutor_name = mysqli_query($connect, $query_tutor_name);
 if ($result_tutor_name && mysqli_num_rows($result_tutor_name) > 0) {
     $row = mysqli_fetch_assoc($result_tutor_name);
-    $tutor_name = $row['name'];
+    $tutor_name = $row['username'];
 }
 
 $query = "INSERT INTO `match` (match_creator, tutor_id, tutor_app_id, ps_id, ps_app_id, match_mark, status) 

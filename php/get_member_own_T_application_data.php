@@ -27,7 +27,11 @@ $query = "
         ab.feePerHr,
         ab.status, 
         COALESCE(sd.subject_names, 'N/A') as subject_names,
-        COALESCE(dd.district_names, 'N/A') as district_names
+        COALESCE(dd.district_names, 'N/A') as district_names,
+        CASE 
+            WHEN cb.completed_count > 0 THEN 1 
+            ELSE 0 
+        END as is_completed
     FROM (
         SELECT 
             a.app_id,
@@ -57,7 +61,16 @@ $query = "
         FROM application_district ad
         JOIN district d ON ad.district_id = d.district_id
         GROUP BY ad.app_id
-    ) dd ON ab.app_id = dd.app_id";
+    ) dd ON ab.app_id = dd.app_id
+    LEFT JOIN (
+        SELECT 
+            m.tutor_app_id as app_id,
+            COUNT(*) as completed_count
+        FROM `match` m
+        JOIN booking b ON m.match_id = b.match_id
+        WHERE b.status = 'completed'
+        GROUP BY m.tutor_app_id
+    ) cb ON ab.app_id = cb.app_id";
 $result = mysqli_query($connect, $query);
 
 if (!$result) {
@@ -86,7 +99,8 @@ if (mysqli_num_rows($result) > 0) {
             'district_names' => $row['district_names'],
             'feePerHr' => $row['feePerHr'],
             'description' => $row['description'],
-            'status' => $row['status'] 
+            'status' => $row['status'],
+            'is_completed' => (bool)$row['is_completed']
         ];
     }
 

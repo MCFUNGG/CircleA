@@ -12,11 +12,17 @@ if (!$connect) {
 
 $memberId = $_POST['member_id'] ?? null;
 
-// Get all PS applications, excluding the current user's applications and only active ones
+// Get all PS applications, excluding the current user's applications, only active ones, and not completed
 $query = "SELECT app_id, member_id, class_level_id, feePerHr FROM application 
           WHERE app_creator = 'PS' 
           AND member_id != '$memberId' 
-          AND status='A'";
+          AND status='A'
+          AND app_id NOT IN (
+              SELECT m.ps_app_id
+              FROM `match` m
+              JOIN booking b ON m.match_id = b.match_id
+              WHERE b.status = 'completed'
+          )";
 $result = mysqli_query($connect, $query);
 
 if (!$result) {

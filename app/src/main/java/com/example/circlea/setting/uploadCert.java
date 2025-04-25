@@ -124,20 +124,8 @@ public class uploadCert extends AppCompatActivity {
         // 點選「選取檔案」按鈕時，不清除原有選擇，直接追加新檔案
         btnSelectFiles.setOnClickListener(v -> openFilePicker());
 
-        // 當上傳按鈕被點擊時，先呼叫 deleteOldCertificates()，待刪除成功後再上傳新檔案
-        btnUpload.setOnClickListener(v -> deleteOldCertificates(new DeleteCallback() {
-            @Override
-            public void onDeleteSuccess() {
-                // 刪除成功後上傳新檔案
-                uploadNewFiles();
-            }
-
-            @Override
-            public void onDeleteFailure(String errorMessage) {
-                runOnUiThread(() -> Toast.makeText(uploadCert.this,
-                        "Delete old certificates failed: " + errorMessage, Toast.LENGTH_SHORT).show());
-            }
-        }));
+        // 當上傳按鈕被點擊時，直接上傳新文件而不先刪除舊文件
+        btnUpload.setOnClickListener(v -> uploadNewFiles());
     }
 
     private void openFilePicker() {
@@ -153,49 +141,6 @@ public class uploadCert extends AppCompatActivity {
                 "image/jpg"
         });
         filePickerLauncher.launch(Intent.createChooser(intent, "Select Files"));
-    }
-
-    private void deleteOldCertificates(DeleteCallback callback) {
-        FormBody formBody = new FormBody.Builder()
-                .add("memberId", memberId)
-                .build();
-
-        Request request = new Request.Builder()
-                .url("http://" + IPConfig.getIP() + "/FYP/php/delete_cert.php")
-                .post(formBody)
-                .build();
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                callback.onDeleteFailure(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseStr = response.body().string();
-                    try {
-                        JSONObject json = new JSONObject(responseStr);
-                        if (json.getString("status").equals("success")) {
-                            callback.onDeleteSuccess();
-                        } else {
-                            callback.onDeleteFailure(json.getString("message"));
-                        }
-                    } catch (JSONException e) {
-                        callback.onDeleteFailure(e.getMessage());
-                    }
-                } else {
-                    callback.onDeleteFailure("Response code: " + response.code());
-                }
-            }
-        });
     }
 
     private void uploadNewFiles() {
@@ -277,12 +222,6 @@ public class uploadCert extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    // DeleteCallback interface to handle deleteCert.php response
-    private interface DeleteCallback {
-        void onDeleteSuccess();
-        void onDeleteFailure(String errorMessage);
     }
 
     private String getFileName(Uri uri) {

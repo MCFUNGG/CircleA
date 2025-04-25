@@ -1,11 +1,15 @@
 package com.example.circlea.home;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,6 +46,11 @@ public class TutorProfileActivity extends AppCompatActivity {
     private TextView aboutMeTextView;
     private ImageButton backButton;
     private de.hdodenhof.circleimageview.CircleImageView tutorImageView;
+    private ImageView tutorVerifiedBadge; // 新增徽章ImageView
+    
+    // 评价相关
+    private LinearLayout feedbackContainer;
+    private TextView noFeedbackText;
     
     // 數據
     private String tutorId;
@@ -60,6 +73,9 @@ public class TutorProfileActivity extends AppCompatActivity {
         if (tutorId != null && !tutorId.isEmpty()) {
             Log.d(TAG, "Fetching tutor data for ID: " + tutorId);
             fetchTutorData(tutorId);
+            
+            // 获取导师评价
+            fetchTutorRatings(tutorId);
         } else {
             Log.e(TAG, "No tutor ID provided!");
             Toast.makeText(this, "無法顯示導師資料，導師ID不存在", Toast.LENGTH_SHORT).show();
@@ -74,6 +90,11 @@ public class TutorProfileActivity extends AppCompatActivity {
         aboutMeTextView = findViewById(R.id.about_me_text);
         backButton = findViewById(R.id.back_button);
         tutorImageView = findViewById(R.id.tutor_image);
+        tutorVerifiedBadge = findViewById(R.id.tutor_verified_badge); // 初始化徽章
+        
+        // 初始化评价区域
+        feedbackContainer = findViewById(R.id.feedbackContainer);
+        noFeedbackText = findViewById(R.id.noFeedbackText);
     }
     
     private void fetchTutorData(String tutorId) {
@@ -250,15 +271,16 @@ public class TutorProfileActivity extends AppCompatActivity {
                     String skills = cvData.optString("skills", "");
                     String language = cvData.optString("language", "");
                     String other = cvData.optString("other", "");
+                    String cvStatus = cvData.optString("status", ""); // 获取CV审批状态
                     
-                    // 過濾出重點大學信息
-                    String filteredEducation = filterHKUniversities(education);
+                    // 检查并显示徽章
+                    final boolean showBadge = "A".equals(cvStatus.trim());
                     
-                    // 顯示資料
-                    displayPartialInfo(name, profileDesc, filteredEducation, skills, language, other);
+                    // 显示信息并处理徽章显示
+                    displayPartialInfo(name, profileDesc, education, skills, language, other, showBadge);
                     
                 } catch (JSONException e) {
-                    Log.e(TAG, "JSON parsing error for CV data: " + e.getMessage());
+                    Log.e(TAG, "JSON parsing error when parsing CV: " + e.getMessage());
                     displayPartialInfo(name, profileDesc, "解析CV資料時出錯", "", "", "");
                 }
             }
@@ -267,51 +289,62 @@ public class TutorProfileActivity extends AppCompatActivity {
     
     private void displayPartialInfo(String name, String profileDesc, String education,
                                    String skills, String language, String other) {
+        // 调用新的overloaded方法，不显示徽章                              
+        displayPartialInfo(name, profileDesc, education, skills, language, other, false);
+    }
+    
+    private void displayPartialInfo(String name, String profileDesc, String education,
+                                   String skills, String language, String other, boolean showBadge) {
         runOnUiThread(() -> {
-            // 顯示用戶名
+            // 填充姓名和描述
             if (name != null && !name.isEmpty()) {
                 nameTextView.setText(name);
             } else {
-                nameTextView.setText("導師");
+                nameTextView.setText("未知導師");
             }
             
-            // 顯示個人描述
             if (profileDesc != null && !profileDesc.isEmpty()) {
                 profileDescTextView.setText(profileDesc);
             } else {
-                profileDescTextView.setText("此導師暫無自我介紹");
+                profileDescTextView.setText("無個人描述");
             }
             
-            // 顯示教育背景
-            if (education != null && !education.isEmpty() && !education.equals("null")) {
-                educationTextView.setText(education);
+            // 填充教育背景 - 過濾香港大學
+            String filteredEducation = filterHKUniversities(education);
+            if (filteredEducation != null && !filteredEducation.isEmpty()) {
+                educationTextView.setText(filteredEducation);
             } else {
-                educationTextView.setText("暫無教育背景資料");
+                educationTextView.setText("未提供教育背景");
             }
             
-            // 組合顯示完整的「關於我」部分
-            StringBuilder aboutMeBuilder = new StringBuilder();
+            // 組合所有其他信息
+            StringBuilder aboutMe = new StringBuilder();
             
-            // 添加技能
-            if (skills != null && !skills.isEmpty() && !skills.equals("null")) {
-                aboutMeBuilder.append("【專業技能】\n").append(skills).append("\n\n");
+            if (skills != null && !skills.isEmpty()) {
+                aboutMe.append("【專業技能】\n").append(skills).append("\n\n");
             }
             
-            // 添加語言能力
-            if (language != null && !language.isEmpty() && !language.equals("null")) {
-                aboutMeBuilder.append("【語言能力】\n").append(language).append("\n\n");
+            if (language != null && !language.isEmpty()) {
+                aboutMe.append("【語言能力】\n").append(language).append("\n\n");
             }
             
-            // 添加其他資訊
-            if (other != null && !other.isEmpty() && !other.equals("null")) {
-                aboutMeBuilder.append("【其他資訊】\n").append(other);
+            if (other != null && !other.isEmpty()) {
+                aboutMe.append("【其他信息】\n").append(other);
             }
             
-            // 如果有內容，顯示；否則顯示默認文字
-            if (aboutMeBuilder.length() > 0) {
-                aboutMeTextView.setText(aboutMeBuilder.toString());
+            if (aboutMe.length() > 0) {
+                aboutMeTextView.setText(aboutMe.toString());
             } else {
-                aboutMeTextView.setText("此導師暫未提供詳細資料");
+                aboutMeTextView.setText("導師未提供詳細資訊");
+            }
+            
+            // 显示或隐藏徽章
+            tutorVerifiedBadge.setVisibility(showBadge ? View.VISIBLE : View.GONE);
+            
+            if (showBadge) {
+                Log.d(TAG, "Showing verified badge for tutor: " + name);
+            } else {
+                Log.d(TAG, "Hiding verified badge for tutor: " + name);
             }
         });
     }
@@ -390,5 +423,138 @@ public class TutorProfileActivity extends AppCompatActivity {
             educationTextView.setText("資料載入中...");
             aboutMeTextView.setText("導師資料暫時無法獲取，請稍後再試。");
         });
+    }
+    
+    /**
+     * 获取导师评价
+     */
+    private void fetchTutorRatings(String tutorId) {
+        OkHttpClient client = new OkHttpClient();
+        
+        String url = "http://" + IPConfig.getIP() + "/FYP/php/get_tutor_ratings.php";
+        Log.d(TAG, "Fetching tutor ratings from: " + url);
+        
+        RequestBody requestBody = new FormBody.Builder()
+                .add("tutor_id", tutorId)
+                .build();
+                
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+                
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "Failed to fetch ratings: " + e.getMessage());
+                runOnUiThread(() -> {
+                    noFeedbackText.setVisibility(View.VISIBLE);
+                    noFeedbackText.setText("评价加载失败，请稍后再试");
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, "Server error when fetching ratings: " + response.code());
+                    runOnUiThread(() -> {
+                        noFeedbackText.setVisibility(View.VISIBLE);
+                        noFeedbackText.setText("评价加载失败，请稍后再试");
+                    });
+                    return;
+                }
+                
+                String jsonResponse = response.body().string();
+                Log.d(TAG, "Ratings response: " + jsonResponse);
+                
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonResponse);
+                    
+                    if (!jsonObject.optBoolean("success", false)) {
+                        String message = jsonObject.optString("message", "未知错误");
+                        Log.e(TAG, "API error when fetching ratings: " + message);
+                        runOnUiThread(() -> {
+                            noFeedbackText.setVisibility(View.VISIBLE);
+                            noFeedbackText.setText("暂无评价");
+                        });
+                        return;
+                    }
+                    
+                    JSONArray ratingsArray = jsonObject.getJSONArray("ratings");
+                    runOnUiThread(() -> displayRatings(ratingsArray));
+                    
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSON parsing error: " + e.getMessage());
+                    runOnUiThread(() -> {
+                        noFeedbackText.setVisibility(View.VISIBLE);
+                        noFeedbackText.setText("评价数据解析错误");
+                    });
+                }
+            }
+        });
+    }
+    
+    /**
+     * 显示导师评价
+     */
+    private void displayRatings(JSONArray ratingsArray) {
+        // 清空容器
+        feedbackContainer.removeAllViews();
+        
+        // 检查是否有评价
+        if (ratingsArray.length() == 0) {
+            noFeedbackText.setVisibility(View.VISIBLE);
+            return;
+        } else {
+            noFeedbackText.setVisibility(View.GONE);
+        }
+        
+        // 添加评价项目
+        for (int i = 0; i < ratingsArray.length(); i++) {
+            try {
+                JSONObject ratingObj = ratingsArray.getJSONObject(i);
+                View ratingView = LayoutInflater.from(this)
+                        .inflate(R.layout.item_tutor_feedback, feedbackContainer, false);
+                
+                TextView tvUsername = ratingView.findViewById(R.id.tvUsername);
+                TextView tvRateTime = ratingView.findViewById(R.id.tvRateTime);
+                TextView tvRateScore = ratingView.findViewById(R.id.tvRateScore);
+                TextView tvComment = ratingView.findViewById(R.id.tvComment);
+                
+                // 设置用户名
+                String username = ratingObj.optString("username", "用户");
+                tvUsername.setText(username);
+                
+                // 设置评分时间
+                String rateTimeStr = ratingObj.optString("rate_times", "");
+                if (!TextUtils.isEmpty(rateTimeStr)) {
+                    try {
+                        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        Date date = inputFormat.parse(rateTimeStr);
+                        tvRateTime.setText(outputFormat.format(date));
+                    } catch (ParseException e) {
+                        tvRateTime.setText(rateTimeStr);
+                    }
+                }
+                
+                // 设置评分
+                double score = ratingObj.optDouble("rate_score", 0);
+                tvRateScore.setText(String.format(Locale.getDefault(), "%.1f", score));
+                
+                // 设置评论
+                String comment = ratingObj.optString("comment", "");
+                if (TextUtils.isEmpty(comment)) {
+                    comment = "无评论内容";
+                }
+                tvComment.setText(comment);
+                
+                // 添加到容器
+                feedbackContainer.addView(ratingView);
+                
+            } catch (JSONException e) {
+                Log.e(TAG, "Error parsing rating item: " + e.getMessage());
+            }
+        }
     }
 } 

@@ -13,8 +13,18 @@ if (!$connect) {
 
 $memberId = $_POST['member_id'] ?? null;
 
-// Get all tutor applications
-$query = "SELECT app_id, member_id, class_level_id, feePerHr FROM application WHERE app_creator = 'T' AND member_id != '$memberId' AND status='A'";
+// Get all tutor applications that are not part of completed bookings
+$query = "SELECT app_id, member_id, class_level_id, feePerHr 
+          FROM application 
+          WHERE app_creator = 'T' 
+          AND member_id != '$memberId' 
+          AND status='A'
+          AND app_id NOT IN (
+              SELECT m.tutor_app_id
+              FROM `match` m
+              JOIN booking b ON m.match_id = b.match_id
+              WHERE b.status = 'completed'
+          )";
 $result = mysqli_query($connect, $query);
 
 if (!$result) { 

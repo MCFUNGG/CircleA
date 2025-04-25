@@ -13,7 +13,7 @@ if ($connect->connect_error) {
 
 try {
     // Get all active advertisements
-    $query = $connect->prepare("SELECT ad_id, title, description, image_url, status FROM ads WHERE status = 'active' ORDER BY sort_order DESC");
+    $query = $connect->prepare("SELECT ad_id, title, description, image_url, link_url, status FROM ads WHERE status = 'active' ORDER BY sort_order DESC");
     $query->execute();
     $result = $query->get_result();
 
@@ -21,12 +21,16 @@ try {
         $advertisements = [];
         
         while ($row = $result->fetch_assoc()) {
+            // 添加调试信息，检查link_url
+            error_log("Ad ID: " . $row['ad_id'] . ", Link URL: " . ($row['link_url'] ? $row['link_url'] : 'NULL'));
+            
             // Add data to results
             $advertisements[] = [
                 'ad_id' => $row['ad_id'],
                 'title' => $row['title'],
                 'description' => $row['description'],
-                'image_url' => $row['image_url']  // This will be like ./FYP/ads/1743480844_等等網取畫面 2024-10-03 105745.png
+                'image_url' => $row['image_url'],  // This will be like ./FYP/ads/1743480844_等等網取畫面 2024-10-03 105745.png
+                'link_url' => isset($row['link_url']) && !empty($row['link_url']) ? $row['link_url'] : null
             ];
         }
 

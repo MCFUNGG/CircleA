@@ -42,18 +42,55 @@
                 android:id="@+id/searchBar"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:hint="Search"
+                android:hint="搜索导师、科目、地区..."
                 android:padding="8dp"
                 android:background="@drawable/rounded_background"
                 android:drawableStart="@drawable/ic_search"
-                android:drawablePadding="8dp" />
+                android:drawablePadding="8dp"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <!-- 搜索结果区域 -->
+        <LinearLayout
+            android:id="@+id/searchResultsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/searchResultsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="搜索结果"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/searchResultsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:maxHeight="300dp" />
+
+            <Button
+                android:id="@+id/closeSearchResultsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="关闭搜索结果"
+                android:layout_marginTop="8dp"/>
         </LinearLayout>
 
         <!-- Horizontal RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/horizontalRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             tools:listitem="@layout/item_horizontal"
             android:layout_marginBottom="16dp"
@@ -67,6 +104,12 @@
             android:layout_marginBottom="16dp" />
 
         <!-- Section Buttons -->
+        <LinearLayout
+            android:id="@+id/mainContentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -199,6 +242,6 @@
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_finding_tutors" />
         </LinearLayout>
-
+        </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

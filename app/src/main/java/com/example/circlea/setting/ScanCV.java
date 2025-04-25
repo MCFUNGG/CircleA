@@ -273,6 +273,7 @@ public class ScanCV extends AppCompatActivity {
         }
 
         startActivity(intent);
+        finish(); // 销毁ScanCV活动，这样用户从MyCVActivity返回时不会回到ScanCV
     }
 
     private String convertImageToBase64(Uri uri) {

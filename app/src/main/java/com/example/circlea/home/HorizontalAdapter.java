@@ -1,13 +1,17 @@
 package com.example.circlea.home;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.example.circlea.Advertisement;
+// import com.example.circlea.Advertisement;
 import com.example.circlea.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,24 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.Vi
                         .placeholder(R.drawable.placeholder_image)
                         .error(R.drawable.error_image)
                         .into(holder.adImageView);
+                
+                // 设置点击事件
+                holder.adImageView.setOnClickListener(v -> {
+                    String linkUrl = ad.getLinkUrl();
+                    Log.d("AdClick", "ad ID: " + ad.getId() + ", URL: " + linkUrl);
+                    
+                    if (linkUrl != null && !linkUrl.isEmpty() && !linkUrl.equalsIgnoreCase("null")) {
+                        try {
+                            Log.d("AdClick", "opening: " + linkUrl);
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkUrl));
+                            holder.itemView.getContext().startActivity(browserIntent);
+                        } catch (Exception e) {
+                            Log.e("AdClick", "open failed: " + e.getMessage());
+                        }
+                    } else {
+                        Log.d("AdClick", "no link");
+                    }
+                });
             }
         }
     }

@@ -255,15 +255,33 @@ public class TutorAppDetail extends AppCompatActivity {
 
 
                                 TextView statusTextView = applicationView.findViewById(R.id.status_tv);
-                                if (status.equals("P")) {
-                                    statusTextView.setText("Pending");
-                                    statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
-                                } else if (status.equals("A")) {
-                                    statusTextView.setText("Approved");
-                                    statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
-                                }else if (status.equals("R")){
-                                    statusTextView.setText("Rejected");
-                                    statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
+                                if (statusTextView != null) {
+                                    if (status.equals("P")) {
+                                        statusTextView.setText("Pending");
+                                        statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
+                                    } else if (status.equals("A")) {
+                                        statusTextView.setText("Approved");
+                                        statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
+                                    } else if (status.equals("R")) {
+                                        statusTextView.setText("Rejected");
+                                        statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
+                                    }
+                                } else {
+                                    // 尝试使用我们在PSAppDetail.java中使用的ID
+                                    statusTextView = applicationView.findViewById(R.id.status_text);
+                                    if (statusTextView != null) {
+                                        if (status.equals("P")) {
+                                            statusTextView.setText("Pending");
+                                            statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
+                                        } else if (status.equals("A")) {
+                                            statusTextView.setText("Approved");
+                                            statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
+                                        } else if (status.equals("R")) {
+                                            statusTextView.setText("Rejected");
+                                            statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
+                                        }
+                                    }
+                                    // 如果两个ID都找不到，就忽略状态显示
                                 }
                                 // Handle subject names array
                                 JSONArray subjectNames = data.optJSONArray("subject_names");

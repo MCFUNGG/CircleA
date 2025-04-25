@@ -26,6 +26,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,6 +49,7 @@ public class PSAppDetail extends AppCompatActivity {
     private String selectedAppId = "";
     private String psAppId = "";
     private String psId = "";
+    private Map<String, String> appStatusMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,17 @@ public class PSAppDetail extends AppCompatActivity {
 
         cancelButton.setOnClickListener(v -> applyDialog.dismiss());
         confirmButton.setOnClickListener(v -> {
+            if (selectedAppId.isEmpty()) {
+                Toast.makeText(PSAppDetail.this, "Please select an application first", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            String status = appStatusMap.get(selectedAppId);
+            if (status == null || !status.equals("A")) {
+                Toast.makeText(PSAppDetail.this, "This application has not been approved yet", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
             checkIfMatchExist();
             applyDialog.dismiss();
         });
@@ -168,9 +182,19 @@ public class PSAppDetail extends AppCompatActivity {
                             JSONArray dataArray = jsonObject.getJSONArray("data");
 
                             runOnUiThread(() -> applicationsContainer.removeAllViews());
+                            
+                            appStatusMap.clear();
 
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject data = dataArray.getJSONObject(i);
+                                
+                                String status = data.optString("status", "");
+                                
+                                if (!"A".equals(status)) {
+                                    Log.d("TutorSendRequestToPS", "Skipping non-approved application: " + data.optString("app_id"));
+                                    continue;
+                                }
+                                
                                 View applicationView = LayoutInflater.from(PSAppDetail.this)
                                         .inflate(R.layout.history_application_item, applicationsContainer, false);
 
@@ -178,6 +202,8 @@ public class PSAppDetail extends AppCompatActivity {
                                 String studentLevel = data.optString("class_level_name", "N/A");
                                 String fee = data.optString("feePerHr", "N/A");
                                 String description = data.optString("description", "N/A");
+                                
+                                appStatusMap.put(appId, status);
 
                                 JSONArray subjectNames = data.optJSONArray("subject_names");
                                 StringBuilder subjectsStr = new StringBuilder();
@@ -209,7 +235,20 @@ public class PSAppDetail extends AppCompatActivity {
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
                                 ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
                                 ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
-                                // ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
+                                
+                                TextView statusView = applicationView.findViewById(R.id.status_text);
+                                if (statusView != null) {
+                                    if (status.equals("P")) {
+                                        statusView.setText("Pending");
+                                        statusView.setBackgroundResource(R.drawable.status_pending_pill);
+                                    } else if (status.equals("A")) {
+                                        statusView.setText("Approved");
+                                        statusView.setBackgroundResource(R.drawable.status_approved_pill);
+                                    } else if (status.equals("R")) {
+                                        statusView.setText("Rejected");
+                                        statusView.setBackgroundResource(R.drawable.status_rejected_pill);
+                                    }
+                                }
 
                                 applicationView.setOnClickListener(v -> {
                                     for (int j = 0; j < applicationsContainer.getChildCount(); j++) {
@@ -227,6 +266,17 @@ public class PSAppDetail extends AppCompatActivity {
                                 final View finalView = applicationView;
                                 runOnUiThread(() -> applicationsContainer.addView(finalView));
                             }
+                            
+                            if (appStatusMap.isEmpty()) {
+                                runOnUiThread(() -> {
+                                    View noAppsView = LayoutInflater.from(PSAppDetail.this)
+                                            .inflate(android.R.layout.simple_list_item_1, applicationsContainer, false);
+                                    ((TextView) noAppsView).setText("No approved applications found");
+                                    ((TextView) noAppsView).setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                    applicationsContainer.addView(noAppsView);
+                                });
+                            }
+                            
                         } else {
                             String message = jsonObject.optString("message", "Unknown error");
                             runOnUiThread(() -> Toast.makeText(PSAppDetail.this,
@@ -255,9 +305,15 @@ public class PSAppDetail extends AppCompatActivity {
     }
 
     private void checkIfMatchExist() {
-        if (selectedAppId == null || psAppId == null) {
+        if (selectedAppId.isEmpty() || psAppId == null) {
             Log.e("TutorSendRequestToPS", "Missing app IDs - Tutor App ID: " + selectedAppId + ", PS App ID: " + psAppId);
             Toast.makeText(this, "Error: Please select an application first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String status = appStatusMap.get(selectedAppId);
+        if (status == null || !status.equals("A")) {
+            Toast.makeText(this, "This application has not been approved yet", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -316,7 +372,7 @@ public class PSAppDetail extends AppCompatActivity {
         String scoreText = matchingScoreTextView.getText().toString();
         String matchMark = extractScore(scoreText);
 
-        if (selectedAppId == null) {
+        if (selectedAppId.isEmpty()) {
             Toast.makeText(this, "Please select your application first", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -325,9 +381,10 @@ public class PSAppDetail extends AppCompatActivity {
             Toast.makeText(this, "Error: PS application information is missing", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        if (matchMark == null) {
-            Toast.makeText(this, "Error: Matching score is missing", Toast.LENGTH_SHORT).show();
+        
+        String status = appStatusMap.get(selectedAppId);
+        if (status == null || !status.equals("A")) {
+            Toast.makeText(this, "This application has not been approved yet", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -335,19 +392,29 @@ public class PSAppDetail extends AppCompatActivity {
         Log.d("TutorSendRequestToPS", "PS App ID: " + psAppId);
         Log.d("TutorSendRequestToPS", "Match Mark: " + matchMark);
 
-        RequestBody formBody = new FormBody.Builder()
+        // 构建请求参数
+        FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("ps_app_id", psAppId)
                 .add("tutor_app_id", selectedAppId)
                 .add("ps_id", psId)
-                .add("tutor_id", tutorId)
-                .add("match_mark", matchMark)
-                .build();
+                .add("tutor_id", tutorId);
+                
+        // 添加匹配分数
+        if (matchMark != null && !matchMark.isEmpty()) {
+            formBuilder.add("match_mark", matchMark);
+        } else {
+            formBuilder.add("match_mark", "50%"); // 默认匹配分数
+        }
+        
+        RequestBody formBody = formBuilder.build();
 
+        // 构建请求
         Request request = new Request.Builder()
                 .url("http://"+IPConfig.getIP()+"/FYP/php/post_match_request_from_T.php")
                 .post(formBody)
                 .build();
 
+        // 发送请求并处理响应
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -360,6 +427,8 @@ public class PSAppDetail extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                Log.d("TutorSendRequestToPS", "Server response: " + responseData);
+                
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
                     final boolean success = jsonResponse.getBoolean("success");
@@ -410,11 +479,35 @@ public class PSAppDetail extends AppCompatActivity {
     }
 
     private String extractScore(String scoreText) {
-        String[] parts = scoreText.split(":");
-        if (parts.length > 1) {
-            return parts[1].trim();
+        if (scoreText == null || scoreText.isEmpty()) {
+            Log.e("TutorSendRequestToPS", "Score text is null or empty");
+            return "50%"; // 默认匹配分数
         }
-        return null;
+        
+        Log.d("TutorSendRequestToPS", "Raw score text: " + scoreText);
+        
+        try {
+            // 尝试从"Score X: YY%" 格式提取
+            String[] parts = scoreText.split(":");
+            if (parts.length > 1) {
+                String scorePart = parts[1].trim();
+                Log.d("TutorSendRequestToPS", "Extracted score part: " + scorePart);
+                return scorePart;
+            }
+            
+            // 如果不包含冒号，可能只是单纯的百分比
+            if (scoreText.contains("%")) {
+                Log.d("TutorSendRequestToPS", "Using raw percentage: " + scoreText);
+                return scoreText.trim();
+            }
+            
+            // 其他情况，尝试直接使用文本
+            Log.d("TutorSendRequestToPS", "Using raw text: " + scoreText);
+            return scoreText;
+        } catch (Exception e) {
+            Log.e("TutorSendRequestToPS", "Error extracting score: " + e.getMessage());
+            return "50%"; // 发生错误时使用默认匹配分数
+        }
     }
 
     private void updateUIWithJson(String jsonResponse) {

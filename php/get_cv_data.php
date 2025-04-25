@@ -19,8 +19,8 @@ if ($memberId === null) {
     exit;
 }
 
-// Query to get CV data from cv_data table
-$query = "SELECT cv_id, member_id, contact, skills, education, language, other, cv_path, created_at
+// Query to get CV data from cv_data table including status field
+$query = "SELECT cv_id, member_id, contact, skills, education, language, other, cv_path, created_at, status
           FROM cv_data
           WHERE member_id = ?
           ORDER BY created_at DESC";

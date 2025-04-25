@@ -34,6 +34,10 @@ try {
         $language  = isset($_POST['language'])  ? $_POST['language']  : '';
         $other     = isset($_POST['other'])     ? $_POST['other']     : '';
         
+        // 检查是否为编辑模式
+        $isEdit = isset($_POST['is_edit']) && $_POST['is_edit'] === 'true';
+        $cvId = isset($_POST['cv_id']) ? intval($_POST['cv_id']) : 0;
+        
         // Process file uploads if they exist
         if (isset($_FILES['file'])) {
             // Ensure FILES are treated as array for multi-files
@@ -62,7 +66,9 @@ try {
                     
                     if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $targetPath)) {
                         $newFileNames[] = $fileName;
-                        $cvPath = 'uploads/' . $fileName; // Use the first uploaded file as CV path
+                        if (empty($cvPath)) {
+                            $cvPath = 'uploads/' . $fileName; // Use the first uploaded file as CV path
+                        }
                     } else {
                         throw new Exception("Failed to move uploaded file #" . ($i + 1));
                     }
@@ -72,31 +78,76 @@ try {
             }
         }
         
-        // Insert data into cv_data table
-        $sql = "INSERT INTO cv_data (member_id, contact, skills, education, language, other, cv_path) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
-        $stmt = $connect->prepare($sql);
-        if ($stmt === false) {
-            throw new Exception("Preparing SQL statement failed: " . $connect->error);
+        // 如果是编辑模式并且有 CV ID，则更新现有记录
+        if ($isEdit && $cvId > 0) {
+            // 如果没有上传新文件，保留原来的 CV 路径
+            if (empty($cvPath)) {
+                $getPathSql = "SELECT cv_path FROM cv_data WHERE id = ?";
+                $pathStmt = $connect->prepare($getPathSql);
+                $pathStmt->bind_param("i", $cvId);
+                $pathStmt->execute();
+                $pathResult = $pathStmt->get_result();
+                if ($pathRow = $pathResult->fetch_assoc()) {
+                    $cvPath = $pathRow['cv_path'];
+                }
+                $pathStmt->close();
+            }
+            
+            $sql = "UPDATE cv_data SET 
+                    contact = ?, 
+                    skills = ?, 
+                    education = ?, 
+                    language = ?, 
+                    other = ?, 
+                    cv_path = ?
+                    WHERE id = ?";
+            
+            $stmt = $connect->prepare($sql);
+            if ($stmt === false) {
+                throw new Exception("Preparing SQL statement failed: " . $connect->error);
+            }
+            
+            $stmt->bind_param("ssssssi", 
+                $contact, 
+                $skills, 
+                $education, 
+                $language, 
+                $other, 
+                $cvPath,
+                $cvId
+            );
+        } else {
+            // 创建新记录
+            $sql = "INSERT INTO cv_data (member_id, contact, skills, education, language, other, cv_path) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)";
+            
+            $stmt = $connect->prepare($sql);
+            if ($stmt === false) {
+                throw new Exception("Preparing SQL statement failed: " . $connect->error);
+            }
+            
+            $stmt->bind_param("issssss", 
+                $mId, 
+                $contact, 
+                $skills, 
+                $education, 
+                $language, 
+                $other, 
+                $cvPath
+            );
+            
+            $cvId = 0;
         }
-        
-        $stmt->bind_param("issssss", 
-            $mId, 
-            $contact, 
-            $skills, 
-            $education, 
-            $language, 
-            $other, 
-            $cvPath
-        );
         
         if (!$stmt->execute()) {
             throw new Exception("Executing CV data save failed: " . $stmt->error);
         }
         
-        $cvId = $stmt->insert_id;
-        error_log("【Debug】CV data inserted with ID: " . $cvId);
+        if (!$isEdit) {
+            $cvId = $stmt->insert_id;
+        }
+        
+        error_log("【Debug】CV data " . ($isEdit ? "updated" : "inserted") . " with ID: " . $cvId);
         $stmt->close();
         
         // Commit the transaction
@@ -104,7 +155,7 @@ try {
         
         echo json_encode(array(
             'status' => 'success',
-            'message' => 'CV data uploaded successfully',
+            'message' => 'CV data ' . ($isEdit ? 'updated' : 'uploaded') . ' successfully',
             'cv_id' => $cvId,
             'cert_files' => $newFileNames
         ));
