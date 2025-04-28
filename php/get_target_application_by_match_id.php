@@ -1,5 +1,6 @@
 <?php
 header("Content-Type: application/json");
+
 require_once 'db_config.php';
 
 // 创建数据库连接
@@ -10,25 +11,64 @@ if (!$connect) {
     exit;
 }
 
-$memberId = $_POST['member_id'] ?? null;
+// 获取match_id
+$matchId = $_POST['match_id'];
 
-// Get all PS applications, excluding the current user's applications, only active ones, and not completed
-$query = "SELECT app_id, member_id, class_level_id, feePerHr FROM application 
-          WHERE app_creator = 'PS' 
-          AND member_id != '$memberId' 
-          AND status='A'
-          AND app_id NOT IN (
-              SELECT m.ps_app_id
-              FROM `match` m
-              JOIN booking b ON m.match_id = b.match_id
-              WHERE b.status = 'completed'
-          )";
-$result = mysqli_query($connect, $query);
-
-if (!$result) {
-    echo json_encode(["success" => false, "message" => "Query failed: " . mysqli_error($connect)]);
+if ($matchId === null) {
+    echo json_encode(["success" => false, "message" => "Match ID not provided"]);
     exit;
 }
+
+// 第一步：获取match信息，包括ps_app_id和tutor_app_id
+$query1 = mysqli_query($connect, "SELECT ps_app_id, tutor_app_id, ps_member_id, tutor_member_id FROM `match` WHERE match_id = '$matchId'");
+$row = mysqli_fetch_assoc($query1);
+if (!$row) {
+    echo json_encode(["success" => false, "message" => "Match not found"]);
+    exit;
+}
+
+// 获取匹配信息
+$psAppId = $row['ps_app_id'];
+$tutorAppId = $row['tutor_app_id'];
+$psMemberId = $row['ps_member_id'];
+$tutorMemberId = $row['tutor_member_id'];
+
+// 获取当前请求用户的ID（从请求参数中获取）
+$currentUserId = isset($_POST['member_id']) ? $_POST['member_id'] : null;
+
+// 确定目标应用ID
+$targetAppId = null;
+$targetMemberId = null;
+
+// 如果当前用户是导师，则目标是学生
+if ($currentUserId == $tutorMemberId) {
+    $targetAppId = $psAppId;
+    $targetMemberId = $psMemberId;
+    $appCreator = 'PS'; // 学生申请
+} 
+// 如果当前用户是学生，则目标是导师
+else if ($currentUserId == $psMemberId) {
+    $targetAppId = $tutorAppId;
+    $targetMemberId = $tutorMemberId;
+    $appCreator = 'T'; // 导师申请
+}
+// 如果未提供用户ID或无法确定角色，默认获取学生申请
+else {
+    $targetAppId = $psAppId;
+    $targetMemberId = $psMemberId;
+    $appCreator = 'PS';
+}
+
+// 第二步：获取目标应用详情
+$query2 = "SELECT app_id, member_id, class_level_id, feePerHr 
+           FROM application 
+           WHERE app_id = '$targetAppId'";
+$result = mysqli_query($connect, $query2);
+
+if (!$result) {
+    echo json_encode(["success" => false, "message" => "Database query failed"]);
+    exit;
+}   
 
 if (mysqli_num_rows($result) > 0) {
     $applicationData = [];
@@ -38,7 +78,7 @@ if (mysqli_num_rows($result) > 0) {
     }
 
     foreach ($applicationData as &$application) {
-        // Get username
+        // 获取用户名
         $memberId = $application['member_id'];
         $usernameQuery = "SELECT username FROM member WHERE member_id = '$memberId'";
         $usernameResult = mysqli_query($connect, $usernameQuery);
@@ -48,7 +88,7 @@ if (mysqli_num_rows($result) > 0) {
             $application['username'] = 'N/A';
         }
 
-        // Get class level name
+        // 获取年级名称
         $classLevelId = $application['class_level_id'];
         $classLevelQuery = "SELECT class_level_name FROM class_level WHERE class_level_id = '$classLevelId'";
         $classLevelResult = mysqli_query($connect, $classLevelQuery);
@@ -58,7 +98,7 @@ if (mysqli_num_rows($result) > 0) {
             $application['class_level_name'] = 'N/A';
         }
 
-        // Get subjects
+        // 获取科目
         $application['subject_names'] = [];
         $subjectQuery = "SELECT subject_id FROM application_subject WHERE app_id = '{$application['app_id']}'";
         $subjectResult = mysqli_query($connect, $subjectQuery);
@@ -71,7 +111,7 @@ if (mysqli_num_rows($result) > 0) {
             }
         }
 
-        // Get districts
+        // 获取地区
         $application['district_names'] = [];
         $districtQuery = "SELECT district_id FROM application_district WHERE app_id = '{$application['app_id']}'";
         $districtResult = mysqli_query($connect, $districtQuery);
@@ -84,13 +124,17 @@ if (mysqli_num_rows($result) > 0) {
             }
         }
 
-        // Get profile icon
+        // 获取头像
         $profileQuery = "SELECT profile FROM member_detail WHERE member_id = '$memberId' ORDER BY version DESC LIMIT 1";
         $profileResult = mysqli_query($connect, $profileQuery);
         if ($profileRow = mysqli_fetch_assoc($profileResult)) {
-            $profilePath = trim($profileRow['profile']);
+            // 添加调试信息
+            error_log("Raw profile path for member_id $memberId: " . $profileRow['profile']);
             
             // 处理文件路径，只保留URL可访问的部分
+            $profilePath = trim($profileRow['profile']);
+            
+            // 检查并处理多种可能的路径格式
             if (strpos($profilePath, 'D:/xampp/htdocs') === 0) {
                 // 处理绝对路径格式 D:/xampp/htdocs/FYP/images/file.jpg
                 $profilePath = str_replace('D:/xampp/htdocs', '', $profilePath);
@@ -121,13 +165,14 @@ if (mysqli_num_rows($result) > 0) {
             }
             
             $application['profile_icon'] = $profilePath;
-            error_log("Final profile path for member $memberId: " . $application['profile_icon']);
+            error_log("Final profile path: " . $application['profile_icon']);
         } else {
+            error_log("No profile found for member_id $memberId");
             $application['profile_icon'] = '';
         }
     }
 
-    // Format final output
+    // 格式化最终输出
     $finalData = array_map(function($application) {
         return [
             'app_id' => $application['app_id'],
@@ -148,9 +193,9 @@ if (mysqli_num_rows($result) > 0) {
 } else {
     echo json_encode([
         "success" => false, 
-        "message" => "No student applications found"
+        "message" => "No application found"
     ]);
 }
 
 mysqli_close($connect);
-?>
+?> 

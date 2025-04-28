@@ -60,9 +60,33 @@ while ($row = $result1->fetch_assoc()) {
     $stmt2->bind_param("ss", $row['ps_id'], $row['ps_id']);
     $stmt2->execute();
     $profileResult = $stmt2->get_result();
-    $row['ps_profile_icon'] = ($profileResult && $profileResult->num_rows > 0) 
-        ? $profileResult->fetch_assoc()['profile'] 
-        : 'N/A';
+    
+    $ps_profile_path = '';
+    if ($profileResult && $profileResult->num_rows > 0) {
+        $profileRow = $profileResult->fetch_assoc();
+        $ps_profile_path = trim($profileRow['profile']);
+        
+        // 简化路径处理逻辑，使用统一的方式处理路径
+        if (!empty($ps_profile_path)) {
+            // 如果路径包含 D:/xampp/htdocs
+            if (strpos($ps_profile_path, 'D:/xampp/htdocs') !== false) {
+                $ps_profile_path = str_replace('D:/xampp/htdocs', '', $ps_profile_path);
+            }
+            // 如果路径以 ./FYP 开头
+            else if (strpos($ps_profile_path, './FYP') === 0) {
+                $ps_profile_path = str_replace('./FYP', '/FYP', $ps_profile_path);
+            }
+            // 如果路径不包含 /FYP/ 但包含 images/
+            else if (strpos($ps_profile_path, '/FYP/') === false && strpos($ps_profile_path, 'images/') !== false) {
+                $ps_profile_path = '/FYP/' . $ps_profile_path;
+            }
+            // 确保路径开头有/
+            if (substr($ps_profile_path, 0, 1) !== '/') {
+                $ps_profile_path = '/' . $ps_profile_path;
+            }
+        }
+    }
+    $row['ps_profile_icon'] = $ps_profile_path;
 
     // Get profile icon of the Tutor
     $stmt3 = $connect->prepare("SELECT profile 
@@ -76,9 +100,33 @@ while ($row = $result1->fetch_assoc()) {
     $stmt3->bind_param("ss", $row['tutor_id'], $row['tutor_id']);
     $stmt3->execute();
     $tutorProfileResult = $stmt3->get_result();
-    $row['tutor_profile_icon'] = ($tutorProfileResult && $tutorProfileResult->num_rows > 0) 
-        ? $tutorProfileResult->fetch_assoc()['profile'] 
-        : 'N/A';
+    
+    $tutor_profile_path = '';
+    if ($tutorProfileResult && $tutorProfileResult->num_rows > 0) {
+        $tutorProfileRow = $tutorProfileResult->fetch_assoc();
+        $tutor_profile_path = trim($tutorProfileRow['profile']);
+        
+        // 简化路径处理逻辑，使用统一的方式处理路径
+        if (!empty($tutor_profile_path)) {
+            // 如果路径包含 D:/xampp/htdocs
+            if (strpos($tutor_profile_path, 'D:/xampp/htdocs') !== false) {
+                $tutor_profile_path = str_replace('D:/xampp/htdocs', '', $tutor_profile_path);
+            }
+            // 如果路径以 ./FYP 开头
+            else if (strpos($tutor_profile_path, './FYP') === 0) {
+                $tutor_profile_path = str_replace('./FYP', '/FYP', $tutor_profile_path);
+            }
+            // 如果路径不包含 /FYP/ 但包含 images/
+            else if (strpos($tutor_profile_path, '/FYP/') === false && strpos($tutor_profile_path, 'images/') !== false) {
+                $tutor_profile_path = '/FYP/' . $tutor_profile_path;
+            }
+            // 确保路径开头有/
+            if (substr($tutor_profile_path, 0, 1) !== '/') {
+                $tutor_profile_path = '/' . $tutor_profile_path;
+            }
+        }
+    }
+    $row['tutor_profile_icon'] = $tutor_profile_path;
 
     // Get application details based on creator
     $appId = ($row['match_creator'] == 'PS') ? $row['ps_app_id'] : $row['tutor_app_id'];

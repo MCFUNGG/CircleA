@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,8 +41,9 @@ import okhttp3.Response;
 
 public class PSAppDetail extends AppCompatActivity {
     private TextView appIdTextView, memberIdTextView, subjectTextView, classLevelTextView,
-            feeTextView, districtTextView, matchingScoreTextView;
+            feeTextView, districtTextView, matchingScoreTextView, usernameTextView;
     private ImageButton exitBtn;
+    private ImageView profileIconImageView;
     private Button applyButton;
     private Dialog applyDialog;
     private String tutorId;
@@ -49,6 +52,8 @@ public class PSAppDetail extends AppCompatActivity {
     private String selectedAppId = "";
     private String psAppId = "";
     private String psId = "";
+    private String psUsername = "";
+    private String psAvatarUrl = "";
     private Map<String, String> appStatusMap = new HashMap<>();
 
     @Override
@@ -60,8 +65,17 @@ public class PSAppDetail extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
         tutorId = sharedPreferences.getString("member_id", null);
 
+        // 获取从Intent传递过来的数据
         psAppId = getIntent().getStringExtra("psAppId");
         psId = getIntent().getStringExtra("ps_id");
+        psUsername = getIntent().getStringExtra("ps_username");
+        psAvatarUrl = getIntent().getStringExtra("ps_avatar_url");
+        
+        // 记录获取到的值
+        Log.d("PSAppDetail", "Received psAppId: " + psAppId);
+        Log.d("PSAppDetail", "Received psId: " + psId);
+        Log.d("PSAppDetail", "Received psUsername: " + psUsername);
+        Log.d("PSAppDetail", "Received psAvatarUrl: " + psAvatarUrl);
 
         initializeViews();
         initializeApplyDialog();
@@ -72,12 +86,14 @@ public class PSAppDetail extends AppCompatActivity {
 
     private void initializeViews() {
         appIdTextView = findViewById(R.id.appIdTextView);
-        //memberIdTextView = findViewById(R.id.memberIdTextView);
+       // memberIdTextView = findViewById(R.id.memberIdTextView);
         subjectTextView = findViewById(R.id.subjectTextView);
         classLevelTextView = findViewById(R.id.classLevelTextView);
         feeTextView = findViewById(R.id.feeTextView);
         districtTextView = findViewById(R.id.districtTextView);
         matchingScoreTextView = findViewById(R.id.matchingScoreTextView);
+        usernameTextView = findViewById(R.id.usernameTextView);
+        profileIconImageView = findViewById(R.id.profileIconImageView);
         exitBtn = findViewById(R.id.exitButton);
         applyButton = findViewById(R.id.applyButton);
     }
@@ -132,21 +148,52 @@ public class PSAppDetail extends AppCompatActivity {
         ArrayList<String> subjects = getIntent().getStringArrayListExtra("subjects");
         ArrayList<String> districts = getIntent().getStringArrayListExtra("districts");
 
-        if (psAppId != null) appIdTextView.setText("Application ID: " + psAppId);
-        //if (memberId != null) memberIdTextView.setText("Member ID: " + memberId);
-        if (classLevel != null) classLevelTextView.setText("Class Level: " + classLevel);
-        if (fee != null) feeTextView.setText("Fee: $" + fee + " /hr");
+        // 设置用户头像
+        if (psAvatarUrl != null && !psAvatarUrl.isEmpty()) {
+            Log.d("PSAppDetail", "Loading avatar URL: " + psAvatarUrl);
+            Glide.with(this)
+                 .load(psAvatarUrl)
+                 .placeholder(R.drawable.default_avatar)
+                 .error(R.drawable.default_avatar)
+                 .circleCrop()
+                 .into(profileIconImageView);
+        } else {
+            profileIconImageView.setImageResource(R.drawable.default_avatar);
+            Log.d("PSAppDetail", "No avatar URL provided, using default");
+        }
+
+        // 设置用户名
+        if (psUsername != null && !psUsername.isEmpty()) {
+            usernameTextView.setText(psUsername);
+            Log.d("PSAppDetail", "Setting username: " + psUsername);
+        } else {
+            usernameTextView.setText("Unknown Student");
+            Log.d("PSAppDetail", "No username provided, using default");
+        }
+        
+        // 设置应用ID为小文本
+        if (psAppId != null) {
+            appIdTextView.setText("App ID: " + psAppId);
+        }
+        
+        if (classLevel != null) {
+            classLevelTextView.setText(classLevel);
+        }
+        
+        if (fee != null) {
+            feeTextView.setText("$" + fee + "/hr");
+        }
 
         if (subjects != null && !subjects.isEmpty()) {
-            subjectTextView.setText("Subjects: " + String.join(", ", subjects));
+            subjectTextView.setText(String.join(", ", subjects));
         } else {
-            subjectTextView.setText("Subjects: N/A");
+            subjectTextView.setText("N/A");
         }
 
         if (districts != null && !districts.isEmpty()) {
-            districtTextView.setText("Districts: " + String.join(", ", districts));
+            districtTextView.setText(String.join(", ", districts));
         } else {
-            districtTextView.setText("Districts: N/A");
+            districtTextView.setText("N/A");
         }
     }
 
@@ -381,7 +428,7 @@ public class PSAppDetail extends AppCompatActivity {
             Toast.makeText(this, "Error: PS application information is missing", Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         String status = appStatusMap.get(selectedAppId);
         if (status == null || !status.equals("A")) {
             Toast.makeText(this, "This application has not been approved yet", Toast.LENGTH_SHORT).show();
@@ -514,23 +561,31 @@ public class PSAppDetail extends AppCompatActivity {
         try {
             JSONArray jsonArray = new JSONArray(jsonResponse);
             StringBuilder scores = new StringBuilder();
+            String topScore = "";
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject.has("score")) {
                     String score = jsonObject.getString("score");
+                    if (i == 0) {
+                        topScore = score;
+                    }
                     scores.append("Score ").append(i + 1).append(": ").append(score).append("\n");
                 }
             }
 
-            if (scores.length() > 0) {
+            if (!topScore.isEmpty()) {
+                // 在顶部右侧显示第一个分数作为主要分数
+                matchingScoreTextView.setText(topScore);
+            } else if (scores.length() > 0) {
+                // 如果没有单独的主要分数，则显示所有分数
                 matchingScoreTextView.setText(scores.toString());
             } else {
-                matchingScoreTextView.setText("No matching scores found.");
+                matchingScoreTextView.setText("N/A");
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            matchingScoreTextView.setText("Error parsing matching scores.");
+            matchingScoreTextView.setText("Error");
         }
     }
 }

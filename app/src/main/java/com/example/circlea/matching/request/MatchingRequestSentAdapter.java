@@ -11,20 +11,50 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
+import com.google.android.material.button.MaterialButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingRequestSentAdapter.ViewHolder> {
+    private static final String TAG = "MatchingRequestSentAdapter";
+    
     private List<MatchingRequest> requests;
     private Context context;
     private OnItemClickListener listener;
     private String currentUsername;
+    private String memberId;
 
     public interface OnItemClickListener {
         void onItemClick(MatchingRequest request, int position);
+    }
+    
+    // Add interface for refreshing parent after cancellation
+    public interface OnRequestCancelledListener {
+        void onRequestCancelled();
+    }
+    
+    private OnRequestCancelledListener cancelListener;
+    
+    public void setOnRequestCancelledListener(OnRequestCancelledListener listener) {
+        this.cancelListener = listener;
     }
 
     public MatchingRequestSentAdapter(Context context, List<MatchingRequest> requests) {
@@ -32,6 +62,7 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
         this.requests = requests;
         SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
         this.currentUsername = sharedPreferences.getString("username", "");
+        this.memberId = sharedPreferences.getString("member_id", "");
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -49,8 +80,18 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MatchingRequest request = requests.get(position);
 
-        // Set username based on the recipient (opposite of the current user's role)
-        String displayUsername = request.getDisplayName(false, currentUsername);
+        // 始终显示接收者的用户名
+        String displayUsername = request.getRecipientUsername();
+        if (displayUsername == null || displayUsername.isEmpty()) {
+            // 如果未设置接收者用户名，则通过比较判断
+            if (currentUsername.equals(request.getPsUsername())) {
+                // 如果当前用户是PS，则显示家教的用户名
+                displayUsername = request.getTutorUsername();
+            } else {
+                // 如果当前用户是家教，则显示PS的用户名
+                displayUsername = request.getPsUsername();
+            }
+        }
         holder.username.setText(displayUsername);
 
         // Determine if the request was sent as PS
@@ -74,6 +115,11 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
         } else {
             holder.profileIcon.setImageResource(R.drawable.circle_background);
         }
+
+        // Set cancel button click listener
+        holder.cancelButton.setOnClickListener(v -> {
+            showCancelConfirmationDialog(request);
+        });
 
         holder.itemView.setOnClickListener(v -> {
             SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
@@ -115,6 +161,73 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
             }
         });
     }
+    
+    private void showCancelConfirmationDialog(MatchingRequest request) {
+        new AlertDialog.Builder(context)
+                .setTitle("Cancel Request")
+                .setMessage("Are you sure you want to cancel this matching request?")
+                .setPositiveButton("Yes", (dialog, which) -> cancelMatchRequest(request.getMatchId()))
+                .setNegativeButton("No", null)
+                .show();
+    }
+    
+    private void cancelMatchRequest(String matchId) {
+        if (matchId == null || memberId == null) {
+            Toast.makeText(context, "Error: Missing request information", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        OkHttpClient client = new OkHttpClient();
+        
+        RequestBody formBody = new FormBody.Builder()
+                .add("match_id", matchId)
+                .add("member_id", memberId)
+                .build();
+        
+        Request request = new Request.Builder()
+                .url("http://" + IPConfig.getIP() + "/FYP/php/cancel_match_request.php")
+                .post(formBody)
+                .build();
+        
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "Failed to cancel request: " + e.getMessage());
+                if (context != null) {
+                    ((android.app.Activity) context).runOnUiThread(() -> 
+                        Toast.makeText(context, "Failed to cancel request. Please try again.", Toast.LENGTH_SHORT).show());
+                }
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d(TAG, "Cancel response: " + responseData);
+                
+                try {
+                    JSONObject jsonResponse = new JSONObject(responseData);
+                    final boolean success = jsonResponse.getBoolean("success");
+                    final String message = jsonResponse.getString("message");
+                    
+                    if (context != null) {
+                        ((android.app.Activity) context).runOnUiThread(() -> {
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                            if (success && cancelListener != null) {
+                                // Notify parent to refresh data
+                                cancelListener.onRequestCancelled();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing response: " + e.getMessage());
+                    if (context != null) {
+                        ((android.app.Activity) context).runOnUiThread(() -> 
+                            Toast.makeText(context, "Error processing server response", Toast.LENGTH_SHORT).show());
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public int getItemCount() {
@@ -124,6 +237,7 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView username, fee, classLevel, subject, district, statusText;
         ImageView profileIcon;
+        MaterialButton cancelButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -134,6 +248,7 @@ public class MatchingRequestSentAdapter extends RecyclerView.Adapter<MatchingReq
             district = itemView.findViewById(R.id.district_tv);
             profileIcon = itemView.findViewById(R.id.profileIcon);
             statusText = itemView.findViewById(R.id.status_text);
+            cancelButton = itemView.findViewById(R.id.dialogCancelButton);
         }
     }
 

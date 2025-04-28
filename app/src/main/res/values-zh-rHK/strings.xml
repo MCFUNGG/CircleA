@@ -371,12 +371,12 @@
     <string name="implementation_todo">待實現的功能</string>
     <string name="no_education_background">暫無教育背景信息</string>
     <string name="tutor_application_id">導師申請編號: %s</string>
-    <string name="subjects_format">科目: %s</string>
+    <string name="subjects_format">%s</string>
     <string name="class_level_format">級別: %s</string>
     <string name="fee_hk_format">費用: 港幣$%s</string>
-    <string name="districts_format">地區: %s</string>
+    <string name="districts_format">%s</string>
     <string name="username_format">用戶名: %s</string>
-    <string name="fee_per_hour_format">費用: $%s /小時</string>
+    <string name="fee_per_hour_format">$%s /小時</string>
     <string name="subjects_na">科目: 不適用</string>
     <string name="districts_na">地區: 不適用</string>
     <string name="per_hour">/小時</string>
@@ -569,4 +569,16 @@
 
     <!-- Conflict Status -->
     <string name="waiting_admin_process">等待管理員處理衝突狀態</string>
+
+    <!-- Days of week -->
+    <string name="monday">星期一</string>
+    <string name="tuesday">星期二</string>
+    <string name="wednesday">星期三</string>
+    <string name="thursday">星期四</string>
+    <string name="friday">星期五</string>
+    <string name="saturday">星期六</string>
+
+    <!-- About Me Content -->
+    <string name="show_more">显示更多</string>
+    <string name="show_less">收起</string>
 </resources>

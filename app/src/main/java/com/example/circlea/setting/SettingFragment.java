@@ -215,12 +215,14 @@ public class SettingFragment extends Fragment {
 
                                     // Handle profile image
                                     if (!profileUrl.isEmpty()) {
-                                        String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl;
+                                       String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl.trim();;
+                                        //String fullProfileUrl = "http://127.0.0.1" + profileUrl.trim();;
                                         Glide.with(requireContext())
                                                 .load(fullProfileUrl)
                                                 .error(R.drawable.ic_launcher_foreground)
                                                 .into(userIcon);
                                         Toast.makeText(getActivity(), fullProfileUrl, Toast.LENGTH_SHORT).show();
+                                        Log.d("SettingFragment", "fullProfileUrl: "+fullProfileUrl);
                                     } else {
                                         userIcon.setImageResource(R.drawable.ic_launcher_foreground);
                                     }

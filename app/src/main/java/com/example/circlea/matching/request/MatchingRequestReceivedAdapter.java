@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 import java.util.List;
 
@@ -64,7 +65,12 @@ public class MatchingRequestReceivedAdapter extends RecyclerView.Adapter<Matchin
         // Handle profile icon
         String profileUrl = request.getProfileIcon();
         if (profileUrl != null && !profileUrl.isEmpty()) {
-            String fullProfileUrl = "http://10.0.2.2" + profileUrl;
+            // Store the path portion for passing to the detail page
+            String profilePath = profileUrl;
+            
+            // Use the full URL for loading the image in the current view
+            String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl.trim();
+            Log.d("MatchingRequestAdapter", "Loading profile: " + fullProfileUrl);
             Glide.with(context)
                     .load(fullProfileUrl)
                     .placeholder(R.drawable.circle_background)
@@ -88,9 +94,12 @@ public class MatchingRequestReceivedAdapter extends RecyclerView.Adapter<Matchin
                 intent.putExtra("subjects", request.getSubjects());
                 intent.putExtra("districts", request.getDistricts());
                 intent.putExtra("match_mark", request.getMatchMark());
-                intent.putExtra("profile_icon", request.getProfileIcon());
+                
+                // 传递两个版本的URL，确保其中一个能正常工作
+                intent.putExtra("profile_icon", profileUrl);
+                intent.putExtra("target_profileUrl", profileUrl);
+                
                 intent.putExtra("match_creator", request.getMatchCreator());
-
                 // Add role-specific data
                 if (request.getMatchCreator().equals("PS")) {
                     intent.putExtra("ps_app_id", request.getPsAppId());

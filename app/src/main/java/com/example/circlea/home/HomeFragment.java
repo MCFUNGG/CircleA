@@ -61,6 +61,7 @@ public class HomeFragment extends Fragment {
     private LinearLayout highRatedSection, tutorApplicationSection, studentApplicationSection,
             searchResultsContainer, mainContentContainer;
     private Button btnHighRated, btnTutorApp, btnStudentApp, closeSearchResultsButton;
+    private Button tutorFilterButton, studentFilterButton;
     private View tutorFilterLayout, studentFilterLayout;
     private FilterHelper tutorFilterHelper, studentFilterHelper;
     private ArrayList<ApplicationItem> originalTutorApplications, originalStudentApplications, 
@@ -111,6 +112,27 @@ public class HomeFragment extends Fragment {
         // 初始化過濾器佈局
         tutorFilterLayout = view.findViewById(R.id.tutor_filter);
         studentFilterLayout = view.findViewById(R.id.student_filter);
+        
+        // 初始化過濾器按钮
+        tutorFilterButton = view.findViewById(R.id.tutor_filter_button);
+        studentFilterButton = view.findViewById(R.id.student_filter_button);
+        
+        // 设置过滤按钮点击事件
+        tutorFilterButton.setOnClickListener(v -> {
+            if (tutorFilterLayout.getVisibility() == View.VISIBLE) {
+                tutorFilterLayout.setVisibility(View.GONE);
+            } else {
+                tutorFilterLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        
+        studentFilterButton.setOnClickListener(v -> {
+            if (studentFilterLayout.getVisibility() == View.VISIBLE) {
+                studentFilterLayout.setVisibility(View.GONE);
+            } else {
+                studentFilterLayout.setVisibility(View.VISIBLE);
+            }
+        });
         
         // 初始化過濾器助手
         tutorFilterHelper = new FilterHelper(tutorFilterLayout, getContext());
@@ -212,13 +234,13 @@ public class HomeFragment extends Fragment {
                 studentFilterLayout.setVisibility(View.GONE);
             } else if (v.getId() == R.id.btnTutorApp) {
                 showSection(tutorApplicationSection);
-                // 显示导师应用过滤器
-                tutorFilterLayout.setVisibility(View.VISIBLE);
+                // 导师应用默认不显示过滤器，只显示过滤按钮
+                tutorFilterLayout.setVisibility(View.GONE);
                 studentFilterLayout.setVisibility(View.GONE);
             } else if (v.getId() == R.id.btnStudentApp) {
                 showSection(studentApplicationSection);
-                // 显示学生应用过滤器
-                studentFilterLayout.setVisibility(View.VISIBLE);
+                // 学生应用默认不显示过滤器，只显示过滤按钮
+                studentFilterLayout.setVisibility(View.GONE);
                 tutorFilterLayout.setVisibility(View.GONE);
             }
         };
@@ -1193,6 +1215,7 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("fee", item.getFee());
                 intent.putStringArrayListExtra("districts", item.getDistricts());
                 intent.putExtra("psAppId", item.getAppId());
+                intent.putExtra("ps_username", item.getUsername());
                 context.startActivity(intent);
             });
         }
@@ -1245,6 +1268,8 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("fee", item.getFee());
                 intent.putStringArrayListExtra("districts", item.getDistricts());
                 intent.putExtra("tutotAppId", item.getAppId());
+                intent.putExtra("tutorName", item.getUsername());
+                intent.putExtra("profileIcon", item.getProfileIcon());
                 String education = item.getEducation();
                 if (education == null) education = "";
                 intent.putExtra("education", education);

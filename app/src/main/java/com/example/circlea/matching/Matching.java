@@ -246,6 +246,10 @@ public class Matching extends Fragment {
                     Toast.makeText(requireContext(), getString(R.string.selected_sent_request, selectedRequestId), Toast.LENGTH_SHORT).show();
                 };
 
+        // Add cancel request listener
+        MatchingRequestSentAdapter.OnRequestCancelledListener cancelListener = 
+                () -> loadRequestData(false); // Reload sent requests data
+
         caseAdapter.setOnItemClickListener((matchingCase, position) -> {
             String caseId = matchingCase.getMatchId();
             String status = matchingCase.getStatus();
@@ -262,6 +266,10 @@ public class Matching extends Fragment {
         sentAdapter.setOnItemClickListener(sentClickListener);
         receivedPsAdapter.setOnItemClickListener(receivedClickListener);
         sentPsAdapter.setOnItemClickListener(sentClickListener);
+        
+        // Set cancel listeners
+        sentAdapter.setOnRequestCancelledListener(cancelListener);
+        sentPsAdapter.setOnRequestCancelledListener(cancelListener);
     }
 
     private void updateAdapters(boolean isReceived) {
@@ -538,6 +546,7 @@ public class Matching extends Fragment {
     private MatchingRequest processRequest(JSONObject item, boolean isReceived) throws JSONException {
         JSONObject appDetails = item.getJSONObject("application_details");
         String creator = item.optString("match_creator", "");
+        String senderRole = item.optString("sender_role", "");
 
         String matchId = item.optString("match_id", getString(R.string.n_a));
         String psAppId = item.optString("ps_app_id", getString(R.string.n_a));
@@ -546,17 +555,26 @@ public class Matching extends Fragment {
         String tutorUsername = item.optString("tutor_username", getString(R.string.n_a));
         String matchMark = item.optString("match_mark", getString(R.string.n_a));
         String profileIcon = item.optString("profile_icon", getString(R.string.n_a));
+        
+        // 获取接收者信息（如果存在）
+        String recipientUsername = item.optString("recipient_username", "");
+        String recipientAppId = item.optString("recipient_app_id", "");
 
         String classLevel = appDetails.optString("class_level_name", getString(R.string.n_a));
         String fee = appDetails.optString("feePerHr", getString(R.string.n_a));
         String subjects = processArray(appDetails.getJSONArray("subject_names"));
         String districts = processArray(appDetails.getJSONArray("district_names"));
 
-        return new MatchingRequest(
+        MatchingRequest request = new MatchingRequest(
                 matchId, psAppId, tutorAppId, psUsername, tutorUsername,
                 fee, classLevel, subjects, districts, matchMark,
                 profileIcon, creator
         );
+        request.setSenderRole(senderRole);
+        request.setRecipientUsername(recipientUsername);
+        request.setRecipientAppId(recipientAppId);
+        
+        return request;
     }
 
     private String processArray(JSONArray array) throws JSONException {

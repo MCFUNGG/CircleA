@@ -71,7 +71,8 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
             // Load the profile icon using Glide
             String profileUrl = application.getProfileIcon();
             if (profileUrl != null && !profileUrl.isEmpty()) {
-                String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl;
+                String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl.trim();
+                Log.d("FindingStudentsAdapter", "Loading profile: " + fullProfileUrl);
                 Glide.with(context)
                         .load(fullProfileUrl)
                         .placeholder(R.drawable.circle_background)
@@ -110,9 +111,10 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 String userMemberId = sharedPreferences.getString("member_id", null);
                 String tutorsMemberId = application.getMemberId();
                 String AppId = application.getAppId();
+                String creator = "PS";
 
                 if (userMemberId != null && tutorsMemberId != null && AppId != null) {
-                    sendMemberIdsToServer(userMemberId, tutorsMemberId, AppId);
+                    sendMemberIdsToServer(userMemberId, tutorsMemberId, AppId, creator);
                 } else {
                     Log.d("RetrieveMemberID", "No member_id found in SharedPreferences.");
                     Toast.makeText(context, "Error: Missing information", Toast.LENGTH_SHORT).show();
@@ -126,6 +128,12 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 intent.putExtra("fee", application.getFee());
                 intent.putStringArrayListExtra("districts", application.getDistricts());
                 intent.putExtra("tutotAppId", application.getAppId());
+                intent.putExtra("tutorName", application.getUsername());
+                intent.putExtra("profileIcon", application.getProfileIcon());
+
+                // 添加日志记录传递的用户名和头像信息
+                Log.d("FindingStudentsAdapter", "Passing tutor name: " + application.getUsername());
+                Log.d("FindingStudentsAdapter", "Passing profile icon: " + application.getProfileIcon());
 
                 String education = application.getEducation();
                 if (education == null) education = "";
@@ -144,7 +152,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
         }
     }
 
-    private void sendMemberIdsToServer(String userMemberId, String tutorsMemberId, String AppId) {
+    private void sendMemberIdsToServer(String userMemberId, String tutorsMemberId, String AppId, String creator) {
         OkHttpClient client = new OkHttpClient();
         String url = "http://" + IPConfig.getIP() + "/Matching/get_MemberID.php";
 
@@ -152,6 +160,7 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
                 .add("PSMemberID", userMemberId)
                 .add("TutorsMemberID", tutorsMemberId)
                 .add("AppId", AppId)
+                .add("creator", creator)
                 .build();
 
         Request request = new Request.Builder()

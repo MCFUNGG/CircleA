@@ -371,7 +371,7 @@ public class ApplicationHistory extends AppCompatActivity {
         ((TextView) applicationView.findViewById(R.id.district_text)).setText(districtsStr);
 
         // Handle status
-        TextView statusTextView = applicationView.findViewById(R.id.status_tv);
+        TextView statusTextView = applicationView.findViewById(R.id.status_text);
         if (isCompleted) {
             statusTextView.setText(getString(R.string.completed));
             statusTextView.setBackgroundResource(R.drawable.status_completed_pill);

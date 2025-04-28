@@ -17,9 +17,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
@@ -37,11 +39,19 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class TutorAppDetail extends AppCompatActivity {
 
     private TextView appIdTextView, memberIdTextView, subjectTextView, classLevelTextView,
-            feeTextView, districtTextView, matchingScoreTextView,educationText;
+            feeTextView, districtTextView, matchingScoreTextView, educationText, tutorNameTextView, aboutMeText;
+    private TextView showMoreLessText;
+    private View aboutMeContainer;
+    private boolean isAboutMeExpanded = false;
     private ImageButton exitBtn;
     private Button applyButton;
     private Dialog applyDialog;
@@ -51,8 +61,10 @@ public class TutorAppDetail extends AppCompatActivity {
     private String selectedAppId = "";
     private String tutorAppId = "";
     String tutorId = "";
+    private ImageView tutorProfileImageView;
 
-
+    // 为调试添加标签
+    private static final String DEBUG_TAG = "TutorAppDetail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +77,24 @@ public class TutorAppDetail extends AppCompatActivity {
         tutorAppId = getIntent().getStringExtra("tutotAppId");
         tutorId = getIntent().getStringExtra("tutor_id");
 
-        // Initialize views
+        // 初始化视图
         initializeViews();
         initializeApplyDialog();
         setClickListeners();
 
-        // Get and display intent data
+        // 获取并显示intent数据
         displayIntentData();
 
-        // Fetch latest data from get_json.php
+        // 获取最新数据
         fetchJsonData();
+        
+        // 新增：获取CV数据来显示教育背景
+        if (tutorId != null && !tutorId.isEmpty()) {
+            Log.d(DEBUG_TAG, "Fetching CV data for tutor ID: " + tutorId);
+            fetchTutorCVData(tutorId);
+        } else {
+            Log.e(DEBUG_TAG, "Tutor ID is null or empty, cannot fetch CV data");
+        }
     }
 
     private void initializeViews() {
@@ -88,6 +108,17 @@ public class TutorAppDetail extends AppCompatActivity {
         exitBtn = findViewById(R.id.exitButton);
         applyButton = findViewById(R.id.applyButton);
         educationText = findViewById(R.id.educationText);
+        tutorNameTextView = findViewById(R.id.tutorNameTextView);
+        tutorProfileImageView = findViewById(R.id.tutorProfileImageView);
+        aboutMeText = findViewById(R.id.aboutMeText);
+        showMoreLessText = findViewById(R.id.showMoreLessText);
+        aboutMeContainer = findViewById(R.id.aboutMeContainer);
+        
+        // 设置整个aboutMeContainer区域可点击，而不是只有文本
+        if (aboutMeContainer != null) {
+            aboutMeContainer.setOnClickListener(v -> toggleAboutMeContent());
+        }
+        
         if (matchingScoreTextView == null) {
             Log.e("TutorAppDetail", "Failed to initialize matchingScoreTextView");
         }
@@ -153,11 +184,17 @@ public class TutorAppDetail extends AppCompatActivity {
         String classLevel = getIntent().getStringExtra("classLevel");
         String fee = getIntent().getStringExtra("fee");
         String education = getIntent().getStringExtra("education");
+        String tutorName = getIntent().getStringExtra("tutorName");
+        String profileIcon = getIntent().getStringExtra("profileIcon");
+        
         // Add debug logs to check all intent data
         Log.d("DEBUG_INTENT", "All extras in intent: " + getIntent().getExtras());
         Log.d("DEBUG_INTENT", "Tutor ID: " + getIntent().getStringExtra("tutor_id"));
+        Log.d("DEBUG_INTENT", "Tutor Name: " + tutorName);
+        Log.d("DEBUG_INTENT", "Profile Icon: " + profileIcon);
         Log.d("TEST_EDUCATION", "Raw education data: [" + education + "]");
         Log.d("Test123","education data after intent in TutorAppDetail.java : "+education);
+        
         ArrayList<String> subjects = getIntent().getStringArrayListExtra("subjects");
         ArrayList<String> districts = getIntent().getStringArrayListExtra("districts");
 
@@ -165,11 +202,31 @@ public class TutorAppDetail extends AppCompatActivity {
         if (tutotAppId != null) {
             appIdTextView.setText("Application ID: " + tutotAppId);
         }
-        if (memberId != null) {
-            memberIdTextView.setText("Member ID: " + memberId);
+        
+        // Display tutor name if available
+        if (tutorName != null && !tutorName.isEmpty()) {
+            tutorNameTextView.setText(tutorName);
+            Log.d("DEBUG_TUTOR", "Setting tutor name: " + tutorName);
+        } else {
+            tutorNameTextView.setText("未知导师");
+            Log.d("DEBUG_TUTOR", "No tutor name available");
         }
+        
+        // Load profile image if available
+        if (profileIcon != null && !profileIcon.isEmpty()) {
+            String fullProfileUrl = "http://" + IPConfig.getIP() + profileIcon;
+            Log.d("DEBUG_PROFILE", "Loading profile image from: " + fullProfileUrl);
+            Glide.with(this)
+                    .load(fullProfileUrl)
+                    .placeholder(R.drawable.circle_background)
+                    .into(tutorProfileImageView);
+        } else {
+            tutorProfileImageView.setImageResource(R.drawable.circle_background);
+            Log.d("DEBUG_PROFILE", "No profile image available, using placeholder");
+        }
+        
         if (classLevel != null) {
-            classLevelTextView.setText("Class Level: " + classLevel);
+            classLevelTextView.setText(classLevel);
         }
         if (fee != null) {
             feeTextView.setText(String.format(getString(R.string.fee_per_hour_format), fee));
@@ -270,15 +327,15 @@ public class TutorAppDetail extends AppCompatActivity {
                                     // 尝试使用我们在PSAppDetail.java中使用的ID
                                     statusTextView = applicationView.findViewById(R.id.status_text);
                                     if (statusTextView != null) {
-                                        if (status.equals("P")) {
-                                            statusTextView.setText("Pending");
-                                            statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
-                                        } else if (status.equals("A")) {
-                                            statusTextView.setText("Approved");
-                                            statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
+                                if (status.equals("P")) {
+                                    statusTextView.setText("Pending");
+                                    statusTextView.setBackgroundResource(R.drawable.status_pending_pill);
+                                } else if (status.equals("A")) {
+                                    statusTextView.setText("Approved");
+                                    statusTextView.setBackgroundResource(R.drawable.status_approved_pill);
                                         } else if (status.equals("R")) {
-                                            statusTextView.setText("Rejected");
-                                            statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
+                                    statusTextView.setText("Rejected");
+                                    statusTextView.setBackgroundResource(R.drawable.status_rejected_pill);
                                         }
                                     }
                                     // 如果两个ID都找不到，就忽略状态显示
@@ -693,6 +750,254 @@ public class TutorAppDetail extends AppCompatActivity {
             return scorePart; // Remove the '%' and trim whitespace
         }
         return null; // Return null if the format is unexpected
+    }
+
+    /**
+     * 从CV数据获取教育背景信息
+     */
+    private void fetchTutorCVData(String tutorId) {
+        OkHttpClient client = new OkHttpClient();
+        
+        // 使用与TutorProfileActivity相同的API
+        String url = "http://" + IPConfig.getIP() + "/FYP/php/get_cv_data.php";
+        
+        Log.d(DEBUG_TAG, "Fetching CV data from URL: " + url);
+        
+        RequestBody requestBody = new FormBody.Builder()
+                .add("member_id", tutorId)
+                .build();
+                
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+                
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(DEBUG_TAG, "Failed to fetch CV data: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    Log.e(DEBUG_TAG, "Server error when fetching CV: " + response.code());
+                    return;
+                }
+                
+                String jsonResponse = response.body().string();
+                Log.d(DEBUG_TAG, "CV data response: " + jsonResponse);
+                
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonResponse);
+                    
+                    if (!jsonObject.optBoolean("success", false)) {
+                        String message = jsonObject.optString("message", "未知错误");
+                        Log.e(DEBUG_TAG, "API error when fetching CV: " + message);
+                        return;
+                    }
+                    
+                    // 检查是否有CV数据
+                    JSONArray dataArray = jsonObject.optJSONArray("cv_data");
+                    if (dataArray == null || dataArray.length() == 0) {
+                        Log.d(DEBUG_TAG, "No CV data found for tutor ID: " + tutorId);
+                        return;
+                    }
+                    
+                    // 获取CV数据
+                    JSONObject cvData = dataArray.getJSONObject(0);
+                    
+                    String education = cvData.optString("education", "");
+                    String skills = cvData.optString("skills", "");
+                    String language = cvData.optString("language", "");
+                    String other = cvData.optString("other", "");
+                    
+                    Log.d(DEBUG_TAG, "Education from CV: " + education);
+                    Log.d(DEBUG_TAG, "Skills from CV: " + skills);
+                    Log.d(DEBUG_TAG, "Language from CV: " + language);
+                    Log.d(DEBUG_TAG, "Other from CV: " + other);
+                    
+                    // 处理并显示教育信息
+                    final String filteredEducation = filterHKUniversities(education);
+                    
+                    // 组装About Me内容
+                    final StringBuilder aboutMe = new StringBuilder();
+                    
+                    if (skills != null && !skills.isEmpty()) {
+                        aboutMe.append("【專業技能】\n").append(skills).append("\n\n");
+                    }
+                    
+                    if (language != null && !language.isEmpty()) {
+                        aboutMe.append("【語言能力】\n").append(language).append("\n\n");
+                    }
+                    
+                    if (other != null && !other.isEmpty()) {
+                        aboutMe.append("【其他信息】\n").append(other);
+                    }
+                    
+                    runOnUiThread(() -> {
+                        // 更新教育背景
+                        if (filteredEducation != null && !filteredEducation.isEmpty()) {
+                            educationText.setText(filteredEducation);
+                            Log.d(DEBUG_TAG, "Setting education from CV: " + filteredEducation);
+                        } else {
+                            educationText.setText(getString(R.string.no_education_background));
+                            Log.d(DEBUG_TAG, "No education in CV, using default text");
+                        }
+                        
+                        // 更新About Me内容
+                        updateAboutMeUI(aboutMe.toString());
+                    });
+                    
+                } catch (JSONException e) {
+                    Log.e(DEBUG_TAG, "JSON parsing error when parsing CV: " + e.getMessage());
+                    // 处理解析错误的情况
+                    runOnUiThread(() -> {
+                        updateAboutMeUI("");
+                    });
+                }
+            }
+        });
+    }
+
+    /**
+     * 过滤香港大学信息，使用更精确的匹配逻辑
+     */
+    private String filterHKUniversities(String education) {
+        if (education == null || education.isEmpty() || education.equals("null")) {
+            return null;
+        }
+        
+        // 大学名称映射（完整名称和缩写 -> 标准中文名）
+        Map<String, String> universityMap = new HashMap<>();
+        universityMap.put("香港大學", "香港大學");
+        universityMap.put("University of Hong Kong", "香港大學");
+        universityMap.put("HKU", "香港大學");
+        universityMap.put("香港中文大學", "香港中文大學");
+        universityMap.put("Chinese University of Hong Kong", "香港中文大學");
+        universityMap.put("CUHK", "香港中文大學");
+        universityMap.put("香港科技大學", "香港科技大學");
+        universityMap.put("Hong Kong University of Science and Technology", "香港科技大學");
+        universityMap.put("HKUST", "香港科技大學");
+        universityMap.put("香港理工大學", "香港理工大學");
+        universityMap.put("Hong Kong Polytechnic University", "香港理工大學");
+        universityMap.put("PolyU", "香港理工大學");
+        universityMap.put("香港城市大學", "香港城市大學");
+        universityMap.put("City University of Hong Kong", "香港城市大學");
+        universityMap.put("CityU", "香港城市大學");
+        universityMap.put("香港浸會大學", "香港浸會大學");
+        universityMap.put("Hong Kong Baptist University", "香港浸會大學");
+        universityMap.put("HKBU", "香港浸會大學");
+        universityMap.put("嶺南大學", "嶺南大學");
+        universityMap.put("Lingnan University", "嶺南大學");
+        universityMap.put("LU", "嶺南大學");
+        universityMap.put("香港教育大學", "香港教育大學");
+        universityMap.put("Education University of Hong Kong", "香港教育大學");
+        universityMap.put("EdUHK", "香港教育大學");
+        universityMap.put("香港樹仁大學", "香港樹仁大學");
+        universityMap.put("Hong Kong Shue Yan University", "香港樹仁大學");
+        universityMap.put("HKSYU", "香港樹仁大學");
+        
+        // 精确匹配检查（全词匹配）
+        String[] words = education.split("\\s+|,|\\.|;|\\(|\\)|\\[|\\]|\\{|\\}");
+        for (String word : words) {
+            String trimmedWord = word.trim();
+            if (!trimmedWord.isEmpty() && universityMap.containsKey(trimmedWord)) {
+                Log.d(DEBUG_TAG, "Found exact match for: " + trimmedWord);
+                return universityMap.get(trimmedWord);
+            }
+        }
+        
+        // 按缩写长度降序排序（确保HKUST在HKU之前检查）
+        List<String> acronyms = new ArrayList<>();
+        List<String> fullNames = new ArrayList<>();
+        
+        for (String uniName : universityMap.keySet()) {
+            if (uniName.matches("[A-Z]+")) {
+                acronyms.add(uniName);
+            } else {
+                fullNames.add(uniName);
+            }
+        }
+        
+        // 按长度降序排序缩写，确保较长的缩写(如HKUST)在较短的缩写(如HKU)之前检查
+        Collections.sort(acronyms, (a, b) -> b.length() - a.length());
+        
+        // 首先检查缩写的词边界匹配
+        for (String acronym : acronyms) {
+            String pattern = "\\b" + acronym + "\\b";
+            if (Pattern.compile(pattern).matcher(education).find()) {
+                Log.d(DEBUG_TAG, "Found acronym match for: " + acronym);
+                return universityMap.get(acronym);
+            }
+        }
+        
+        // 然后检查全名匹配
+        Collections.sort(fullNames, (a, b) -> b.length() - a.length());
+        for (String fullName : fullNames) {
+            if (education.contains(fullName)) {
+                Log.d(DEBUG_TAG, "Found full name match for: " + fullName);
+                return universityMap.get(fullName);
+            }
+        }
+        
+        // 如果没有找到匹配，返回原始信息
+        return education;
+    }
+
+    private void updateAboutMeUI(String aboutMeContent) {
+        if (aboutMeText != null) {
+            if (aboutMeContent != null && !aboutMeContent.isEmpty()) {
+                aboutMeText.setText(aboutMeContent);
+                
+                // 首先折叠内容
+                aboutMeText.post(() -> {
+                    // 判断内容是否需要展开/折叠功能
+                    if (aboutMeText.getLineCount() > 3) {
+                        // 内容超过3行，启用展开/折叠功能
+                        aboutMeText.setMaxLines(3); // 初始默认只显示3行
+                        isAboutMeExpanded = false;
+                        
+                        // 隐藏单独的"显示更多"按钮，因为整个区域现在都是可点击的
+                        if (showMoreLessText != null) {
+                            showMoreLessText.setVisibility(View.GONE);
+                        }
+                    } else {
+                        // 内容不超过3行，无需展开/折叠功能
+                        if (showMoreLessText != null) {
+                            showMoreLessText.setVisibility(View.GONE);
+                        }
+                    }
+                });
+                
+                Log.d(DEBUG_TAG, "Setting about me content");
+            } else {
+                aboutMeText.setText("導師未提供詳細資訊");
+                
+                // 隐藏"显示更多/更少"按钮
+                if (showMoreLessText != null) {
+                    showMoreLessText.setVisibility(View.GONE);
+                }
+                
+                Log.d(DEBUG_TAG, "No about me content available");
+            }
+        } else {
+            Log.e(DEBUG_TAG, "aboutMeText is null, cannot set text");
+        }
+    }
+
+    private void toggleAboutMeContent() {
+        if (aboutMeText == null) return;
+        
+        isAboutMeExpanded = !isAboutMeExpanded;
+        
+        if (isAboutMeExpanded) {
+            // 展开内容 - 取消最大行数限制
+            aboutMeText.setMaxLines(Integer.MAX_VALUE);
+        } else {
+            // 折叠内容 - 设置最大行数
+            aboutMeText.setMaxLines(3);
+        }
     }
 
 }

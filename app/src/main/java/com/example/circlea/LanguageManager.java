@@ -15,7 +15,10 @@ import com.example.circlea.application.ApplicationFragment;
 import com.example.circlea.home.HomeFragment;
 import com.example.circlea.matching.Matching;
 import com.example.circlea.setting.SettingFragment;
+import com.example.circlea.utils.TranslationHelper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class LanguageManager {
@@ -63,6 +66,7 @@ public class LanguageManager {
             setLanguage("zh", activity);
         }
     }
+    
     public void setLanguage(String languageCode, Activity activity) {
         try {
             // Save the selected language
@@ -127,5 +131,76 @@ public class LanguageManager {
 
     public void applyLanguage() {
         setLanguage(getCurrentLanguage(), null);
+    }
+    
+    /**
+     * 翻译单个数据库字段
+     * @param fieldText 数据库中的文本
+     * @param fieldType 字段类型 (district, subject, class_level, status)
+     * @return 翻译后的文本
+     */
+    public String translateDatabaseField(String fieldText, String fieldType) {
+        if (getCurrentLanguage().equals("en")) {
+            return fieldText; // 如果是英文，直接返回
+        }
+        
+        switch (fieldType) {
+            case "district":
+                return TranslationHelper.translateDistrict(context, fieldText);
+            case "subject":
+                return TranslationHelper.translateSubject(context, fieldText);
+            case "class_level":
+                return TranslationHelper.translateClassLevel(context, fieldText);
+            case "status":
+                return TranslationHelper.translateStatus(context, fieldText);
+            default:
+                return fieldText;
+        }
+    }
+    
+    /**
+     * 翻译逗号分隔的多个项目（如多个科目、地区等）
+     * @param commaSeparatedText 逗号分隔的文本
+     * @param fieldType 字段类型
+     * @return 翻译后的文本
+     */
+    public String translateCommaSeparatedList(String commaSeparatedText, String fieldType) {
+        if (commaSeparatedText == null || commaSeparatedText.isEmpty() || 
+            getCurrentLanguage().equals("en")) {
+            return commaSeparatedText;
+        }
+        
+        String[] items = commaSeparatedText.split(",\\s*");
+        List<String> translatedItems = new ArrayList<>();
+        
+        for (String item : items) {
+            String trimmedItem = item.trim();
+            if (!trimmedItem.isEmpty()) {
+                translatedItems.add(translateDatabaseField(trimmedItem, fieldType));
+            }
+        }
+        
+        return String.join(", ", translatedItems);
+    }
+    
+    /**
+     * 翻译地区列表
+     */
+    public String translateDistrictList(String commaSeparatedDistricts) {
+        return translateCommaSeparatedList(commaSeparatedDistricts, "district");
+    }
+    
+    /**
+     * 翻译科目列表
+     */
+    public String translateSubjectList(String commaSeparatedSubjects) {
+        return translateCommaSeparatedList(commaSeparatedSubjects, "subject");
+    }
+    
+    /**
+     * 判断当前是否为中文环境
+     */
+    public boolean isChineseLanguage() {
+        return "zh".equals(getCurrentLanguage());
     }
 }

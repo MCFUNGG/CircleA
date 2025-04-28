@@ -21,8 +21,10 @@ import android.widget.ViewFlipper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circlea.IPConfig;
+import com.example.circlea.LanguageManager;
 import com.example.circlea.R;
 import com.example.circlea.utils.ContentFilter;
+import com.example.circlea.utils.TranslationHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +59,7 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
     private boolean isParent = true;
     private TextView lessonsPerWeekText;
     private int selectedDaysCount = 0;
+    private LanguageManager languageManager;
 
     private int currentStep = 0;
     private final ArrayList<String> selectedDates = new ArrayList<>();
@@ -70,6 +73,9 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_application_step1); // Update your layout file
+
+        // Initialize LanguageManager
+        languageManager = new LanguageManager(this);
 
         // Initialize views
         viewFlipper = findViewById(R.id.view_flipper);
@@ -228,8 +234,11 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             String subject = subjects.get(i);
             String subjectId = subjectIds.get(i);
 
+            // 翻译科目名称
+            String translatedSubject = languageManager.translateDatabaseField(subject, "subject");
+
             CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(subject);
+            checkBox.setText(translatedSubject);
             checkBox.setTag(subjectId);
             checkBox.setChecked(selectedSubjectIds.contains(subjectId)); // Restore selection state
 
@@ -270,9 +279,12 @@ public class ParentApplicationFillDetail extends AppCompatActivity {
             String[] parts = district.split(":");
             String districtId = parts[0];
             String districtName = parts[1];
+            
+            // 翻译地区名称
+            String translatedDistrictName = languageManager.translateDatabaseField(districtName, "district");
 
             CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(districtName);
+            checkBox.setText(translatedDistrictName);
             checkBox.setTag(districtId);
             checkBox.setChecked(selectedDistricts.contains(districtId)); // Restore selection state
 

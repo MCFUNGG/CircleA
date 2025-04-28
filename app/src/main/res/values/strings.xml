@@ -71,7 +71,7 @@
     <string name="you_confirmed_lesson_unfinished_but_other_confirmed_completed">You confirmed the lesson was unfinished, but the other party confirmed it was completed. Please provide evidence to support your claim.</string>
     <string name="evidence_submission_to_be_implemented">Evidence submission to be implemented</string>
     <string name="lesson_completed">Lesson Completed</string>
-    <string name="lesson_completed_message">课程已成功完成。感谢您的参与！</string>
+    <string name="lesson_completed_message">The lesson has been marked as completed. Thank you for your service.</string>
     <string name="failed_to_update_lesson_status">Failed to update lesson status</string>
     <string name="student_marked_lesson_as_incomplete">Student marked lesson as incomplete</string>
     
@@ -248,8 +248,10 @@
     <string name="your_feedback">Your feedback (optional)</string>
     <string name="submitting_feedback">Submitting feedback...</string>
     <string name="lesson_incomplete">Lesson Incomplete</string>
-    <string name="feedback_error">Error submitting feedback</string>
-    <string name="please_rate_tutor">Please rate the tutor</string>
+    
+    <!-- About Me Content -->
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
     
     <!-- Network Error Messages -->
     
@@ -341,12 +343,12 @@
     <string name="please_fill_contact_info">Please fill in contact information</string>
     <string name="no_education_background">No education background information</string>
     <string name="tutor_application_id">Tutor Application ID: %s</string>
-    <string name="subjects_format">Subjects: %s</string>
+    <string name="subjects_format">%s</string>
     <string name="class_level_format">Class Level: %s</string>
     <string name="fee_hk_format">Fee: HK$%s</string>
-    <string name="districts_format">Districts: %s</string>
+    <string name="districts_format">%s</string>
     <string name="username_format">Username: %s</string>
-    <string name="fee_per_hour_format">Fee: $%s /hr</string>
+    <string name="fee_per_hour_format">$%s /hr</string>
     <string name="subjects_na">Subjects: N/A</string>
     <string name="districts_na">Districts: N/A</string>
     <string name="per_hour">/hr</string>
@@ -560,6 +562,9 @@
     <string name="both_incomplete_message">Both you and the tutor have confirmed that the lesson was not completed. The fee will be refunded to your account.</string>
     <string name="both_incomplete_tutor_message">Both you and the student have confirmed that the lesson was not completed. Please provide new available time slots.</string>
     <string name="reason">Reason</string>
+    
+    <!-- Feedback strings -->
+    <string name="feedback_error">Error submitting feedback</string>
     
     <!-- Student Payment Status -->
     <string name="payment_status">Payment Status</string>

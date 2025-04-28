@@ -14,6 +14,8 @@ public class MatchingRequest {
     private String profileIcon;
     private String matchCreator;
     private String senderRole;  // New field to help with sorting
+    private String recipientUsername; // 接收者用户名
+    private String recipientAppId; // 接收者应用ID
 
     // Constructor
     public MatchingRequest(String matchId, String psAppId, String tutorAppId,
@@ -49,6 +51,8 @@ public class MatchingRequest {
     public String getProfileIcon() { return profileIcon; }
     public String getMatchCreator() { return matchCreator; }
     public String getSenderRole() { return senderRole; }
+    public String getRecipientUsername() { return recipientUsername; }
+    public String getRecipientAppId() { return recipientAppId; }
 
     // Setters
     public void setPsUsername(String psUsername) { this.psUsername = psUsername; }
@@ -63,6 +67,8 @@ public class MatchingRequest {
     public void setProfileIcon(String profileIcon) { this.profileIcon = profileIcon; }
     public void setMatchCreator(String matchCreator) { this.matchCreator = matchCreator; }
     public void setSenderRole(String senderRole) { this.senderRole = senderRole; }
+    public void setRecipientUsername(String recipientUsername) { this.recipientUsername = recipientUsername; }
+    public void setRecipientAppId(String recipientAppId) { this.recipientAppId = recipientAppId; }
 
     // Helper method to get the display name based on request type
     public String getDisplayName(boolean isReceived, String currentUsername) {
@@ -71,6 +77,9 @@ public class MatchingRequest {
             return matchCreator.equals("PS") ? psUsername : tutorUsername;
         } else {
             // For sent requests, show the recipient's name
+            if (recipientUsername != null && !recipientUsername.isEmpty()) {
+                return recipientUsername;
+            }
             return currentUsername.equals(psUsername) ? tutorUsername : psUsername;
         }
     }

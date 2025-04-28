@@ -101,7 +101,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
                 String districts = extras.getString("districts", "N/A");
                 String profileIconUrl = extras.getString("profile_icon", "");
                 String lessonPerWeek = extras.getString("lesson_per_week", "N/A");
-
+                String target_profileUrl = extras.getString("target_profileUrl", "");
                 // Set PS details
                 psAppIdTextView.setText("Application ID: " + psAppId);
                 psSubjectTextView.setText("Subjects: " + subjects);
@@ -114,15 +114,32 @@ public class RequestReceivedDetail extends AppCompatActivity {
                 requestMessageTextView.setText(requestMessage);
 
                 // Load profile image if available
-                if (!profileIconUrl.isEmpty() && profileIcon != null) {
-                    String fullProfileUrl = "http://10.0.2.2" + profileIconUrl;
+                if (target_profileUrl != null && !target_profileUrl.isEmpty() && !target_profileUrl.equals("N/A")) {
+                    String fullProfileUrl = "http://" + IPConfig.getIP() + target_profileUrl;
+                    Log.d("RequestDetail", "fullProfileUrl:" + fullProfileUrl);
                     Glide.with(this)
                             .load(fullProfileUrl)
                             .error(R.drawable.circle_background)
                             .placeholder(R.drawable.circle_background)
                             .circleCrop()
                             .into(profileIcon);
+                } else {
+                    // Fallback to just using the profile_icon
+                    if (profileIconUrl != null && !profileIconUrl.isEmpty() && !profileIconUrl.equals("N/A")) {
+                        String fullProfileUrl = "http://" + IPConfig.getIP() + profileIconUrl;
+                        Log.d("RequestDetail", "Using fallback profileIconUrl:" + fullProfileUrl);
+                        Glide.with(this)
+                                .load(fullProfileUrl)
+                                .error(R.drawable.circle_background)
+                                .placeholder(R.drawable.circle_background)
+                                .circleCrop()
+                                .into(profileIcon);
+                    } else {
+                        // No valid URL, use default image
+                        profileIcon.setImageResource(R.drawable.circle_background);
+                    }
                 }
+
             } catch (Exception e) {
                 Log.e("RequestDetail", "Error loading data: " + e.getMessage());
                 Toast.makeText(this, "Error loading data", Toast.LENGTH_SHORT).show();
@@ -244,7 +261,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
                 }
             }
         });
-}
+    }
 
     private void acceptMatchingRequest(String matchId) {
         SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);

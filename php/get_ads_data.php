@@ -30,7 +30,7 @@ try {
                 'title' => $row['title'],
                 'description' => $row['description'],
                 'image_url' => $row['image_url'],  // This will be like ./FYP/ads/1743480844_等等網取畫面 2024-10-03 105745.png
-                'link_url' => isset($row['link_url']) && !empty($row['link_url']) ? $row['link_url'] : null
+                'link_url' => $row['link_url']
             ];
         }
 

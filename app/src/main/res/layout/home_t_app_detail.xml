@@ -37,7 +37,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Computer"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -66,7 +65,7 @@
                     android:layout_marginBottom="12dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/profileIcon"
+                        android:id="@+id/tutorProfileImageView"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src="@drawable/circle_background"/>
@@ -82,47 +81,14 @@
                 </FrameLayout>
 
                 <TextView
-                    android:id="@+id/nameText"
+                    android:id="@+id/tutorNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sin Ho Yat, Eric"
+                    android:text="导师姓名"
                     android:textColor="#FFFFFF"
                     android:textSize="22sp"
                     android:textStyle="bold"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Former secondary school teacher"
-                    android:textColor="#CCCCCC"
-                    android:textSize="14sp"
-                    android:layout_marginTop="4dp"/>
-
-                <!-- Navigation Dots -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="16dp"
-                    android:layout_gravity="end">
-
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/white_circle"
-                        android:layout_marginBottom="6dp"/>
-
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/white_circle"
-                        android:layout_marginBottom="6dp"/>
-
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/white_circle"/>
-                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
 
@@ -211,10 +177,14 @@
             android:layout_marginTop="16dp">
 
             <LinearLayout
+                android:id="@+id/aboutMeContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -231,15 +201,23 @@
                     android:layout_height="wrap_content"
                     android:text="I was graduated from HKU Computer Science major since 2022..."
                     android:textColor="#666666"
-                    android:textSize="14sp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Thank You."
-                    android:textColor="#666666"
                     android:textSize="14sp"
-                    android:layout_marginTop="16dp"/>
+                    android:padding="4dp"/>
+
+                <!-- 新增：显示更多/更少的TextView -->
+                <TextView
+                    android:id="@+id/showMoreLessText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/show_more"
+                    android:textColor="#1E88E5"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp"
+                    android:visibility="gone"/>
+
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -324,16 +302,7 @@
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp"/>
 
-                    <!-- Fee Section -->
-                    <TextView
-                        android:id="@+id/feeTextView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="HK$200/hr"
-                        android:textColor="@color/purple_500"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="12dp"/>
+
 
                     <!-- Districts Section -->
                     <TextView

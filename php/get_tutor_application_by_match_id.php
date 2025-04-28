@@ -98,9 +98,12 @@ if (mysqli_num_rows($result) > 0) {
         $profileQuery = "SELECT profile FROM member_detail WHERE member_id = '$memberId' ORDER BY version DESC LIMIT 1";
         $profileResult = mysqli_query($connect, $profileQuery);
         if ($profileRow = mysqli_fetch_assoc($profileResult)) {
-            $application['profile_icon'] = $profileRow['profile'];
+           
+            $profilePath = $profileRow['profile'];
+            
+            $application['profile_icon'] = $profilePath;
         } else {
-            $application['profile_icon'] = 'N/A';
+            $application['profile_icon'] = '';
         }
     }
 

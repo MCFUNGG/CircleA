@@ -102,7 +102,8 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.ViewHo
             // Load the profile icon using Glide (same as in FindingStudentsAdapter)
             String profileUrl = application.getProfileIcon();
             if (profileUrl != null && !profileUrl.isEmpty()) {
-                String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl;
+                String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl.trim();
+                Log.d("VerticalAdapter", "Loading profile: " + fullProfileUrl);
                 Glide.with(context)
                         .load(fullProfileUrl)
                         .placeholder(R.drawable.circle_background)
@@ -124,9 +125,10 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.ViewHo
                 String userMemberId = sharedPreferences.getString("member_id", null);
                 String tutorsMemberId = application.getMemberId();
                 String AppId = application.getAppId();
+                String creator = "PS";
 
                 if (userMemberId != null && tutorsMemberId != null && AppId != null) {
-                    sendMemberIdsToServer(userMemberId, tutorsMemberId, AppId);
+                    sendMemberIdsToServer(userMemberId, tutorsMemberId, AppId, creator);
                 } else {
                     Log.d("RetrieveMemberID", "No member_id found in SharedPreferences.");
                     Toast.makeText(context, "Error: Missing information", Toast.LENGTH_SHORT).show();
@@ -146,7 +148,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.ViewHo
         }
     }
 
-    private void sendMemberIdsToServer(String tutorId, String psId, String psAppId) {
+    private void sendMemberIdsToServer(String tutorId, String psId, String psAppId, String creator) {
         OkHttpClient client = new OkHttpClient();
         String url = "http://" + IPConfig.getIP() + "/Matching/get_MemberID.php";
 
@@ -154,6 +156,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.ViewHo
                 .add("TutorID", tutorId)
                 .add("PSID", psId)
                 .add("PSAppId", psAppId)
+                .add("creator", creator)
                 .build();
 
         Request request = new Request.Builder()

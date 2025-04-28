@@ -10,7 +10,7 @@ $memberId = trim($_POST["member_id"]);
 $addressDistrictId = trim($_POST["address_district_id"]); 
 $address = trim($_POST["address"]); 
 $dob = trim($_POST["dob"]); 
-$profile = trim($_POST["profile"]); 
+// $profile = trim($_POST["profile"]); // 不再从客户端获取profile
 $description = trim($_POST["description"]); 
 $version = 1; // Default version
 
@@ -20,11 +20,21 @@ if ($gender_input == 'Male') {
     $gender = 'M';
 } elseif ($gender_input == 'Female') {
     $gender = 'F';
+} else {
+    $gender = $gender_input; // 直接使用客户端传递的M或F值
 }
 
-// Connect to the database
+// 获取最新的profile数据
+$profile = "";
+$queryProfile = "SELECT profile FROM member_detail WHERE member_id = '$memberId' ORDER BY version DESC LIMIT 1";
+$resultProfile = mysqli_query($connect, $queryProfile);
 
-// Check if the member has an existing version
+if ($resultProfile && mysqli_num_rows($resultProfile) > 0) {
+    $profileRow = mysqli_fetch_assoc($resultProfile);
+    $profile = $profileRow['profile'];
+}
+
+// 检查是否有现有版本
 $queryVersion = "SELECT version FROM member_detail WHERE member_id = '$memberId' ORDER BY version DESC LIMIT 1";
 $resultVersion = mysqli_query($connect, $queryVersion);
 

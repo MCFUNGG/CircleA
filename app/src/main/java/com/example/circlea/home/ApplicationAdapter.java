@@ -22,6 +22,8 @@ import com.example.circlea.DatabaseHelper;
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -70,20 +72,31 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             String profileUrl = application.getProfileIcon();
             if (profileUrl != null && !profileUrl.isEmpty()) {
                 String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl;
+                Log.d("ApplicationAdapter", "Loading profile image: " + fullProfileUrl);
                 Glide.with(context)
                         .load(fullProfileUrl)
-                        .placeholder(R.drawable.circle_background)
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .circleCrop()
                         .into(holder.profileIcon);
             } else {
-                holder.profileIcon.setImageResource(R.drawable.circle_background);
+                Log.d("ApplicationAdapter", "No profile image URL, using default");
+                holder.profileIcon.setImageResource(R.drawable.default_avatar);
             }
 
-            holder.username.setText(application.getUsername());
+            // Set username with proper logging
+            String username = application.getUsername();
+            if (username != null && !username.isEmpty()) {
+                Log.d("ApplicationAdapter", "Setting username: " + username);
+                holder.username.setText(username);
+            } else {
+                Log.d("ApplicationAdapter", "No username available, using default");
+                holder.username.setText("Unknown");
+            }
+            
             holder.classLevelTextView.setText(application.getClassLevel());
 
-
             Log.d("ApplicationAdapter", "onBindViewHolder: " + application.getSubjects());
-
 
             // Concatenate subjects
             StringBuilder subjects = new StringBuilder();
@@ -109,14 +122,15 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
             holder.layout.setOnClickListener(v -> {
                 SharedPreferences sharedPreferences = context.getSharedPreferences("CircleA", Context.MODE_PRIVATE);
-                String tutorId = sharedPreferences.getString("member_id", null);
-                String psId = application.getMemberId();
-                String psAppId = application.getAppId();
+                String userMemberId = sharedPreferences.getString("member_id", null);
+                String tutorsMemberId = application.getMemberId();
+                String Appid = application.getAppId();
+                String creator = "T";
 
-                if (tutorId != null && psId != null && psAppId != null) {
-                    Log.d("RetrieveMemberID", "TutorID: " + tutorId);
-                    Log.d("RetrieveMemberID", "PSID: " + psId);
-                    sendMemberIdsToServer(tutorId, psId, psAppId);
+                if (userMemberId != null && tutorsMemberId != null && Appid != null) {
+                    Log.d("RetrieveMemberID", "TutorID: " + userMemberId);
+                    Log.d("RetrieveMemberID", "PSID: " + tutorsMemberId);
+                    sendMemberIdsToServer(userMemberId, tutorsMemberId, Appid, creator);
                 } else {
                     Log.d("RetrieveMemberID", "Missing required IDs");
                     Toast.makeText(context, "Error: Missing required information", Toast.LENGTH_SHORT).show();
@@ -131,6 +145,19 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
                 intent.putExtra("fee", application.getFee());
                 intent.putStringArrayListExtra("districts", application.getDistricts());
                 intent.putExtra("psAppId", application.getAppId());
+                intent.putExtra("ps_username", application.getUsername());
+
+                // 确保头像URL正确传递
+                String avatarUrl = application.getProfileIcon();
+                if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                    String fullAvatarUrl = "http://" + IPConfig.getIP() + avatarUrl;
+                    intent.putExtra("ps_avatar_url", fullAvatarUrl);
+                    Log.d("ApplicationAdapter", "Sending avatar URL: " + fullAvatarUrl);
+                } else {
+                    intent.putExtra("ps_avatar_url", "");
+                    Log.d("ApplicationAdapter", "No avatar URL available");
+                }
+
                 context.startActivity(intent);
             });
 
@@ -138,14 +165,15 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         }
     }
 
-    private void sendMemberIdsToServer(String tutorId, String psId, String psAppId) {
+    private void sendMemberIdsToServer(String userMemberId, String tutorsMemberId, String AppId, String creator) {
         OkHttpClient client = new OkHttpClient();
         String url = "http://" + IPConfig.getIP() + "/Matching/get_MemberID.php";
 
         RequestBody formBody = new FormBody.Builder()
-                .add("TutorID", tutorId)
-                .add("PSID", psId)
-                .add("PSAppId", psAppId)
+                .add("PSMemberID", userMemberId)
+                .add("TutorsMemberID", tutorsMemberId)
+                .add("AppId", AppId)
+                .add("creator", creator)
                 .build();
 
         Request request = new Request.Builder()
