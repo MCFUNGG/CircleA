@@ -280,9 +280,9 @@
     <string name="your_feedback">您的反饋（選填）</string>
     <string name="submitting_feedback">正在提交反饋...</string>
     <string name="lesson_completed">課程已完成</string>
+    <string name="lesson_completed_message">課程已標記為完成。感謝您的服務。</string>
     <string name="lesson_incomplete">課程未完成</string>
     <string name="feedback_error">提交反饋時出錯</string>
-    <string name="please_rate_tutor">請為導師評分</string>
 
     <!-- Time picker dialog strings -->
     <string name="time_separator">:</string>
@@ -397,6 +397,7 @@
     <string name="female">女</string>
     <string name="address_district_id">區域編號</string>
     <string name="date_of_birth">出生日期 (月/日/年)</string>
+    <string name="member_detail_title">會員詳細表格</string>
     
     <!-- Scan CV Strings -->
     <string name="select_cv_image">選擇CV圖片</string>
@@ -570,15 +571,55 @@
     <!-- Conflict Status -->
     <string name="waiting_admin_process">等待管理員處理衝突狀態</string>
 
-    <!-- Days of week -->
-    <string name="monday">星期一</string>
-    <string name="tuesday">星期二</string>
-    <string name="wednesday">星期三</string>
-    <string name="thursday">星期四</string>
-    <string name="friday">星期五</string>
-    <string name="saturday">星期六</string>
 
     <!-- About Me Content -->
-    <string name="show_more">显示更多</string>
+    <string name="show_more">顯示更多</string>
     <string name="show_less">收起</string>
+
+    <!-- Tutor Profile/App Detail -->
+    <string name="about_me">關於我</string>
+    <string name="graduated_from">畢業於</string>
+    <string name="price">價格</string>
+
+    
+    <!-- Student Profile/App Detail -->
+    <string name="subject_details">科目詳情</string>
+    <string name="location_preferences">地區偏好</string>
+    <string name="preferred_districts">首選地區：</string>
+    <string name="subject">科目：</string>
+    <string name="level">級別：</string>
+    <string name="send_request">發送請求</string>
+
+
+    <!-- 新增的字符串资源 -->
+    <string name="unknown_tutor">未知導師</string>
+    <string name="tutor_application_id_format">申請編號: %s</string>
+    <string name="no_tutor_details">導師未提供詳細資訊</string>
+    <string name="data_loading">資料載入中...</string>
+    <string name="education_not_provided">未提供教育背景</string>
+    <string name="confirm_apply_tutor">您確定要申請這位導師嗎？\n\n</string>
+    <string name="error_parsing_scores">解析匹配分數時出錯。</string>
+    <string name="failed_fetch_data">獲取數據失敗</string>
+    <string name="server_error_message">伺服器錯誤</string>
+    
+    <!-- 新增学生资料详情页面所需字符串 -->
+    <string name="unknown_student">未知學生</string>
+    <string name="app_id_prefix">申請編號: %s</string>
+    <string name="fee_hourly_format">$%s/小時</string>
+    <string name="subject_prefix">科目: %s</string>
+    <string name="fee_prefix">$%s</string>
+    <string name="district_prefix">地區: %s</string>
+    <string name="no_approved_applications">未找到已批准的申請</string>
+    <string name="confirm_send_request">您確定要向此學生發送請求嗎？\n\n</string>
+    <string name="n_a_score">暫無</string>
+    <string name="error_score">錯誤</string>
+    
+    <!-- 通用标签 -->
+    <string name="subjects_heading">科目</string>
+    <string name="class_level_heading">班級水平</string>
+    <string name="districts_heading">地區</string>
+    <string name="match_score">匹配分數</string>
+
+    <!-- Search Hint -->
+    <string name="search_hint">搜索導師、科目、地區...</string>
 </resources>

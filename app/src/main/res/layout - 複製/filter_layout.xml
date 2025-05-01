@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/filter_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 標題和重置按鈕 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="過濾選項"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1E3F71" />
+
+            <Button
+                android:id="@+id/reset_filter_button"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="重置"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#F44336"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:minHeight="0dp" />
+        </LinearLayout>
+
+        <!-- 費用範圍過濾 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="費用範圍"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <EditText
+                android:id="@+id/min_fee"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:hint="最低價格"
+                android:inputType="number"
+                android:background="@drawable/rounded_background"
+                android:paddingHorizontal="8dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" - "
+                android:textSize="14sp"
+                android:layout_marginHorizontal="8dp" />
+
+            <EditText
+                android:id="@+id/max_fee"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:hint="最高價格"
+                android:inputType="number"
+                android:background="@drawable/rounded_background"
+                android:paddingHorizontal="8dp"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- 年級過濾 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="年級"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <Spinner
+            android:id="@+id/class_level_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_background"
+            android:layout_marginTop="4dp"
+            android:paddingHorizontal="8dp"
+            android:spinnerMode="dropdown" />
+
+        <!-- 科目過濾 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="科目"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/subject_chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:chipSpacingHorizontal="4dp"
+                app:singleSelection="false" />
+        </HorizontalScrollView>
+
+        <!-- 地區過濾 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="地區"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/district_chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:chipSpacingHorizontal="4dp"
+                app:singleSelection="false" />
+        </HorizontalScrollView>
+
+        <!-- 應用過濾按鈕 -->
+        <Button
+            android:id="@+id/apply_filter_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="應用過濾"
+            android:textSize="14sp"
+            android:backgroundTint="#1E3F71"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView> 

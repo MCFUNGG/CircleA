@@ -44,6 +44,7 @@ public class PSAppDetail extends AppCompatActivity {
             feeTextView, districtTextView, matchingScoreTextView, usernameTextView;
     private ImageButton exitBtn;
     private ImageView profileIconImageView;
+    private ImageView genderIcon;
     private Button applyButton;
     private Dialog applyDialog;
     private String tutorId;
@@ -55,6 +56,8 @@ public class PSAppDetail extends AppCompatActivity {
     private String psUsername = "";
     private String psAvatarUrl = "";
     private Map<String, String> appStatusMap = new HashMap<>();
+    
+    private static final String DEBUG_TAG = "PSAppDetail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,9 @@ public class PSAppDetail extends AppCompatActivity {
         setClickListeners();
         displayIntentData();
         fetchJsonData();
+        
+        // 获取目标用户的性别信息
+        fetchTargetGenderInfo();
     }
 
     private void initializeViews() {
@@ -94,6 +100,7 @@ public class PSAppDetail extends AppCompatActivity {
         matchingScoreTextView = findViewById(R.id.matchingScoreTextView);
         usernameTextView = findViewById(R.id.usernameTextView);
         profileIconImageView = findViewById(R.id.profileIconImageView);
+        genderIcon = findViewById(R.id.genderIcon);
         exitBtn = findViewById(R.id.exitButton);
         applyButton = findViewById(R.id.applyButton);
     }
@@ -167,13 +174,13 @@ public class PSAppDetail extends AppCompatActivity {
             usernameTextView.setText(psUsername);
             Log.d("PSAppDetail", "Setting username: " + psUsername);
         } else {
-            usernameTextView.setText("Unknown Student");
+            usernameTextView.setText(getString(R.string.unknown_student));
             Log.d("PSAppDetail", "No username provided, using default");
         }
         
         // 设置应用ID为小文本
         if (psAppId != null) {
-            appIdTextView.setText("App ID: " + psAppId);
+            appIdTextView.setText(getString(R.string.app_id_prefix, psAppId));
         }
         
         if (classLevel != null) {
@@ -181,19 +188,19 @@ public class PSAppDetail extends AppCompatActivity {
         }
         
         if (fee != null) {
-            feeTextView.setText("$" + fee + "/hr");
+            feeTextView.setText(getString(R.string.fee_hourly_format, fee));
         }
 
         if (subjects != null && !subjects.isEmpty()) {
             subjectTextView.setText(String.join(", ", subjects));
         } else {
-            subjectTextView.setText("N/A");
+            subjectTextView.setText(getString(R.string.n_a));
         }
 
         if (districts != null && !districts.isEmpty()) {
             districtTextView.setText(String.join(", ", districts));
         } else {
-            districtTextView.setText("N/A");
+            districtTextView.setText(getString(R.string.n_a));
         }
     }
 
@@ -278,10 +285,10 @@ public class PSAppDetail extends AppCompatActivity {
                                 final String districts = districtsStr.toString();
 
                                 ((TextView) applicationView.findViewById(R.id.app_id)).setText(appId);
-                                ((TextView) applicationView.findViewById(R.id.subject_text)).setText("Subject: " + subjects);
+                                ((TextView) applicationView.findViewById(R.id.subject_text)).setText(getString(R.string.subject_prefix, subjects));
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
-                                ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
-                                ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
+                                ((TextView) applicationView.findViewById(R.id.fee_text)).setText(getString(R.string.fee_prefix, fee));
+                                ((TextView) applicationView.findViewById(R.id.district_text)).setText(getString(R.string.district_prefix, districts));
                                 
                                 TextView statusView = applicationView.findViewById(R.id.status_text);
                                 if (statusView != null) {
@@ -318,7 +325,7 @@ public class PSAppDetail extends AppCompatActivity {
                                 runOnUiThread(() -> {
                                     View noAppsView = LayoutInflater.from(PSAppDetail.this)
                                             .inflate(android.R.layout.simple_list_item_1, applicationsContainer, false);
-                                    ((TextView) noAppsView).setText("No approved applications found");
+                                    ((TextView) noAppsView).setText(getString(R.string.no_approved_applications));
                                     ((TextView) noAppsView).setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                                     applicationsContainer.addView(noAppsView);
                                 });
@@ -342,7 +349,7 @@ public class PSAppDetail extends AppCompatActivity {
     private void showApplyDialog() {
         if (applyDialog != null) {
             TextView messageText = applyDialog.findViewById(R.id.dialogMessageText);
-            messageText.setText("Are you sure you want to send request to this student?\n\n" +
+            messageText.setText(getString(R.string.confirm_send_request) +
                     classLevelTextView.getText() + "\n" +
                     subjectTextView.getText() + "\n" +
                     feeTextView.getText());
@@ -581,11 +588,98 @@ public class PSAppDetail extends AppCompatActivity {
                 // 如果没有单独的主要分数，则显示所有分数
                 matchingScoreTextView.setText(scores.toString());
             } else {
-                matchingScoreTextView.setText("N/A");
+                matchingScoreTextView.setText(getString(R.string.n_a_score));
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            matchingScoreTextView.setText("Error");
+            matchingScoreTextView.setText(getString(R.string.error_score));
         }
+    }
+
+    private void displayGenderIcon(String gender) {
+        runOnUiThread(() -> {
+            if (gender != null && !gender.isEmpty()) {
+                if (gender.equals("M")) {
+                    genderIcon.setImageResource(R.drawable.ic_male);
+                    genderIcon.setBackgroundResource(R.drawable.circle_background);
+                    genderIcon.setVisibility(View.VISIBLE);
+                } else if (gender.equals("F")) {
+                    genderIcon.setImageResource(R.drawable.ic_female);
+                    genderIcon.setBackgroundResource(R.drawable.circle_background);
+                    genderIcon.setVisibility(View.VISIBLE);
+                } else {
+                    genderIcon.setVisibility(View.GONE);
+                }
+            } else {
+                genderIcon.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void fetchTargetGenderInfo() {
+        if (isFinishing()) return;
+        
+        if (psId == null || psId.isEmpty()) {
+            Log.e(DEBUG_TAG, "无法获取目标会员ID");
+            return;
+        }
+        
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://" + IPConfig.getIP() + "/FYP/php/get_member_detail.php";
+        
+        RequestBody requestBody = new FormBody.Builder()
+            .add("member_id", psId)
+            .build();
+            
+        Request request = new Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build();
+            
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(DEBUG_TAG, "获取性别信息失败: " + e.getMessage());
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    Log.e(DEBUG_TAG, "获取性别信息服务器错误: " + response.code());
+                    return;
+                }
+                
+                String jsonResponse = response.body().string();
+                Log.d(DEBUG_TAG, "性别信息响应: " + jsonResponse);
+                
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonResponse);
+                    
+                    if (!jsonObject.optBoolean("success", false)) {
+                        // 如果API返回失败，就隐藏性别图标
+                        runOnUiThread(() -> genderIcon.setVisibility(View.GONE));
+                        return;
+                    }
+                    
+                    JSONArray dataArray = jsonObject.optJSONArray("data");
+                    if (dataArray == null || dataArray.length() == 0) {
+                        // 如果没有数据，就隐藏性别图标
+                        runOnUiThread(() -> genderIcon.setVisibility(View.GONE));
+                        return;
+                    }
+                    
+                    // 获取第一条会员详情记录
+                    JSONObject memberDetail = dataArray.getJSONObject(0);
+                    String gender = memberDetail.optString("Gender", "");
+                    
+                    // 显示性别图标
+                    displayGenderIcon(gender);
+                    
+                } catch (JSONException e) {
+                    Log.e(DEBUG_TAG, "解析性别信息JSON出错: " + e.getMessage());
+                    runOnUiThread(() -> genderIcon.setVisibility(View.GONE));
+                }
+            }
+        });
     }
 }

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#D67229">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/payment_notification"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="21sp"
+                android:layout_gravity="center"/>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ... rest of the layout using string resources ... -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/payment_details"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/confirmed_lesson_time"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/first_lesson_fee"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/platform_service_fee"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/total_amount"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <!-- Bank Transfer Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bank_transfer"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bank_name"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/account_number"
+        android:textIsSelectable="true"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/account_name"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"/>
+
+    <!-- Digital Payment Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/or"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/digital_payment"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/alipay_id"
+        android:textColor="#FFFFFF"
+        android:textSize="18dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wechat_id"
+        android:textColor="#FFFFFF"
+        android:textSize="18dp"/>
+
+    <!-- Receipt Upload Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_receipt_title"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_receipt_note"
+        android:textStyle="bold"
+        android:textColor="#3f255c"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/upload_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_receipt_button"
+        app:icon="@drawable/ic_upload"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/payment_confirmation_note"
+        android:textColor="#757575"
+        android:textSize="14sp"
+        android:textAlignment="center"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_payment_verification"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout> 

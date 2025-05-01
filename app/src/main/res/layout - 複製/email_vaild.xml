@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1e4072"
+    android:padding="16dp">
+
+    <!-- Top Bar -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/exitButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/exit" />
+
+        <Button
+            android:id="@+id/languageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:text="🌐"
+            android:textSize="24sp" />
+    </RelativeLayout>
+
+    <!-- Verification Card -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Verification Message -->
+            <TextView
+                android:id="@+id/tv_email_verification_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Please check your email to verify your account."
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Email Address -->
+            <TextView
+                android:id="@+id/tv_email_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email: user@example.com"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:gravity="center"
+                android:layout_marginBottom="32dp" />
+
+            <!-- Button to send verification email -->
+            <Button
+                android:id="@+id/btn_send_verification_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Send Verification Email"
+                android:backgroundTint="#8BBEF0"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="Send verification email button" />
+
+            <!-- Continue Button -->
+            <Button
+                android:id="@+id/btn_continue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Continue"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:contentDescription="Continue to next step" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

@@ -62,6 +62,7 @@ public class TutorAppDetail extends AppCompatActivity {
     private String tutorAppId = "";
     String tutorId = "";
     private ImageView tutorProfileImageView;
+    private ImageView genderIcon;
 
     // 为调试添加标签
     private static final String DEBUG_TAG = "TutorAppDetail";
@@ -95,6 +96,9 @@ public class TutorAppDetail extends AppCompatActivity {
         } else {
             Log.e(DEBUG_TAG, "Tutor ID is null or empty, cannot fetch CV data");
         }
+
+        // 获取目标用户的性别信息
+        fetchTargetGenderInfo();
     }
 
     private void initializeViews() {
@@ -113,6 +117,7 @@ public class TutorAppDetail extends AppCompatActivity {
         aboutMeText = findViewById(R.id.aboutMeText);
         showMoreLessText = findViewById(R.id.showMoreLessText);
         aboutMeContainer = findViewById(R.id.aboutMeContainer);
+        genderIcon = findViewById(R.id.genderIcon);
         
         // 设置整个aboutMeContainer区域可点击，而不是只有文本
         if (aboutMeContainer != null) {
@@ -200,7 +205,7 @@ public class TutorAppDetail extends AppCompatActivity {
 
         // Display the data with null checks
         if (tutotAppId != null) {
-            appIdTextView.setText("Application ID: " + tutotAppId);
+            appIdTextView.setText(getString(R.string.tutor_application_id_format, tutotAppId));
         }
         
         // Display tutor name if available
@@ -208,7 +213,7 @@ public class TutorAppDetail extends AppCompatActivity {
             tutorNameTextView.setText(tutorName);
             Log.d("DEBUG_TUTOR", "Setting tutor name: " + tutorName);
         } else {
-            tutorNameTextView.setText("未知导师");
+            tutorNameTextView.setText(getString(R.string.unknown_tutor));
             Log.d("DEBUG_TUTOR", "No tutor name available");
         }
         
@@ -369,10 +374,10 @@ public class TutorAppDetail extends AppCompatActivity {
 
                                 // Set values
                                 ((TextView) applicationView.findViewById(R.id.app_id)).setText(appId);
-                                ((TextView) applicationView.findViewById(R.id.subject_text)).setText("Subject: " + subjects);
+                                ((TextView) applicationView.findViewById(R.id.subject_text)).setText(getString(R.string.subject_prefix, subjects));
                                 ((TextView) applicationView.findViewById(R.id.student_level_text)).setText(studentLevel);
-                                ((TextView) applicationView.findViewById(R.id.fee_text)).setText("$" + fee);
-                                ((TextView) applicationView.findViewById(R.id.district_text)).setText("District: " + districts);
+                                ((TextView) applicationView.findViewById(R.id.fee_text)).setText(getString(R.string.fee_prefix, fee));
+                                ((TextView) applicationView.findViewById(R.id.district_text)).setText(getString(R.string.district_prefix, districts));
                                 // ((TextView) applicationView.findViewById(R.id.description_text)).setText(description);
 
                                 // Add click listener for selection
@@ -434,7 +439,7 @@ public class TutorAppDetail extends AppCompatActivity {
         if (applyDialog != null && !isFinishing()) {  // Check if activity is not finishing
             // Update dialog message with current details
             TextView messageText = applyDialog.findViewById(R.id.dialogMessageText);
-            messageText.setText("Are you sure you want to apply for this tutor?\n\n" +
+            messageText.setText(getString(R.string.confirm_apply_tutor) +
                     classLevelTextView.getText() + "\n" +
                     subjectTextView.getText() + "\n" +
                     feeTextView.getText());
@@ -648,44 +653,59 @@ public class TutorAppDetail extends AppCompatActivity {
 
 
     private void updateUIWithJson(String jsonResponse) {
-        if (isFinishing()) {
-            Log.e("TutorAppDetail", "Activity is finishing");
-            return;
-        }
+        try {
+            JSONArray jsonArray = new JSONArray(jsonResponse);
+            StringBuilder scores = new StringBuilder();
 
-        runOnUiThread(() -> {
-            // Check if view is still valid
-            if (matchingScoreTextView == null) {
-                Log.e("TutorAppDetail", "matchingScoreTextView is null");
-                return;
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            if (jsonObject.has("score")) {
+                String score = jsonObject.getString("score");
+                scores.append(score);
             }
 
-            try {
-                JSONArray jsonArray = new JSONArray(jsonResponse);
-                StringBuilder scores = new StringBuilder();
+            // 获取性别信息
+            String gender = "";
+            if (jsonObject.has("gender")) {
+                gender = jsonObject.getString("gender");
+            }
+            
+            // 显示性别图标
+            displayGenderIcon(gender);
 
+            final String finalScore = scores.length() > 0 ?
+                    scores.toString() : "No matching scores found.";
+            
+            // Final null check before setting text
+            if (matchingScoreTextView != null) {
+                matchingScoreTextView.setText(finalScore);
+            }
 
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                if (jsonObject.has("score")) {
-                    String score = jsonObject.getString("score");
-                    scores.append(score);
+        } catch (JSONException e) {
+            Log.e("TutorAppDetail", "JSON parsing error: " + e.getMessage());
+            // Final null check before setting error text
+            if (matchingScoreTextView != null) {
+                matchingScoreTextView.setText(getString(R.string.error_parsing_scores));
+            }
+        }
+    }
+
+    // 添加显示性别图标的方法
+    private void displayGenderIcon(String gender) {
+        runOnUiThread(() -> {
+            if (gender != null && !gender.isEmpty()) {
+                if (gender.equals("M")) {
+                    genderIcon.setImageResource(R.drawable.ic_male);
+                    genderIcon.setBackgroundResource(R.drawable.circle_background);
+                    genderIcon.setVisibility(View.VISIBLE);
+                } else if (gender.equals("F")) {
+                    genderIcon.setImageResource(R.drawable.ic_female);
+                    genderIcon.setBackgroundResource(R.drawable.circle_background);
+                    genderIcon.setVisibility(View.VISIBLE);
+                } else {
+                    genderIcon.setVisibility(View.GONE);
                 }
-
-
-                final String finalScore = scores.length() > 0 ?
-                        scores.toString() : "No matching scores found.";
-
-                // Final null check before setting text
-                if (matchingScoreTextView != null) {
-                    matchingScoreTextView.setText(finalScore);
-                }
-
-            } catch (JSONException e) {
-                Log.e("TutorAppDetail", "JSON parsing error: " + e.getMessage());
-                // Final null check before setting error text
-                if (matchingScoreTextView != null) {
-                    matchingScoreTextView.setText("Error parsing matching scores.");
-                }
+            } else {
+                genderIcon.setVisibility(View.GONE);
             }
         });
     }
@@ -707,7 +727,7 @@ public class TutorAppDetail extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     if (!isFinishing() && matchingScoreTextView != null) {
-                        matchingScoreTextView.setText("Failed to fetch data");
+                        matchingScoreTextView.setText(getString(R.string.failed_fetch_data));
                         Toast.makeText(TutorAppDetail.this,
                                 "Failed to fetch data. Please check your internet connection.",
                                 Toast.LENGTH_SHORT).show();
@@ -727,7 +747,7 @@ public class TutorAppDetail extends AppCompatActivity {
                 } else {
                     runOnUiThread(() -> {
                         if (!isFinishing() && matchingScoreTextView != null) {
-                            matchingScoreTextView.setText("Server error");
+                            matchingScoreTextView.setText(getString(R.string.server_error_message));
                             Toast.makeText(TutorAppDetail.this,
                                     "Server error. Please try again later.",
                                     Toast.LENGTH_SHORT).show();
@@ -853,7 +873,7 @@ public class TutorAppDetail extends AppCompatActivity {
                     Log.e(DEBUG_TAG, "JSON parsing error when parsing CV: " + e.getMessage());
                     // 处理解析错误的情况
                     runOnUiThread(() -> {
-                        updateAboutMeUI("");
+                        updateAboutMeUI(getString(R.string.no_tutor_details));
                     });
                 }
             }
@@ -972,7 +992,7 @@ public class TutorAppDetail extends AppCompatActivity {
                 
                 Log.d(DEBUG_TAG, "Setting about me content");
             } else {
-                aboutMeText.setText("導師未提供詳細資訊");
+                aboutMeText.setText(getString(R.string.no_tutor_details));
                 
                 // 隐藏"显示更多/更少"按钮
                 if (showMoreLessText != null) {
@@ -998,6 +1018,75 @@ public class TutorAppDetail extends AppCompatActivity {
             // 折叠内容 - 设置最大行数
             aboutMeText.setMaxLines(3);
         }
+    }
+
+    // 添加一个新方法，用于获取目标用户的性别信息
+    private void fetchTargetGenderInfo() {
+        if (isFinishing()) return;
+        
+        String targetMemberId = getIntent().getStringExtra("member_id");
+        if (targetMemberId == null || targetMemberId.isEmpty()) {
+            Log.e(DEBUG_TAG, "无法获取目标会员ID");
+            return;
+        }
+        
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://" + IPConfig.getIP() + "/FYP/php/get_member_detail.php";
+        
+        RequestBody requestBody = new FormBody.Builder()
+            .add("member_id", targetMemberId)
+            .build();
+            
+        Request request = new Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build();
+            
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(DEBUG_TAG, "获取性别信息失败: " + e.getMessage());
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    Log.e(DEBUG_TAG, "获取性别信息服务器错误: " + response.code());
+                    return;
+                }
+                
+                String jsonResponse = response.body().string();
+                Log.d(DEBUG_TAG, "性别信息响应: " + jsonResponse);
+                
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonResponse);
+                    
+                    if (!jsonObject.optBoolean("success", false)) {
+                        // 如果API返回失败，就隐藏性别图标
+                        runOnUiThread(() -> genderIcon.setVisibility(View.GONE));
+                        return;
+                    }
+                    
+                    JSONArray dataArray = jsonObject.optJSONArray("data");
+                    if (dataArray == null || dataArray.length() == 0) {
+                        // 如果没有数据，就隐藏性别图标
+                        runOnUiThread(() -> genderIcon.setVisibility(View.GONE));
+                        return;
+                    }
+                    
+                    // 获取第一条会员详情记录
+                    JSONObject memberDetail = dataArray.getJSONObject(0);
+                    String gender = memberDetail.optString("Gender", "");
+                    
+                    // 显示性别图标
+                    displayGenderIcon(gender);
+                    
+                } catch (JSONException e) {
+                    Log.e(DEBUG_TAG, "解析性别信息JSON出错: " + e.getMessage());
+                    runOnUiThread(() -> genderIcon.setVisibility(View.GONE));
+                }
+            }
+        });
     }
 
 }

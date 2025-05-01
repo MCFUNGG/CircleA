@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Set Available Time Slots"
+            app:navigationIcon="@drawable/ic_back"
+            android:background="?attr/colorSurface"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:navigationIconTint="?attr/colorOnSurface"
+            style="@style/Widget.Material3.Toolbar.Surface"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Available Time Slots Section -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/available_time_slots_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available Time Slots"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:layout_marginBottom="16dp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/add_slot_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    style="@style/Widget.Material3.CardView.Elevated">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add New Time Slot"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/select_date_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Select Date"
+                            android:layout_marginTop="8dp"
+                            style="@style/Widget.Material3.Button.OutlinedButton"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/time_slots_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"/>
+
+                <!-- Booking Detail Section -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/booking_detail_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone"
+                    style="@style/Widget.Material3.CardView.Filled">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/booking_student_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:layout_marginBottom="8dp"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/booking_date_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:layout_marginBottom="8dp"/>
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/booking_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.Material3.Chip.Assist"/>
+                        
+                        <!-- Payment Status Section -->
+                        <LinearLayout
+                            android:id="@+id/payment_status_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="16dp">
+                            
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/payment_status"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:layout_marginBottom="8dp"/>
+                                
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/student_payment_status"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/student_payment_not_submitted"
+                                    style="@style/Widget.Material3.Chip.Assist"/>
+                                    
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"/>
+                                    
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/check_payment_status_button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/check_payment_status"
+                                    android:visibility="gone"
+                                    style="@style/Widget.Material3.Button.TextButton"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/view_student_contact_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="View Student Contact"
+                            android:layout_marginTop="16dp"
+                            style="@style/Widget.Material3.Button.OutlinedButton"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/update_lesson_status_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Update Lesson Status"
+                    android:visibility="gone"
+                    style="@style/Widget.Material3.Button.UnelevatedButton"/>
+
+                <!-- Booking Requests Section -->
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/booking_requests_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="24dp"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/booking_requests_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Booking Requests"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:layout_marginBottom="16dp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/booking_requests_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    style="@style/Widget.Material3.CardView.Filled">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/no_requests_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No pending booking requests"
+                            android:textAlignment="center"
+                            android:visibility="gone"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/booking_requests_recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/save_slots_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:text="Save Available Slots"
+        app:icon="@drawable/ic_save"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

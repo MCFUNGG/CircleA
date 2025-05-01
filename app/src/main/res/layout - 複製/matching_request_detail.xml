@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:background="#F5F5F5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Top Bar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/exitButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/exit"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+            <!-- Tutor Application Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/your_application"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="#1E3F71"/>
+
+                            <TextView
+                                android:id="@+id/tutorAppIdTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/application_id"
+                                android:textSize="14sp"
+                                android:textColor="#666666"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tutorFeeTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textSize="18sp"
+                            android:textColor="#1E3F71"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/tutorClassLevelTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/ic_class"
+                            android:drawablePadding="8dp"
+                            android:text="@string/class_level"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tutorSubjectTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_subject"
+                        android:drawablePadding="8dp"
+                        android:text="@string/subjects"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tutorDistrictTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_location"
+                        android:drawablePadding="8dp"
+                        android:text="@string/districts"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Arrow Indicator -->
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:src="@drawable/ic_arrow_upward"/>
+
+            <TextView
+                android:id="@+id/requestMessageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:textSize="16sp"
+                android:textColor="#1E3F71"
+                android:textStyle="bold"
+                android:text="@string/sent_you_a_request"/>
+
+            <!-- PS Application Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp">
+
+                            <TextView
+                                android:id="@+id/psMemberIdTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ps_username"
+                                android:textSize="18sp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:id="@+id/psAppIdTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/application_id"
+                                android:textSize="14sp"
+                                android:textColor="#666666"/>
+
+
+                        </LinearLayout>
+
+
+
+                        <TextView
+                            android:id="@+id/psFeeTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textSize="18sp"
+                            android:textColor="#1E3F71"
+                            android:textStyle="bold"/>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/psClassLevelTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/ic_class"
+                            android:drawablePadding="8dp"
+                            android:text="@string/class_level"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/psSubjectTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_subject"
+                        android:drawablePadding="8dp"
+                        android:text="@string/subjects"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp"/>
+
+
+
+                    <TextView
+                        android:id="@+id/psDistrictTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_location"
+                        android:drawablePadding="8dp"
+                        android:text="@string/districts"
+                        android:textSize="14sp"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Accept/Reject Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reject_Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:backgroundTint="#f23d3d"
+                    app:cornerRadius="20dp"
+                    android:text="@string/reject"
+                    android:textColor="#FFFFFF"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/accept_Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:backgroundTint="#29B314"
+                    app:cornerRadius="20dp"
+                    android:text="@string/accept"
+                    android:textColor="#FFFFFF"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>

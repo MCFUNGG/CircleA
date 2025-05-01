@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header Section -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp">
+
+            <ImageButton
+                android:id="@+id/exitButton"
+                android:layout_width="42dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/exit"
+                app:tint="@color/text_primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/application_history_title"
+                android:textSize="24sp"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
+        <!-- Toggle Buttons Container -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:background="@drawable/toggle_background">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_tutor"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/tutor_applications_history"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="20dp"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_ps"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/parent_student_applications"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="20dp"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Applications Container -->
+        <LinearLayout
+            android:id="@+id/history_application_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+</ScrollView>

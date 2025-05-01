@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/exit" />
+
+    <!-- Display Instructions -->
+    <TextView
+        android:id="@+id/tv_phone_verification_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter your phone number and get a verification code"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Input Field for Phone Number -->
+    <EditText
+        android:id="@+id/et_user_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your phone number"
+        android:inputType="phone"
+        android:padding="12dp"
+        android:background="@android:drawable/edit_text"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Phone number input"
+        android:text="+852 " /> <!-- Set default text with country code -->
+
+    <!-- Button to Send Verification Code -->
+    <Button
+        android:id="@+id/btn_send_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Verification Code"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="Send verification code button" />
+
+    <!-- Input Field for Verification Code -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="24dp">
+
+        <!-- EditText for Code Input -->
+        <EditText
+            android:id="@+id/et_verification_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter code"
+            android:inputType="number"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Verification code input" />
+
+        <!-- Button to Submit Verification Code -->
+        <Button
+            android:id="@+id/btn_submit_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit Code"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:padding="12dp"
+            android:contentDescription="Submit verification code button" />
+    </LinearLayout>
+
+</LinearLayout>

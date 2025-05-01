@@ -31,7 +31,8 @@ $query = "
         CASE 
             WHEN cb.completed_count > 0 THEN 1 
             ELSE 0 
-        END as is_completed
+        END as is_completed,
+        md.Gender as gender
     FROM (
         SELECT 
             a.app_id,
@@ -70,7 +71,16 @@ $query = "
         JOIN booking b ON m.match_id = b.match_id
         WHERE b.status = 'completed'
         GROUP BY m.tutor_app_id
-    ) cb ON ab.app_id = cb.app_id";
+    ) cb ON ab.app_id = cb.app_id
+    LEFT JOIN (
+        SELECT md1.*
+        FROM member_detail md1
+        JOIN (
+            SELECT member_id, MAX(version) as max_version
+            FROM member_detail
+            GROUP BY member_id
+        ) md2 ON md1.member_id = md2.member_id AND md1.version = md2.max_version
+    ) md ON ab.member_id = md.member_id";
 $result = mysqli_query($connect, $query);
 
 if (!$result) {
@@ -100,7 +110,8 @@ if (mysqli_num_rows($result) > 0) {
             'feePerHr' => $row['feePerHr'],
             'description' => $row['description'],
             'status' => $row['status'],
-            'is_completed' => (bool)$row['is_completed']
+            'is_completed' => (bool)$row['is_completed'],
+            'gender' => $row['gender']
         ];
     }
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dialog_content_padding">
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_reason_no_show"
+        style="@style/DialogOptionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tutor didn't show up"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_reason_technical"
+        style="@style/DialogOptionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Technical issues"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_reason_emergency"
+        style="@style/DialogOptionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Emergency situation"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_reason_time"
+        style="@style/DialogOptionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time management issues"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_reason_other"
+        style="@style/DialogOptionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Other reasons"/>
+</LinearLayout>

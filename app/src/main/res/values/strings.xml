@@ -341,16 +341,16 @@
     <!-- Final missing strings -->
     <string name="implementation_todo">Implementation to be done</string>
     <string name="please_fill_contact_info">Please fill in contact information</string>
-    <string name="no_education_background">No education background information</string>
+    <string name="no_education_background">No education background</string>
     <string name="tutor_application_id">Tutor Application ID: %s</string>
     <string name="subjects_format">%s</string>
     <string name="class_level_format">Class Level: %s</string>
     <string name="fee_hk_format">Fee: HK$%s</string>
     <string name="districts_format">%s</string>
     <string name="username_format">Username: %s</string>
-    <string name="fee_per_hour_format">$%s /hr</string>
-    <string name="subjects_na">Subjects: N/A</string>
-    <string name="districts_na">Districts: N/A</string>
+    <string name="fee_per_hour_format">$%s/hr</string>
+    <string name="subjects_na">N/A</string>
+    <string name="districts_na">N/A</string>
     <string name="per_hour">/hr</string>
     
     <!-- Settings Fragment Strings -->
@@ -369,6 +369,7 @@
     <string name="female">Female</string>
     <string name="address_district_id">Address District ID</string>
     <string name="date_of_birth">Date of Birth (MM/DD/YYYY)</string>
+    <string name="member_detail_title">Member Details</string>
     
     <!-- Scan CV Strings -->
     <string name="select_cv_image">Select CV Image</string>
@@ -582,6 +583,51 @@
     <string name="waiting_admin_process">Waiting for admin to process conflict status</string>
     
     <!-- Completed Status -->
+
+    <!-- Tutor Profile/App Detail -->
+    <string name="about_me">About Me</string>
+    <string name="graduated_from">Graduated from</string>
+    <string name="price">Price</string>
+
+    <!-- Student Profile/App Detail -->
+    <string name="subject_details">Subject Details</string>
+    <string name="location_preferences">Location Preferences</string>
+    <string name="preferred_districts">Preferred Districts:</string>
+    <string name="subject">Subject:</string>
+    <string name="level">Level:</string>
+    <string name="send_request">Send Request</string>
+    
+    <!-- 新增的字符串资源 -->
+    <string name="unknown_tutor">Unknown Tutor</string>
+    <string name="tutor_application_id_format">Application ID: %s</string>
+    <string name="no_tutor_details">Tutor did not provide detailed information</string>
+    <string name="data_loading">Loading data...</string>
+    <string name="education_not_provided">No education background provided</string>
+    <string name="confirm_apply_tutor">Are you sure you want to apply for this tutor?\n\n</string>
+    <string name="error_parsing_scores">Error parsing matching scores.</string>
+    <string name="failed_fetch_data">Failed to fetch data</string>
+    <string name="server_error_message">Server error</string>
+    
+    <!-- 新增学生资料详情页面所需字符串 -->
+    <string name="unknown_student">Unknown Student</string>
+    <string name="app_id_prefix">App ID: %s</string>
+    <string name="fee_hourly_format">$%s/hr</string>
+    <string name="subject_prefix">Subject: %s</string>
+    <string name="fee_prefix">$%s</string>
+    <string name="district_prefix">District: %s</string>
+    <string name="no_approved_applications">No approved applications found</string>
+    <string name="confirm_send_request">Are you sure you want to send request to this student?\n\n</string>
+    <string name="n_a_score">N/A</string>
+    <string name="error_score">Error</string>
+    
+    <!-- 通用标签 -->
+    <string name="subjects_heading">Subjects</string>
+    <string name="class_level_heading">Class Level</string>
+    <string name="districts_heading">Districts</string>
+    <string name="match_score">Match Score</string>
+
+    <!-- Search Hint -->
+    <string name="search_hint">Search tutors, subjects, districts...</string>
 
 </resources>
 
