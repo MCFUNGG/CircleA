@@ -629,5 +629,41 @@
     <!-- Search Hint -->
     <string name="search_hint">Search tutors, subjects, districts...</string>
 
+    <!-- Search Related -->
+    <string name="search_results">Search Results</string>
+    <string name="search_results_count">Search Results (%d)</string>
+    <string name="close_search_results">Close Search Results</string>
+    <string name="all_subjects">All Subjects</string>
+    <string name="all_districts">All Districts</string>
+    <string name="all_grades">All Grades</string>
+
+    <!-- Filter Button -->
+    <string name="filter_button">Filter</string>
+
+    <!-- Filter Layout Strings -->
+    <string name="filter_options">Filter Options</string>
+    <string name="reset">Reset</string>
+    <string name="price_range">Price Range</string>
+    <string name="min_price">Min Price</string>
+    <string name="max_price">Max Price</string>
+    <string name="grade">Grade</string>
+
+    <!-- Tutor Profile Missing Info -->
+    <string name="unknown_tutor_name">Unknown Tutor</string>
+    <string name="no_profile_desc">No description</string>
+    <string name="no_education_provided">No education background provided</string>
+    <string name="no_about_me">Tutor did not provide detailed information</string>
+    <string name="loading_profile">Loading...</string>
+    <string name="profile_load_failed">Tutor information is temporarily unavailable. Please try again later.</string>
+    <string name="feedback_load_failed">Failed to load reviews, please try again later</string>
+    <string name="no_feedback">No reviews yet</string>
+    <string name="feedback_parse_error">Error parsing review data</string>
+    
+    <!-- CV Management -->
+    <string name="currently_using">Currently Using</string>
+    
+    <!-- Video Introduction -->
+    <string name="record_video_intro">Record Self-Introduction Video</string>
+
 </resources>
 

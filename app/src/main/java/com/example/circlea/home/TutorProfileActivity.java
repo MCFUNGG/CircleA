@@ -300,13 +300,13 @@ public class TutorProfileActivity extends AppCompatActivity {
             if (name != null && !name.isEmpty()) {
                 nameTextView.setText(name);
             } else {
-                nameTextView.setText("未知導師");
+                nameTextView.setText(getString(R.string.unknown_tutor_name));
             }
             
             if (profileDesc != null && !profileDesc.isEmpty()) {
                 profileDescTextView.setText(profileDesc);
             } else {
-                profileDescTextView.setText("無個人描述");
+                profileDescTextView.setText(getString(R.string.no_profile_desc));
             }
             
             // 填充教育背景 - 過濾香港大學
@@ -314,7 +314,7 @@ public class TutorProfileActivity extends AppCompatActivity {
             if (filteredEducation != null && !filteredEducation.isEmpty()) {
                 educationTextView.setText(filteredEducation);
             } else {
-                educationTextView.setText("未提供教育背景");
+                educationTextView.setText(getString(R.string.no_education_provided));
             }
             
             // 組合所有其他信息
@@ -335,7 +335,7 @@ public class TutorProfileActivity extends AppCompatActivity {
             if (aboutMe.length() > 0) {
                 aboutMeTextView.setText(aboutMe.toString());
             } else {
-                aboutMeTextView.setText("導師未提供詳細資訊");
+                aboutMeTextView.setText(getString(R.string.no_about_me));
             }
             
             // 显示或隐藏徽章
@@ -415,13 +415,13 @@ public class TutorProfileActivity extends AppCompatActivity {
             if (name != null && !name.isEmpty()) {
                 nameTextView.setText(name);
             } else {
-                nameTextView.setText("導師");
+                nameTextView.setText(getString(R.string.tutor));
             }
             
             // 設置預設描述
-            profileDescTextView.setText("資料載入中...");
-            educationTextView.setText("資料載入中...");
-            aboutMeTextView.setText("導師資料暫時無法獲取，請稍後再試。");
+            profileDescTextView.setText(getString(R.string.loading_profile));
+            educationTextView.setText(getString(R.string.loading_profile));
+            aboutMeTextView.setText(getString(R.string.profile_load_failed));
         });
     }
     
@@ -449,7 +449,7 @@ public class TutorProfileActivity extends AppCompatActivity {
                 Log.e(TAG, "Failed to fetch ratings: " + e.getMessage());
                 runOnUiThread(() -> {
                     noFeedbackText.setVisibility(View.VISIBLE);
-                    noFeedbackText.setText("评价加载失败，请稍后再试");
+                    noFeedbackText.setText(getString(R.string.feedback_load_failed));
                 });
             }
 
@@ -459,7 +459,7 @@ public class TutorProfileActivity extends AppCompatActivity {
                     Log.e(TAG, "Server error when fetching ratings: " + response.code());
                     runOnUiThread(() -> {
                         noFeedbackText.setVisibility(View.VISIBLE);
-                        noFeedbackText.setText("评价加载失败，请稍后再试");
+                        noFeedbackText.setText(getString(R.string.feedback_load_failed));
                     });
                     return;
                 }
@@ -475,7 +475,7 @@ public class TutorProfileActivity extends AppCompatActivity {
                         Log.e(TAG, "API error when fetching ratings: " + message);
                         runOnUiThread(() -> {
                             noFeedbackText.setVisibility(View.VISIBLE);
-                            noFeedbackText.setText("暂无评价");
+                            noFeedbackText.setText(getString(R.string.no_feedback));
                         });
                         return;
                     }
@@ -487,7 +487,7 @@ public class TutorProfileActivity extends AppCompatActivity {
                     Log.e(TAG, "JSON parsing error: " + e.getMessage());
                     runOnUiThread(() -> {
                         noFeedbackText.setVisibility(View.VISIBLE);
-                        noFeedbackText.setText("评价数据解析错误");
+                        noFeedbackText.setText(getString(R.string.feedback_parse_error));
                     });
                 }
             }

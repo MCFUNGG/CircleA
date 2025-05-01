@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 import com.google.android.material.button.MaterialButton;
+import com.example.circlea.LanguageManager;
 
 import org.json.JSONObject;
 
@@ -63,6 +64,10 @@ public class Payment extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 应用语言设置
+        LanguageManager languageManager = new LanguageManager(this);
+        languageManager.applyLanguage();
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment);
         Log.d("CurrentJava", "Payment");
@@ -70,6 +75,14 @@ public class Payment extends AppCompatActivity {
         setupToolbar();
         processIntentData();
         setupClickListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 确保活动恢复时使用正确的语言
+        LanguageManager languageManager = new LanguageManager(this);
+        languageManager.applyLanguage();
     }
 
     private void initializeViews() {

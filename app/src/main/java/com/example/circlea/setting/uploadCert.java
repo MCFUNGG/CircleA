@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class uploadCert extends AppCompatActivity {
     private RecyclerView recyclerViewFiles;
     private FileAdapter fileAdapter;
     private String memberId, contact, skills, education, language, other;
+    private int SCORE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +62,14 @@ public class uploadCert extends AppCompatActivity {
         education = intent.getStringExtra("education");
         language = intent.getStringExtra("language");
         other = intent.getStringExtra("other");
-        
+        SCORE = intent.getIntExtra("score", 0);
+
+        Log.d("SCORE", "SCORE: " + SCORE);
+
         // 檢查是否為編輯模式
         boolean isEditMode = intent.getBooleanExtra("is_edit", false);
         int cvId = intent.getIntExtra("cv_id", 0);
-        
+
         if (isEditMode) {
             setTitle(getString(R.string.edit_cv));
         } else {
@@ -153,12 +158,14 @@ public class uploadCert extends AppCompatActivity {
         multipartBuilder.addFormDataPart("education", education);
         multipartBuilder.addFormDataPart("language", language);
         multipartBuilder.addFormDataPart("other", other);
-        
+        multipartBuilder.addFormDataPart("SCORE", String.valueOf(SCORE));
+
+
         // 檢查是否為編輯模式
         Intent intent = getIntent();
         boolean isEditMode = intent.getBooleanExtra("is_edit", false);
         int cvId = intent.getIntExtra("cv_id", 0);
-        
+
         if (isEditMode && cvId > 0) {
             multipartBuilder.addFormDataPart("cv_id", String.valueOf(cvId));
             multipartBuilder.addFormDataPart("is_edit", "true");

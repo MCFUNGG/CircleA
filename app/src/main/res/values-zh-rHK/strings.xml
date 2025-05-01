@@ -622,4 +622,40 @@
 
     <!-- Search Hint -->
     <string name="search_hint">搜索導師、科目、地區...</string>
+
+    <!-- Search Related -->
+    <string name="search_results">搜索結果</string>
+    <string name="search_results_count">搜索結果 (%d)</string>
+    <string name="close_search_results">關閉搜索結果</string>
+    <string name="all_subjects">所有科目</string>
+    <string name="all_districts">所有地區</string>
+    <string name="all_grades">所有年級</string>
+
+    <!-- Filter Button -->
+    <string name="filter_button">篩選</string>
+
+    <!-- Filter Layout Strings -->
+    <string name="filter_options">過濾選項</string>
+    <string name="reset">重置</string>
+    <string name="price_range">費用範圍</string>
+    <string name="min_price">最低價格</string>
+    <string name="max_price">最高價格</string>
+    <string name="grade">年級</string>
+
+    <!-- Tutor Profile Missing Info -->
+    <string name="unknown_tutor_name">未知導師</string>
+    <string name="no_profile_desc">無個人描述</string>
+    <string name="no_education_provided">未提供教育背景</string>
+    <string name="no_about_me">導師未提供詳細資訊</string>
+    <string name="loading_profile">資料載入中...</string>
+    <string name="profile_load_failed">導師資料暫時無法獲取，請稍後再試。</string>
+    <string name="feedback_load_failed">評價加載失敗，請稍後再試</string>
+    <string name="no_feedback">暫無評價</string>
+    <string name="feedback_parse_error">評價數據解析錯誤</string>
+    
+    <!-- CV Management -->
+    <string name="currently_using">當前使用</string>
+    
+    <!-- Video Introduction -->
+    <string name="record_video_intro">錄製自我介紹影片</string>
 </resources>

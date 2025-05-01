@@ -328,7 +328,7 @@ public class FilterHelper {
      */
     public void setClassLevelItems(List<String> classLevels) {
         List<String> items = new ArrayList<>();
-        items.add("所有年級"); // 添加默認選項
+        items.add(context.getString(R.string.all_grades)); // 添加默認選項
         items.addAll(classLevels);
         
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -362,7 +362,7 @@ public class FilterHelper {
         
         // 添加"所有科目"選項
         Chip allSubjectsChip = new Chip(context);
-        allSubjectsChip.setText("所有科目");
+        allSubjectsChip.setText(context.getString(R.string.all_subjects));
         setupChip(allSubjectsChip, true);
         subjectChipGroup.addView(allSubjectsChip);
         
@@ -420,7 +420,7 @@ public class FilterHelper {
         
         // 添加"所有地區"選項
         Chip allDistrictsChip = new Chip(context);
-        allDistrictsChip.setText("所有地區");
+        allDistrictsChip.setText(context.getString(R.string.all_districts));
         setupChip(allDistrictsChip, true);
         districtChipGroup.addView(allDistrictsChip);
         

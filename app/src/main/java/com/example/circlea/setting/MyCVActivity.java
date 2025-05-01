@@ -391,7 +391,7 @@ public class MyCVActivity extends AppCompatActivity {
             
             // 顯示CV狀態
             if (cvItem.getStatus().equals("A")) {
-                holder.statusTextView.setText("當前使用");
+                holder.statusTextView.setText(getString(R.string.currently_using));
                 holder.statusTextView.setVisibility(View.VISIBLE);
             } else {
                 holder.statusTextView.setVisibility(View.GONE);

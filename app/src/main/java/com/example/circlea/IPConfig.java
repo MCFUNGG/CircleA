@@ -8,7 +8,7 @@ public class IPConfig {
 
     // 服务器配置
     private static final String EMULATOR_IP = "10.0.2.2";        // 模擬器使用
-    private static final String REAL_DEVICE_IP = "192.168.0.6";  // 實體設備使用
+    private static final String REAL_DEVICE_IP = "192.168.0.10";  // 實體設備使用
     private static final String INFINITYFREE_DOMAIN = "circlea-app-a7e9dnbxg0ggerhz.eastasia-01.azurewebsites.net"; 
     
     // 環境控制

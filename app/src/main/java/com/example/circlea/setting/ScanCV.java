@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,8 +30,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.util.Base64;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 public class ScanCV extends AppCompatActivity {
 
@@ -71,7 +80,7 @@ public class ScanCV extends AppCompatActivity {
             educationEditText.setText(intent.getStringExtra("education"));
             languageEditText.setText(intent.getStringExtra("language"));
             otherEditText.setText(intent.getStringExtra("other"));
-            
+
             // 設置標題為編輯模式
             titleTextView.setText(getString(R.string.edit_cv));
         } else {
@@ -250,30 +259,88 @@ public class ScanCV extends AppCompatActivity {
             return;
         }
 
-        // 嘗試轉換圖片，允許圖片為空
-        String base64Image = convertImageToBase64(savedImageUri);
+        // 創建要發送到Flask服務器的數據
+        JSONObject jsonBody = new JSONObject();
+        AtomicInteger SCORE = new AtomicInteger(0); // 用於存儲分數
 
-        // 創建Intent並傳遞所有資料到uploadCert
-        Intent intent = new Intent(this, uploadCert.class);
-        intent.putExtra("contact", contactEditText.getText().toString().trim());
-        intent.putExtra("skills", skillsEditText.getText().toString().trim());
-        intent.putExtra("education", educationEditText.getText().toString().trim());
-        intent.putExtra("language", languageEditText.getText().toString().trim());
-        intent.putExtra("other", otherEditText.getText().toString().trim());
+        try {
+            Intent intent = new Intent(this, uploadCert.class);
+            jsonBody.put("contact", contactEditText.getText().toString().trim());
+            jsonBody.put("skills", skillsEditText.getText().toString().trim());
+            jsonBody.put("education", educationEditText.getText().toString().trim());
+            jsonBody.put("language", languageEditText.getText().toString().trim());
+            jsonBody.put("other", otherEditText.getText().toString().trim());
 
-        // 獲取member_id並傳遞
-        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
-        String memberId = sharedPreferences.getString("member_id", "");
-        intent.putExtra("member_id", memberId);
-        
-        // 檢查是否為編輯模式，如果是則傳遞CV ID
-        if (getIntent().hasExtra("cv_id")) {
-            intent.putExtra("cv_id", getIntent().getIntExtra("cv_id", 0));
-            intent.putExtra("is_edit", true);
+            // 獲取member_id
+            SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
+            String memberId = sharedPreferences.getString("member_id", "");
+            jsonBody.put("member_id", memberId);
+
+            // 添加職位名稱（可以從其他地方獲取或使用默認值）
+            jsonBody.put("job_title", "general position");
+
+            // 創建網絡請求
+            String url = "http://"+IPConfig.getIP()+":5030/evaluate_cv"; // 本地測試用10.0.2.2，實際部署時改為服務器IP
+            JsonObjectRequest request = new JsonObjectRequest(
+                    Request.Method.POST,
+                    url,
+                    jsonBody,
+                    response -> {
+                        try {
+                            if (response.getBoolean("success")) {
+                                int score = response.getInt("score");
+                                Toast.makeText(this, "CV評分: " + score + "/100", Toast.LENGTH_LONG).show();
+                                int finalScore = score;
+                                SCORE.set(finalScore); // 更新分數
+                                Log.d("ScanCV", "Score: " + SCORE);
+
+                                finish();
+
+                            } else {
+                                Toast.makeText(this, "評分失敗，請稍後重試", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(this, "解析響應失敗", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    error -> {
+                        error.printStackTrace();
+                        Toast.makeText(this, "網絡請求失敗: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+
+            // 添加請求到隊列
+            Volley.newRequestQueue(this).add(request);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "創建請求失敗", Toast.LENGTH_SHORT).show();
         }
 
-        startActivity(intent);
-        finish(); // 销毁ScanCV活动，这样用户从MyCVActivity返回时不会回到ScanCV
+        new android.os.Handler().postDelayed(() -> {
+            // 在這裡執行延遲後的操作，例如跳轉到下一個活動
+            // 這裡可以使用Intent來跳轉到uploadCert活動
+            Intent intent = new Intent(ScanCV.this, uploadCert.class);
+            intent.putExtra("contact", contactEditText.getText().toString().trim());
+            intent.putExtra("skills", skillsEditText.getText().toString().trim());
+            intent.putExtra("education", educationEditText.getText().toString().trim());
+            intent.putExtra("language", languageEditText.getText().toString().trim());
+            intent.putExtra("other", otherEditText.getText().toString().trim());
+            intent.putExtra("score", SCORE.get());
+
+            // 獲取member_id並傳遞
+            SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
+            String memberId = sharedPreferences.getString("member_id", "");
+            intent.putExtra("member_id", memberId);
+
+            // 檢查是否為編輯模式，如果是則傳遞CV ID
+            if (getIntent().hasExtra("cv_id")) {
+                intent.putExtra("cv_id", getIntent().getIntExtra("cv_id", 0));
+                intent.putExtra("is_edit", true);
+            }
+
+            startActivity(intent);
+        }, 5000); // 延遲5秒 (5000毫秒)
     }
 
     private String convertImageToBase64(Uri uri) {

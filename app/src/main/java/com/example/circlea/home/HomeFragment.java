@@ -1060,7 +1060,7 @@ public class HomeFragment extends Fragment {
         } else {
             // 显示搜索结果区域
             TextView searchResultsTitle = requireView().findViewById(R.id.searchResultsTitle);
-            searchResultsTitle.setText("搜索结果 (" + searchResults.size() + ")");
+            searchResultsTitle.setText(getString(R.string.search_results_count, searchResults.size()));
             searchResultsContainer.setVisibility(View.VISIBLE);
             mainContentContainer.setVisibility(View.GONE);
         }
