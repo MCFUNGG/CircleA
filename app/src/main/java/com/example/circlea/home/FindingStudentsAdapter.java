@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.circlea.DatabaseHelper;
 import com.example.circlea.IPConfig;
+import com.example.circlea.LanguageManager;
 import com.example.circlea.R;
 
 import java.io.IOException;
@@ -42,11 +43,13 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
     private Context context;
     private DatabaseHelper dbHelper;
     private RecyclerView recyclerView;
+    private LanguageManager languageManager;
 
     public FindingStudentsAdapter(ArrayList<ApplicationItem> data, Context context) {
         this.data = data;
         this.context = context;
         this.dbHelper = new DatabaseHelper(context);
+        this.languageManager = new LanguageManager(context);
     }
 
     @NonNull
@@ -82,22 +85,29 @@ public class FindingStudentsAdapter extends RecyclerView.Adapter<FindingStudents
             }
 
             holder.username.setText(application.getUsername());
-            holder.classLevelTextView.setText("aims: " + application.getClassLevel());
+            
+            // 翻译学生级别
+            String classLevel = languageManager.translateDatabaseField(application.getClassLevel(), "class_level");
+            holder.classLevelTextView.setText(context.getString(R.string.label_aims) + " " + classLevel);
 
-            // Concatenate subjects
+            // Concatenate subjects and translate each one
             StringBuilder subjects = new StringBuilder();
             for (String subject : application.getSubjects()) {
-                subjects.append(subject).append(", ");
+                // 翻译科目
+                String translatedSubject = languageManager.translateDatabaseField(subject, "subject");
+                subjects.append(translatedSubject).append(", ");
             }
             if (subjects.length() > 2) {
                 subjects.setLength(subjects.length() - 2);
             }
             holder.subjectTextView.setText(subjects.toString());
 
-            // Concatenate districts
+            // Concatenate districts and translate each one
             StringBuilder districts = new StringBuilder();
             for (String district : application.getDistricts()) {
-                districts.append(district).append(", ");
+                // 翻译地区
+                String translatedDistrict = languageManager.translateDatabaseField(district, "district");
+                districts.append(translatedDistrict).append(", ");
             }
             if (districts.length() > 2) {
                 districts.setLength(districts.length() - 2);

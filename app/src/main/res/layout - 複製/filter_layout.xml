@@ -25,7 +25,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="過濾選項"
+                android:text="@string/filter_options"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#1E3F71" />
@@ -34,7 +34,7 @@
                 android:id="@+id/reset_filter_button"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:text="重置"
+                android:text="@string/reset"
                 android:textSize="12sp"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#F44336"
@@ -47,7 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="費用範圍"
+            android:text="@string/price_range"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
@@ -63,7 +63,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:hint="最低價格"
+                android:hint="@string/min_price"
                 android:inputType="number"
                 android:background="@drawable/rounded_background"
                 android:paddingHorizontal="8dp"
@@ -81,7 +81,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:hint="最高價格"
+                android:hint="@string/max_price"
                 android:inputType="number"
                 android:background="@drawable/rounded_background"
                 android:paddingHorizontal="8dp"
@@ -92,7 +92,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="年級"
+            android:text="@string/grade"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginTop="12dp" />
@@ -110,7 +110,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="科目"
+            android:text="@string/subject"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginTop="12dp" />
@@ -133,7 +133,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="地區"
+            android:text="@string/district"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginTop="12dp" />
@@ -157,7 +157,7 @@
             android:id="@+id/apply_filter_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="應用過濾"
+            android:text="@string/apply_filters"
             android:textSize="14sp"
             android:backgroundTint="#1E3F71"
             android:layout_marginTop="16dp" />

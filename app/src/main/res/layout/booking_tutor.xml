@@ -16,9 +16,9 @@
             android:layout_height="?attr/actionBarSize"
             app:title="Set Available Time Slots"
             app:navigationIcon="@drawable/ic_back"
-            android:background="?attr/colorSurface"
-            app:titleTextColor="?attr/colorOnSurface"
-            app:navigationIconTint="?attr/colorOnSurface"
+            android:background="#1e3f71"
+            app:titleTextColor="#FFFFFF"
+            app:navigationIconTint="#FFFFFF"
             style="@style/Widget.Material3.Toolbar.Surface"/>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -58,7 +58,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
+                        android:padding="16dp"
+                        android:background="#EAF7FF">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
@@ -71,6 +72,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Select Date"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#1e3f71"
                             android:layout_marginTop="8dp"
                             style="@style/Widget.Material3.Button.OutlinedButton"/>
                     </LinearLayout>
@@ -171,6 +174,18 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/interview_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Self-Introduction Video"
+                    android:visibility="gone"
+                    android:backgroundTint="?attr/colorSecondary"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/ic_video_camera"
+                    app:iconTint="@color/white"
+                    style="@style/Widget.Material3.Button.UnelevatedButton"/>
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/update_lesson_status_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -204,7 +219,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
+                        android:padding="16dp"
+                        android:background="#eaf7ff">
 
                         <TextView
                             android:id="@+id/no_requests_text"
@@ -232,6 +248,9 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:text="Save Available Slots"
-        app:icon="@drawable/ic_save"/>
+        android:backgroundTint="#EBBD00"
+        android:textColor="#000000"
+        app:icon="@drawable/ic_save"
+        app:iconTint="#000000"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

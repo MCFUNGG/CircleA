@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-04-24 18:38:32
+-- 產生時間： 2025-05-02 07:40:50
 -- 伺服器版本： 10.4.27-MariaDB
 -- PHP 版本： 8.2.0
 
@@ -32,7 +32,7 @@ CREATE TABLE `ads` (
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `image_url` varchar(255) NOT NULL,
-  `link_url` varchar(255) DEFAULT NULL,
+  `link_url` text DEFAULT NULL,
   `status` enum('active','inactive') NOT NULL DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -44,9 +44,10 @@ CREATE TABLE `ads` (
 --
 
 INSERT INTO `ads` (`ad_id`, `title`, `description`, `image_url`, `link_url`, `status`, `created_at`, `updated_at`, `sort_order`) VALUES
-(7, 'm', '', '/FYP/ads/1744341636_67f88a843f1cf.jpg', NULL, 'active', '2025-04-11 03:20:36', '2025-04-11 03:20:36', 0),
-(8, '222', 'gdgd', '/FYP/ads/1744352822_67f8b63651b5a.jpg', 'https://www.google.com/search?q=news&rlz=1C1CHZN_enHK1128HK1128&oq=news&gs_lcrp=EgZjaHJvbWUyDAgAEEUYORjJAxiABDINCAEQABiDARixAxiABDINCAIQABiSAxiABBiKBTINCAMQABiDARixAxiABDIHCAQQABiABDIHCAUQABiABDINCAYQABiDARixAxiABDINCAcQABiDARixAxiABDIHCAgQABiABDIGCAkQABg', 'inactive', '2025-04-11 06:27:02', '2025-04-11 06:27:02', 0),
-(9, '3', 'grfrg', '/FYP/ads/1744352877_67f8b66dc0405.png', NULL, 'active', '2025-04-11 06:27:57', '2025-04-11 06:27:57', 0);
+(10, 'ww', '', '/FYP/ads/1745586406_680b88e6d4be0.jpg', NULL, 'active', '2025-04-25 13:06:46', '2025-04-25 13:06:46', 0),
+(13, 'r', '', '/FYP/ads/1745594482_680ba87259d23.png', NULL, 'active', '2025-04-25 15:21:22', '2025-04-25 15:21:22', 0),
+(14, 'w', '', '/FYP/ads/1745597138_680bb2d238007.jpg', NULL, 'active', '2025-04-25 16:05:38', '2025-04-25 16:05:38', 0),
+(15, '2', '', '/FYP/ads/1745599605_680bbc75562a7.jpg', 'https://www.hk01.com/18%E5%8D%80%E6%96%B0%E8%81%9E/796289/%E7%96%AB%E4%B8%8B%E5%AD%B8%E7%BF%92%E7%8F%BE%E6%96%B7%E5%B1%A4-%E5%AD%B8%E7%94%9F%E6%83%85%E7%B7%92%E9%9F%BF%E8%AD%A6%E8%99%9F-%E9%97%9C%E5%AD%B8%E8%81%AF%E4%BF%83%E6%94%BF%E5%BA%9C%E5%AF%A6%E8%A1%8C%E8%A3%9C%E6%95%91%E6%8E%AA%E6%96%BD', 'active', '2025-04-25 16:46:45', '2025-04-25 17:10:18', 0);
 
 -- --------------------------------------------------------
 
@@ -71,7 +72,7 @@ CREATE TABLE `application` (
 
 INSERT INTO `application` (`app_id`, `member_id`, `app_creator`, `class_level_id`, `description`, `feePerHr`, `lessonPerWeek`, `status`) VALUES
 (77, 1, 'T', 1, '', 222, NULL, 'A'),
-(80, 3, 'T', 19, 'fhc', 500, NULL, 'A'),
+(80, 3, 'T', 19, NULL, 500, NULL, 'A'),
 (81, 1, 'T', 6, '/', 250, NULL, 'A'),
 (98, 1, 'PS', 3, '1', 444, NULL, 'A'),
 (108, 1, 'PS', 1, '', 222, NULL, 'A'),
@@ -88,7 +89,8 @@ INSERT INTO `application` (`app_id`, `member_id`, `app_creator`, `class_level_id
 (125, 3, 'PS', 15, '', 200, 1, 'A'),
 (126, 5, 'PS', 1, '', 205, 1, 'A'),
 (127, 3, 'PS', 1, '', 410, 2, 'A'),
-(132, 5, 'T', 15, '', 250, NULL, 'A');
+(132, 5, 'T', 15, '', 250, NULL, 'A'),
+(133, 1, 'PS', 1, '', 5, 1, 'P');
 
 -- --------------------------------------------------------
 
@@ -129,7 +131,8 @@ INSERT INTO `application_date` (`app_Date_id`, `app_id`, `monday_time`, `tuesday
 (28, 125, '1400-1530', '', '', '', '', '', ''),
 (29, 126, '1400 - 1600', '', '', '', '', '', ''),
 (30, 127, '1200-1600', '', '', '', '', '', ''),
-(35, 132, '1500-1600', '', '', '', '', '', '');
+(35, 132, '1500-1600', '', '', '', '', '', ''),
+(36, 133, '1200-1600', '', '', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -184,7 +187,8 @@ INSERT INTO `application_district` (`application_district_id`, `app_id`, `distri
 (110, 109, 4),
 (111, 109, 5),
 (116, 132, 1),
-(117, 132, 2);
+(117, 132, 2),
+(118, 133, 2);
 
 -- --------------------------------------------------------
 
@@ -244,7 +248,8 @@ INSERT INTO `application_subject` (`application_subject_id`, `app_id`, `subject_
 (141, 109, '5'),
 (142, 109, '12'),
 (146, 132, '1'),
-(147, 132, '3');
+(147, 132, '3'),
+(148, 133, '1');
 
 -- --------------------------------------------------------
 
@@ -280,7 +285,9 @@ INSERT INTO `booking` (`booking_id`, `match_id`, `tutor_id`, `student_id`, `date
 (28, 114, 5, NULL, '2025-04-24', '09:00:00', '10:00:00', '', '2025-04-22 20:10:53', '2025-04-22 20:22:10'),
 (38, 116, 5, NULL, '2025-04-26', '09:00:00', '10:00:00', '', '2025-04-23 18:19:39', '2025-04-23 18:24:29'),
 (40, 116, 5, NULL, '2025-04-30', '09:00:00', '10:00:00', '', '2025-04-23 18:58:55', '2025-04-23 19:14:41'),
-(42, 116, 5, 3, '2025-04-30', '09:00:00', '10:01:00', 'completed', '2025-04-23 19:20:15', '2025-04-24 16:28:44');
+(42, 116, 5, 3, '2025-04-30', '09:00:00', '10:01:00', 'confirmed', '2025-04-23 19:20:15', '2025-05-01 12:38:12'),
+(44, 119, 5, 3, '2025-05-30', '09:00:00', '10:00:00', 'completed', '2025-05-01 11:02:12', '2025-05-01 14:11:49'),
+(45, 125, 5, 1, '2025-05-30', '09:00:00', '10:00:00', 'confirmed', '2025-05-02 04:47:49', '2025-05-02 04:47:58');
 
 -- --------------------------------------------------------
 
@@ -348,8 +355,17 @@ CREATE TABLE `cv_data` (
 INSERT INTO `cv_data` (`cv_id`, `member_id`, `contact`, `skills`, `education`, `language`, `other`, `cv_score`, `cv_path`, `created_at`, `last_modified`, `Score`, `status`) VALUES
 (1, 3, 'CONTACT\nlaukwantingabc1 23@gmal. com', 'Acquired web design skills using\nHTML, Css, and JavaScript.\nLearned basic operations of the Linux\nsystem.', 'Education (IVE)\n2023-2025\nStudied various programming', 'LANGUAGES\nEnglish\nCantonese\nMandarin', 'Engineered a generative A-driven marketplace as part of a school hackathon.\nEmployed Python and JavaScript to build a platform capable of understanding and\nresponding to natural language queries. Integrated OpenAl API to classify user\ninputs (e.g. product search, recipe request) and generate tailored responses.\nImplemented a question-answering systern for recipes, enabling users to ask follow-\nup questions.', 0, '/storage/emulated/0/Android/data/com.example.circlea/files/Pictures/CVs/CV_20250201_175409.jpg', '2025-02-01 17:54:09', '2025-04-20 19:21:50', NULL, 'A'),
 (2, 3, 'CONTACT\nlaukwantingabc1 23@gmal. com', 'Acquired web design skills using\nHTML, Css, and JavaScript.\nLearned basic operations of the Linux\nsystem.', 'Education (IVE)\n2023-2025\nStudied various programming香港教育大學', 'LANGUAGES\nEnglish\nCantonese\nMandarin', 'Engineered a generative A-driven marketplace as part of a school hackathon.\nEmployed Python and JavaScript to build a platform capable of understanding and\nresponding to natural language queries. Integrated OpenAl API to classify user\ninputs (e.g. product search, recipe request) and generate tailored responses.\nImplemented a question-answering systern for recipes, enabling users to ask follow-\nup questions.', 0, 'uploads/CV_3_1738432816.jpg', '2025-02-01 18:00:16', '2025-04-20 19:21:50', NULL, 'A'),
-(3, 1, 'Email :\nWardiere Inc. / CEO\n123-456-7890\nhello@reallygreatsite.com', 'SKILLS\n• Project Management\n• Public Relations\n• Teamwork\nTime Management\n• Leadership\n• Effective Communication\n• Critical Thinking', 'WARDIERE UNIVERSITY\nBachelor of Business\n• GPA: 3.8 / 4.0', 'LANGUAGES\n• English (Fluent)\n• French (Fluent)\nGerman (Basics)\n• Spanish (Intermediate)\nRICHARD SANCHEZ\nMARKETING MANAGER\nPROFILE\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor\nincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis\nnostrud exercitation. Lorenm ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad\nminim veniam quis nostrud exercitation. Ut enim ad minim veniam quis nostrud\nexercitation.\nWORK EXPERIENCE\nBorcelle Studio\nMarketing Manager & Specialist\n• Develop and execute comprehensive marketing strategies and\ncampaigns that align with the company\'s goals and objectives.\nLead, mentor, and manage a high-performing marketing team,\nfosteringa collaborative and results-driven work environment.\n• Monitor brand consistency across marketing channels and materials.\nFauget Studio\nMarketing Manager & Specialist\n• Create and manage the marketing budget, ensuring efficient\nallocation of resources and optimizing ROI.\n• Oversee market research to identify emerging trends, customer needs,\nand competitor strategies.\nStudio Shodwe\n• Monitor brand consistency across marketing channels and materials.\nMarketing Manager & Specialist\n2030 - PRESENT\nREFERENCE\n• Develop and maintain strong relationships with partners, agencies,\nand vendors to support marketing initiatives.\nEstelle Darcy\nMonitor and maintain brand consistency across all marketing\nchannels and materials.\nWardiere Inc. / CTO', '', 0, 'uploads/CV_1_1738433277.jpg', '2025-02-01 18:07:57', '2025-04-20 19:21:50', NULL, ''),
-(4, 5, 'cONTACT\nsuCATIoN\n30\nLANG ULOIS\nRICHARD SANCHEZ\nARRETNG wGER\nPROFLE\nwoEK IENCE\ni', 'c', 'HKBU', 'g', 'g', 0, 'uploads/CV_5_1738821808.jpg', '2025-02-06 06:03:28', '2025-04-20 19:21:50', NULL, 'N');
+(3, 1, 'Email :\nWardiere Inc. / CEO\n123-456-7890\nhello@reallygreatsite.com', 'SKILLS\n• Project Management\n• Public Relations\n• Teamwork\nTime Management\n• Leadership\n• Effective Communication\n• Critical Thinking', 'WARDIERE UNIVERSITY\nBachelor of Business\n• GPA: 3.8 / 4.0', 'LANGUAGES\n• English (Fluent)\n• French (Fluent)\nGerman (Basics)\n• Spanish (Intermediate)\nRICHARD SANCHEZ\nMARKETING MANAGER\nPROFILE\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor\nincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis\nnostrud exercitation. Lorenm ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad\nminim veniam quis nostrud exercitation. Ut enim ad minim veniam quis nostrud\nexercitation.\nWORK EXPERIENCE\nBorcelle Studio\nMarketing Manager & Specialist\n• Develop and execute comprehensive marketing strategies and\ncampaigns that align with the company\'s goals and objectives.\nLead, mentor, and manage a high-performing marketing team,\nfosteringa collaborative and results-driven work environment.\n• Monitor brand consistency across marketing channels and materials.\nFauget Studio\nMarketing Manager & Specialist\n• Create and manage the marketing budget, ensuring efficient\nallocation of resources and optimizing ROI.\n• Oversee market research to identify emerging trends, customer needs,\nand competitor strategies.\nStudio Shodwe\n• Monitor brand consistency across marketing channels and materials.\nMarketing Manager & Specialist\n2030 - PRESENT\nREFERENCE\n• Develop and maintain strong relationships with partners, agencies,\nand vendors to support marketing initiatives.\nEstelle Darcy\nMonitor and maintain brand consistency across all marketing\nchannels and materials.\nWardiere Inc. / CTO', '', 0, 'uploads/CV_1_1738433277.jpg', '2025-02-01 18:07:57', '2025-04-20 19:21:50', NULL, 'A'),
+(4, 5, 'cONTACT\nsuCATIoN\n30\nLANG ULOIS\nRICHARD SANCHEZ\nARRETNG wGER\nPROFLE\nwoEK IENCE\ni', 'c', 'HKUST, 1345165', 'g', 'g', 0, 'uploads/CV_5_1738821808.jpg', '2025-02-06 06:03:28', '2025-04-20 19:21:50', NULL, ''),
+(5, 5, '1', '3', '2', '4', '¥300.00\nPHILEMON O00\n234-7*70283\n2021-01-26 13:16\nS6k', 0, 'uploads/CERT_5_1745516989_0.jpg', '2025-04-24 17:49:49', '2025-04-24 17:49:49', NULL, ''),
+(6, 5, '1', '3', '2', '4', '¥300.00\nPHILEMON O00\n234-7*70283\n2021-01-26 13:16\nS6k', 0, 'uploads/CERT_5_1745517265_0.jpg', '2025-04-24 17:54:25', '2025-04-24 17:54:25', NULL, ''),
+(7, 5, '565165', 't', 'HKUST, 1345165', 't', '¥300.00\nPHILEMON O00\n234-7*70283\n2021-01-26 13:16\nS6k', 0, 'uploads/CERT_5_1745517862_0.jpg', '2025-04-24 18:04:22', '2025-04-24 18:04:22', NULL, 'A'),
+(8, 3, '2', '2', '2', '2', '8:334\nMacquarie\ny410.97\nl4G\nO 410.97 (AU$87.42) spent at\nALP*gouwuxiaofei5399 Shanghai CN in Chi...\nPayment Handling Fee\nPayment method\nnow\nY 399.00\nY 11.97\nMastercard (5615)', 0, 'uploads/CERT_3_1745556521_0.jpg', '2025-04-25 04:48:41', '2025-04-25 04:48:41', NULL, ''),
+(9, 3, 'Address 4798 Glory Rood,\nCrossvlie, Tennessee, 38555\nLinkedie /zolaAuderhor', 'SKILLS:\nEducotion Softwore\n-Micrasoft ofice Sute\n*Googie Suite\nVideo Conferencing Tools\nDigita Presenkotions\n* Internet Resecrch\n*Coding/Programming\nZOLA AUFDERHAR\nTeacher CV\nPROFILE SUMMARY:\nDedicated ond pasionote educotor wth (number of yeors] of\nperience fostering a dynamic nd engaging learning\nenvironment. Committed to cultivoting a love for leorning whle\ntoloring teaching methods to occommodate dhverse leoming\nstyles, Profcient in ieeroging technology to ennonce clossroom\noctivities ond promote interoctive leorning experiences.', '•Crossvile High School, Crossville, Tennessee\n2021-2023\nDeeloped and imgiemented engoging lesson plons in\n[Subject Name, cotering to diverse learning styles, resuting\nino 15% improvement in stucent test scores\nMentored ond odvised an extrocurriculor club, fostering\nleodership skila and teamork omong 30+ stucerts\nColiaborated with colleogues to create interdisciplinary', '', 'projects, enhoncing eross-subject ieorning and stuoent\nengngement', 0, 'uploads/CERT_3_1745559823_0.jpg', '2025-04-25 05:43:43', '2025-04-25 05:43:43', NULL, ''),
+(10, 3, 'Address 4798 Glory Rood,\nCrossvlie, Tennessee, 38555\nLinkedie /zolaAuderhor', 'SKILLS:\nEducotion Softwore\n-Micrasoft ofice Sute\n*Googie Suite\nVideo Conferencing Tools\nDigita Presenkotions\n* Internet Resecrch\n*Coding/Programming\nZOLA AUFDERHAR\nTeacher CV\nPROFILE SUMMARY:\nDedicated ond pasionote educotor wth (number of yeors] of\nperience fostering a dynamic nd engaging learning\nenvironment. Committed to cultivoting a love for leorning whle\ntoloring teaching methods to occommodate dhverse leoming\nstyles, Profcient in ieeroging technology to ennonce clossroom\noctivities ond promote interoctive leorning experiences.', '•Crossvile High School, Crossville, Tennessee\n2021-2023\nDeeloped and imgiemented engoging lesson plons in\n[Subject Name, cotering to diverse learning styles, resuting\nino 15% improvement in stucent test scores\nMentored ond odvised an extrocurriculor club, fostering\nleodership skila and teamork omong 30+ stucerts\nColiaborated with colleogues to create interdisciplinary', 'k', 'projects, enhoncing eross-subject ieorning and stuoent\nengngement', 0, 'uploads/CERT_3_1745817546_0.jpg', '2025-04-28 05:19:06', '2025-04-28 05:19:06', NULL, ''),
+(11, 3, 'Address 4798 Glory Rood,\nCrossvlie, Tennessee, 38555\nLinkedie /zolaAuderhor', 'SKILLS:\nEducotion Softwore\n-Micrasoft ofice Sute\n*Googie Suite\nVideo Conferencing Tools\nDigita Presenkotions\n* Internet Resecrch\n*Coding/Programming\nZOLA AUFDERHAR\nTeacher CV\nPROFILE SUMMARY:\nDedicated ond pasionote educotor wth (number of yeors] of\nperience fostering a dynamic nd engaging learning\nenvironment. Committed to cultivoting a love for leorning whle\ntoloring teaching methods to occommodate dhverse leoming\nstyles, Profcient in ieeroging technology to ennonce clossroom\noctivities ond promote interoctive leorning experiences.', '•Crossvile High School, Crossville, Tennessee\n2021-2023\nDeeloped and imgiemented engoging lesson plons in\n[Subject Name, cotering to diverse learning styles, resuting\nino 15% improvement in stucent test scores\nMentored ond odvised an extrocurriculor club, fostering\nleodership skila and teamork omong 30+ stucerts\nColiaborated with colleogues to create interdisciplinary', '12', 'projects, enhoncing eross-subject ieorning and stuoent\nengngement', 0, '', '2025-05-01 11:27:04', '2025-05-01 11:27:04', 0, ''),
+(12, 3, 'Address 4798 Glory Rood,\nCrossvlie, Tennessee, 38555\nLinkedie /zolaAuderhor', 'SKILLS:\nEducotion Softwore\n-Micrasoft ofice Sute\n*Googie Suite\nVideo Conferencing Tools\nDigita Presenkotions\n* Internet Resecrch\n*Coding/Programming\nZOLA AUFDERHAR\nTeacher CV\nPROFILE SUMMARY:\nDedicated ond pasionote educotor wth (number of yeors] of\nperience fostering a dynamic nd engaging learning\nenvironment. Committed to cultivoting a love for leorning whle\ntoloring teaching methods to occommodate dhverse leoming\nstyles, Profcient in ieeroging technology to ennonce clossroom\noctivities ond promote interoctive leorning experiences.', '•Crossvile High School, Crossville, Tennessee\n2021-2023\nDeeloped and imgiemented engoging lesson plons in\n[Subject Name, cotering to diverse learning styles, resuting\nino 15% improvement in stucent test scores\nMentored ond odvised an extrocurriculor club, fostering\nleodership skila and teamork omong 30+ stucerts\nColiaborated with colleogues to create interdisciplinary', '', 'projects, enhoncing eross-subject ieorning and stuoent\nengngement', 45, NULL, '2025-05-01 11:29:16', '2025-05-01 11:29:16', 45, 'A'),
+(13, 3, 'Address 4798 Glory Rood,\nCrossvlie, Tennessee, 38555\nLinkedie /zolaAuderhor', 'SKILLS:\nEducotion Softwore\n-Micrasoft ofice Sute\n*Googie Suite\nVideo Conferencing Tools\nDigita Presenkotions\n* Internet Resecrch\n*Coding/Programming\nZOLA AUFDERHAR\nTeacher CV\nPROFILE SUMMARY:\nDedicated ond pasionote educotor wth (number of yeors] of\nperience fostering a dynamic nd engaging learning\nenvironment. Committed to cultivoting a love for leorning whle\ntoloring teaching methods to occommodate dhverse leoming\nstyles, Profcient in ieeroging technology to ennonce clossroom\noctivities ond promote interoctive leorning experiences.', '•Crossvile High School, Crossville, Tennessee\n2021-2023\nDeeloped and imgiemented engoging lesson plons in\n[Subject Name, cotering to diverse learning styles, resuting\nino 15% improvement in stucent test scores\nMentored ond odvised an extrocurriculor club, fostering\nleodership skila and teamork omong 30+ stucerts\nColiaborated with colleogues to create interdisciplinary', '', 'projects, enhoncing eross-subject ieorning and stuoent\nengngement', 0, 'uploads/CERT_3_1746098980_0.jpg', '2025-05-01 11:29:40', '2025-05-01 11:29:40', 0, '');
 
 -- --------------------------------------------------------
 
@@ -407,8 +423,9 @@ CREATE TABLE `fcm_tokens` (
 --
 
 INSERT INTO `fcm_tokens` (`id`, `member_id`, `token`, `created_at`, `updated_at`) VALUES
-(1, '5', 'd4lbRsz-S0yozkuxmi_HFx:APA91bEqq8iiHoecZXPSKWpFMxb_iOqE3zCbTDyyV1yp5l94-eDEhAfDu5VddUCXvbLo254358KZ5NaYknAKXrkKDK7Z_M90iGeczZFf8QK3s4OOF49fj4k', '2025-04-15 13:31:11', '2025-04-21 04:39:10'),
-(2, '3', 'dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI', '2025-04-15 13:31:50', '2025-04-21 08:03:24');
+(1, '5', 'c7pAGAdZTreRgjoHTqgFkG:APA91bEhpgPLjxrUniVd3oeYwdHknTHif-M4q77GvFrTw5U28J5rNQIO7U85SwHXvFDxRSRCZcwsya9cwP_xSl7YLKufw8YFoh4STU6verqyK0vtE1wrWc8', '2025-04-15 13:31:11', '2025-05-01 22:26:36'),
+(2, '3', 'dFUDwy5hSNu0tUGRfsmI-X:APA91bHxl1y-lT3vSuBUOMG3gJ5DbXBU3WgLMQtOjoP-ukrJs-oqP4QlJs8c2oQj1SRcPHvvjUFAnUJQ2iOTZ99mWQmXilWTYl4BB_DxJMTsYSxvL-NETSI', '2025-04-15 13:31:50', '2025-04-28 05:43:17'),
+(3, '1', 'cKcQSuzzR4mKUkc3tRQgG-:APA91bES5ulBtHGAWZJwR0acDTmyQoeiy45P-4UpJ_WSrQbmJH_eQFz-nSkTwXd_9ZiEYBX3lAX6SwN4sjBEtXa0g3EahmkIY4aQQALT5gG581-Y13ewf2M', '2025-05-01 04:47:08', '2025-05-01 04:47:08');
 
 -- --------------------------------------------------------
 
@@ -437,7 +454,8 @@ INSERT INTO `first_lesson` (`first_lesson_id`, `booking_id`, `next_action`, `t_r
 (31, 21, NULL, NULL, NULL, 'completed', 'completed', '2025-04-11 06:15:36', '2025-04-11 06:19:25', NULL),
 (32, 22, NULL, NULL, NULL, NULL, NULL, '2025-04-22 08:48:38', '2025-04-22 09:00:00', '2025-04-25 08:12:58'),
 (33, 23, NULL, NULL, NULL, 'completed', 'completed', '2025-04-22 09:48:25', '2025-04-22 09:48:45', '2025-04-25 09:48:25'),
-(50, 42, NULL, NULL, NULL, 'completed', 'completed', '2025-04-24 16:24:29', '2025-04-24 16:28:44', '2025-04-27 15:22:27');
+(50, 42, NULL, NULL, NULL, NULL, 'completed', '2025-04-24 16:24:29', '2025-04-24 16:28:44', '2025-04-27 15:22:27'),
+(51, 44, NULL, NULL, NULL, 'completed', 'completed', '2025-05-01 14:11:49', '2025-05-01 14:04:03', '2025-05-04 13:59:09');
 
 -- --------------------------------------------------------
 
@@ -459,6 +477,8 @@ CREATE TABLE `match` (
   `video_file` varchar(255) DEFAULT NULL,
   `video_mark` float DEFAULT NULL,
   `video_datetime` date DEFAULT NULL,
+  `video_summary` text DEFAULT NULL,
+  `video_analysis` text DEFAULT NULL,
   `app_id` int(10) DEFAULT NULL,
   `member_id` int(10) DEFAULT NULL,
   `match_creator` varchar(2) NOT NULL
@@ -468,14 +488,15 @@ CREATE TABLE `match` (
 -- 傾印資料表的資料 `match`
 --
 
-INSERT INTO `match` (`match_id`, `tutor_id`, `tutor_app_id`, `ps_id`, `ps_app_id`, `match_mark`, `status`, `admin_approval_status`, `admin_approved_by`, `admin_approved_at`, `video_file`, `video_mark`, `video_datetime`, `app_id`, `member_id`, `match_creator`) VALUES
-(49, '1', '81', '3', '110', '50.00%', 'WT', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
-(52, '1', '77', '3', '110', '50.00%', 'WPS', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
-(58, '1', '112', '3', '110', '50.00%', 'WPS', 'rejected', 2, '2025-04-11 06:25:00', NULL, NULL, NULL, NULL, NULL, 'T'),
-(60, '1', '81', '3', '111', '50.00%', 'WPS', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
-(68, '1', '77', '3', '123', '68%', 'WT', 'approved', 2, '2025-04-11 06:24:58', NULL, NULL, NULL, NULL, NULL, 'PS'),
-(114, '5', '121', '3', '111', '71.28%', 'ope', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
-(116, '5', '124', '3', '111', '71.28%', 'A', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS');
+INSERT INTO `match` (`match_id`, `tutor_id`, `tutor_app_id`, `ps_id`, `ps_app_id`, `match_mark`, `status`, `admin_approval_status`, `admin_approved_by`, `admin_approved_at`, `video_file`, `video_mark`, `video_datetime`, `video_summary`, `video_analysis`, `app_id`, `member_id`, `match_creator`) VALUES
+(114, '5', '121', '3', '111', '71.28%', 'ope', 'pending', NULL, NULL, NULL, 5, '2025-05-01', '該教師具備中文大學背景及十年教學經驗，但自我介紹過於簡短，缺乏結構性與細節。內容未明確展示教學方法、學科知識深度或學生成果，整體印象偏向籠統，未能有效凸顯專業優勢與個人特色。\n\n---', '**專業性（35%）**  \n- **問題**：  \n  未提及具體教學方法（如分層提問、形成性評估），亦未連結教育理論（如布盧姆分類法的「分析」「創造」等高階認知目標）。學科知識僅以「中文老師」概括，未說明專精領域（如文言文、寫作技巧）。  \n- **建議**：  \n  結合布盧姆分類法設計教學策略，例如：「引導學生從文本理解（理解層次）進階至批判性評論（評價層次）」。補充學科專長，如「專攻DSE中文寫作與口語訓練」。  \n- **分數**：6/10  \n\n**溝通能力（30%）**  \n- **問題**：  \n  結構鬆散，缺乏邏輯框架（如STAR模型的情境-任務-行動-結果）。例如未說明「十年經驗」中如何解決學生痛點，僅陳述事實。  \n- **建議**：  \n  採用「背景-經驗-目標」框架，例如：「畢業於中大中文系（背景），十年間協助200+學生提升DSE成績一至兩個等級（經驗），目標是透過個性化教學激發學生潛能（目標）」。  \n- **分數**：5/10  \n\n**教學熱情（25%）**  \n- **問題**：  \n  僅強調年資，未傳遞教育理念或對學生的承諾，例如未提及「因材施教」或「以學生為中心」的價值觀。  \n- **建議**：  \n  加入動機陳述，如：「深信語言是思維的載體，致力培養學生獨立思考能力，近三年輔導學生獲中文科5**比例達30%」。  \n- **分數**：5/10  \n\n**可信度（10%）**  \n- **問題**：  \n  缺乏可驗證的成就或第三方背書（如學生見證、公開成績數據）。「十年經驗」未與教學成效連結，說服力不足。  \n- **建議**：  \n  提供具體案例，如：「2023年指導學生於校際辯論賽獲冠軍」或「出版《中文寫作思維訓練》教材」。  \n- **分數**：6/10  \n\n---', NULL, NULL, 'PS'),
+(116, '5', '124', '3', '111', '71.28%', 'A', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
+(119, '5', '109', '3', '110', '73.33%', 'A', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
+(121, '5', '109', '6', '120', '73.33%', 'WPS', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
+(122, '5', '109', '1', '98', '73.43%', 'A', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
+(123, '5', '121', '1', '108', '73.43%', 'A', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T'),
+(124, '3', '80', '1', '98', '73.43%', 'WT', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS'),
+(125, '5', '121', '1', '112', '73.43%', 'A', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PS');
 
 -- --------------------------------------------------------
 
@@ -602,8 +623,17 @@ INSERT INTO `member_detail` (`member_detail_id`, `member_id`, `Gender`, `Address
 (39, 3, '', '', '', '0000-00-00', '/FYP/images/icon_39.jpg', '', 4, ''),
 (40, 5, '', '', '', '0000-00-00', '/FYP/images/icon_40.jpg', '', 2, ''),
 (41, 5, '', '', '', '0000-00-00', '/FYP/images/icon_41.jpg', '', 3, ''),
-(42, 3, '', '', '', '0000-00-00', '', '', 5, ''),
-(43, 3, '', '', '', '0000-00-00', '', '', 6, '');
+(42, 3, '', '', '', '0000-00-00', '/FYP/images/icon_39.jpg', '', 5, ''),
+(43, 3, '', '', '', '0000-00-00', '/FYP/images/icon_39.jpg', '', 6, ''),
+(44, 5, '', '123', '4', '2025-04-26', '', 'w', 4, ''),
+(45, 5, '', '123', '4', '2025-04-26', '', 'w', 5, ''),
+(46, 5, 'F', '123', '4', '2025-04-26', '', 'w0', 6, ''),
+(47, 5, 'M', '123', '4', '2025-04-26', ' ', 'w0', 7, ''),
+(48, 5, 'M', '123', '4', '2025-04-26', '/FYP/images/icon_41.jpg', 'w0', 8, ''),
+(49, 3, 'M', '5', '3', '2025-05-01', '/FYP/images/icon_39.jpg', '3', 7, ''),
+(50, 3, 'F', '5', '3', '2025-05-01', '/FYP/images/icon_39.jpg', '3', 8, ''),
+(51, 3, 'M', '5', '3', '2025-05-01', '/FYP/images/icon_39.jpg', '3', 9, ''),
+(52, 1, 'M', '45655888', '13', '2000-01-02', '/FYP/images/icon_34.jpg', 'eebr', 34, '');
 
 -- --------------------------------------------------------
 
@@ -872,7 +902,55 @@ INSERT INTO `notifications` (`id`, `member_id`, `title`, `message`, `type`, `rel
 (524, '5', '請回應課程狀態', '學生 tsui 已回應第一堂課狀態，請您在3天內回應，謝謝。', 'lesson_status_request', 42, 0, '2025-04-24 15:22:27'),
 (525, '5', '請回應課程狀態', '學生 tsui 已回應第一堂課狀態，請您在3天內回應，謝謝。', 'lesson_status_request', 42, 0, '2025-04-24 15:27:38'),
 (526, '5', '請回應課程狀態', '學生 tsui 已回應第一堂課狀態，請您在3天內回應，謝謝。', 'lesson_status_request', 42, 0, '2025-04-24 16:24:29'),
-(527, '3', '課程狀態已更新', '導師 Mr Chan 已回應第一堂課狀態，請查看詳情。', 'lesson_completed', 42, 0, '2025-04-24 16:28:44');
+(527, '3', '課程狀態已更新', '導師 Mr Chan 已回應第一堂課狀態，請查看詳情。', 'lesson_completed', 42, 0, '2025-04-24 16:28:44'),
+(528, '1', '匹配请求已取消', 'tsui 已取消匹配请求', 'request_cancelled', 117, 0, '2025-04-25 11:18:54'),
+(529, '1', '匹配请求已取消', 'tsui 已取消匹配请求', 'request_cancelled', 49, 0, '2025-04-25 12:14:41'),
+(530, '3', '新導師請求', 'Mr Chan 向您發送了導師請求', 'tutor_request', 118, 0, '2025-04-26 01:50:35'),
+(531, '5', '新補習請求', 'tsui 向您發送了補習請求', 'new_request', 119, 0, '2025-04-26 01:53:44'),
+(532, '3', '新補習請求', 'Mr Chan 向您發送了補習請求', 'new_request', 120, 0, '2025-04-26 05:21:06'),
+(533, '1', '匹配请求已取消', 'tsui 已取消匹配请求', 'request_cancelled', 68, 0, '2025-04-27 15:21:10'),
+(534, '3', '配對狀態更新', '導師 Mr Chan 已接受您的配對請求', 'new_request', 119, 0, '2025-05-01 11:01:37'),
+(535, '3', '導師已更新可用時間', '導師 Mr Chan 已經更新了可預約的時間段，請前往查看並選擇合適的時間。', 'new_request', 119, 0, '2025-05-01 11:02:12'),
+(536, '5', '新的預約時間已被選擇', 'tsui 向選擇預約時間 2025-05-30 09:00 - 10:00，請查看並確認。', 'new_request', 119, 0, '2025-05-01 11:03:56'),
+(537, '5', '學生已付款', 'tsui 已為 2025-05-30 09:00 - 10:00 的課程付款 $351.00，確認後將解鎖聯絡方式。', 'payment_submitted', 119, 0, '2025-05-01 11:04:08'),
+(538, '3', '付款已確認', '您為 2025-05-30 09:00 - 10:00 課程的 351 付款已確認。您現在可以查看導師聯絡資訊。', 'payment_confirmed', 119, 0, '2025-05-01 11:04:40'),
+(539, '5', '學生付款已確認', 'tsui 為 2025-05-30 09:00 - 10:00 課程的 351 付款已確認。學生現在可以查看您的聯絡資訊。', 'payment_confirmed', 119, 0, '2025-05-01 11:04:40'),
+(540, '3', 'Payment Confirmed', 'Your payment of $351 for the lesson on 2025-05-30 09:00 - 10:00 has been confirmed. You can now view the tutor\'s contact information.', 'payment_confirmed', 119, 0, '2025-05-01 11:06:37'),
+(541, '5', 'Student Payment Confirmed', 'tsui\'s payment of $351 for the lesson on 2025-05-30 09:00 - 10:00 has been confirmed. The student can now view your contact information.', 'payment_confirmed', 119, 0, '2025-05-01 11:06:37'),
+(542, '3', 'Payment Confirmed', 'Your payment of $475 for the lesson on the lesson has been confirmed. You can now view the tutor\'s contact information.', 'payment_confirmed', 116, 0, '2025-05-01 11:06:41'),
+(543, '5', 'Student Payment Confirmed', 'tsui\'s payment of $475 for the lesson on the lesson has been confirmed. The student can now view your contact information.', 'payment_confirmed', 116, 0, '2025-05-01 11:06:41'),
+(544, '3', 'Payment Confirmed', 'Your payment of $351 for the lesson on 2025-05-30 09:00 - 10:00 has been confirmed. You can now view the tutor\'s contact information.', 'payment_confirmed', 119, 0, '2025-05-01 11:06:58'),
+(545, '5', 'Student Payment Confirmed', 'tsui\'s payment of $351 for the lesson on 2025-05-30 09:00 - 10:00 has been confirmed. The student can now view your contact information.', 'payment_confirmed', 119, 0, '2025-05-01 11:06:58'),
+(546, '3', 'Payment Confirmed', 'Your payment of $351 for the lesson on 2025-05-30 09:00 - 10:00 has been confirmed. You can now view the tutor\'s contact information.', 'payment_confirmed', 119, 0, '2025-05-01 11:06:59'),
+(547, '5', 'Student Payment Confirmed', 'tsui\'s payment of $351 for the lesson on 2025-05-30 09:00 - 10:00 has been confirmed. The student can now view your contact information.', 'payment_confirmed', 119, 0, '2025-05-01 11:06:59'),
+(548, '3', '付款已確認', '您為 2025-05-30 09:00 - 10:00 課程的 351 付款已確認。您現在可以查看導師聯絡資訊。', 'payment_confirmed', 119, 0, '2025-05-01 11:14:57'),
+(549, '5', '學生付款已確認', 'tsui 為 2025-05-30 09:00 - 10:00 課程的 351 付款已確認。學生現在可以查看您的聯絡資訊。', 'payment_confirmed', 119, 0, '2025-05-01 11:14:57'),
+(550, '3', '匹配请求已取消', 'Mr Chan 已取消匹配请求', 'request_cancelled', 120, 0, '2025-05-01 12:34:59'),
+(551, '5', '新的預約時間已被選擇', 'tsui 向選擇預約時間 2025-04-30 09:00 - 10:01，請查看並確認。', 'new_request', 116, 0, '2025-05-01 12:38:12'),
+(552, '5', '學生已付款', 'tsui 已為 2025-04-30 09:00 - 10:01 的課程付款 $475.00，確認後將解鎖聯絡方式。', 'payment_submitted', 116, 0, '2025-05-01 13:32:54'),
+(553, '3', '付款已確認', '您為 2025-04-30 09:00 - 10:01 課程的 475 付款已確認。您現在可以查看導師聯絡資訊。', 'payment_confirmed', 116, 0, '2025-05-01 13:32:59'),
+(554, '5', '學生付款已確認', 'tsui 為 2025-04-30 09:00 - 10:01 課程的 475 付款已確認。學生現在可以查看您的聯絡資訊。', 'payment_confirmed', 116, 0, '2025-05-01 13:32:59'),
+(555, '5', '新的預約時間已被選擇', 'tsui 向選擇預約時間 2025-05-30 09:00 - 10:00，請查看並確認。', 'new_request', 119, 0, '2025-05-01 13:42:18'),
+(556, '3', '請回應課程狀態', '導師 Mr Chan 已回應第一堂課狀態，請您在3天內回應，謝謝。', 'lesson_status_request', 44, 0, '2025-05-01 13:59:09'),
+(557, '5', '課程狀態已更新', '學生 tsui 已回應第一堂課狀態，請查看詳情。', 'lesson_conflict', 44, 0, '2025-05-01 13:59:15'),
+(558, '3', '請回應課程狀態', '導師 Mr Chan 已回應第一堂課狀態，請您在3天內回應，謝謝。', 'lesson_status_request', 44, 0, '2025-05-01 14:04:03'),
+(559, '5', '課程狀態已更新', '學生 tsui 已回應第一堂課狀態，請查看詳情。', 'lesson_completed', 44, 0, '2025-05-01 14:11:49'),
+(560, '5', '申請未通過審核', '很抱歉，您的申請未通過管理員審核。請檢查您的資料是否完整，或聯繫客服了解詳情。', 'application_rejected', 132, 0, '2025-05-01 23:30:39'),
+(561, '5', '申請已通過審核', '您的申請已通過管理員審核，現在可以開始使用配對功能。', 'application_approved', 132, 0, '2025-05-01 23:30:41'),
+(562, '3', 'Payment Rejected', 'Your payment of $475 for the lesson on 2025-04-30 09:00 - 10:01 was rejected. Please contact support for more details.', 'payment_rejected', 116, 0, '2025-05-01 23:51:03'),
+(563, '5', 'Student Payment Rejected', 'tsui\'s payment of $475 for the lesson on 2025-04-30 09:00 - 10:01 was rejected.', 'payment_rejected', 116, 0, '2025-05-01 23:51:03'),
+(564, '3', 'Payment Confirmed', 'Your payment of $475 for the lesson on 2025-04-30 09:00 - 10:01 has been confirmed. You can now view the tutor\'s contact information.', 'payment_confirmed', 116, 0, '2025-05-01 23:51:06'),
+(565, '5', 'Student Payment Confirmed', 'tsui\'s payment of $475 for the lesson on 2025-04-30 09:00 - 10:01 has been confirmed. The student can now view your contact information.', 'payment_confirmed', 116, 0, '2025-05-01 23:51:06'),
+(566, '1', '新導師請求', 'Mr Chan 向您發送了導師請求', 'tutor_request', 122, 0, '2025-05-02 03:44:24'),
+(567, '5', '配對狀態更新', '學生 kenny 已接受您的配對請求', 'new_request', 122, 0, '2025-05-02 03:44:30'),
+(568, '1', '新導師請求', 'Mr Chan 向您發送了導師請求', 'tutor_request', 123, 0, '2025-05-02 04:12:47'),
+(569, '3', '新補習請求', 'kenny 向您發送了補習請求', 'new_request', 124, 0, '2025-05-02 04:28:11'),
+(570, '5', '新補習請求', 'kenny 向您發送了補習請求', 'new_request', 125, 0, '2025-05-02 04:28:46'),
+(571, '5', '配對狀態更新', '學生 kenny 已接受您的配對請求', 'new_request', 123, 0, '2025-05-02 04:44:52'),
+(572, '1', '配對狀態更新', '導師 Mr Chan 已接受您的配對請求', 'new_request', 125, 0, '2025-05-02 04:44:56'),
+(573, '1', '導師已更新可用時間', '導師 Mr Chan 已經更新了可預約的時間段，請前往查看並選擇合適的時間。', 'new_request', 125, 0, '2025-05-02 04:47:49'),
+(574, '5', '新的預約時間已被選擇', 'kenny 向選擇預約時間 2025-05-30 09:00 - 10:00，請查看並確認。', 'new_request', 125, 0, '2025-05-02 04:47:58'),
+(575, '5', '學生已付款', 'kenny 已為 2025-05-30 09:00 - 10:00 的課程付款 $350.00，確認後將解鎖聯絡方式。', 'payment_submitted', 125, 0, '2025-05-02 04:51:55');
 
 -- --------------------------------------------------------
 
@@ -896,7 +974,9 @@ CREATE TABLE `payment` (
 --
 
 INSERT INTO `payment` (`payment_id`, `match_id`, `student_id`, `amount`, `status`, `receipt_path`, `submitted_at`, `verified_at`) VALUES
-(36, 116, 3, 475, 'confirmed', 'uploads/receipts/RECEIPT_680a4a3d68399_RECEIPT_1745504827126.jpeg', '2025-04-24 14:27:09', '2025-04-24 14:27:43');
+(37, 119, 3, 351, 'confirmed', 'uploads/receipts/RECEIPT_68135528d1dbf_RECEIPT_1746097448410.jpeg', '2025-05-01 11:04:08', '2025-05-01 11:14:57'),
+(38, 116, 3, 475, 'confirmed', 'uploads/receipts/RECEIPT_68137806c7a5c_RECEIPT_1746106374376.jpeg', '2025-05-01 13:32:54', '2025-05-01 23:51:06'),
+(39, 125, 1, 350, 'confirmed', 'uploads/receipts/RECEIPT_68144f6b200b9_RECEIPT_1746161513983.jpeg', '2025-05-02 04:51:55', NULL);
 
 -- --------------------------------------------------------
 
@@ -962,7 +1042,7 @@ CREATE TABLE `tutor_rating` (
 INSERT INTO `tutor_rating` (`rate_id`, `member_id`, `application_id`, `role`, `rate_times`, `rate_score`, `comment`) VALUES
 (1, 5, 109, 'tutor', '2025-03-15 14:30:00', '4.5', '学生学习态度认真，很有上进心'),
 (2, 3, 109, 'parent', '2025-03-15 15:00:00', '5.0', '老师教学方法很好，孩子进步明显'),
-(3, 3, 80, 'tutor', '2025-03-16 09:15:00', '4.0', '地理科目学习进展良好，继续保持'),
+(3, 3, 80, 'parent', '2025-03-27 09:15:00', '4.0', '地理科目学习进展良好，继续保持'),
 (4, 1, 80, 'parent', '2025-03-16 10:30:00', '3.5', '教学质量不错，但有时候会迟到'),
 (5, 1, 81, 'tutor', '2025-03-16 13:20:00', '5.0', '对学生的学习进度非常满意'),
 (6, 3, 81, 'parent', '2025-03-16 14:00:00', '4.8', '老师非常专业，对孩子很有耐心'),
@@ -1119,37 +1199,37 @@ ALTER TABLE `tutor_rating`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `ads`
 --
 ALTER TABLE `ads`
-  MODIFY `ad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `ad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `application`
 --
 ALTER TABLE `application`
-  MODIFY `app_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
+  MODIFY `app_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=134;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `application_date`
 --
 ALTER TABLE `application_date`
-  MODIFY `app_Date_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `app_Date_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `application_district`
 --
 ALTER TABLE `application_district`
-  MODIFY `application_district_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+  MODIFY `application_district_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `application_subject`
 --
 ALTER TABLE `application_subject`
-  MODIFY `application_subject_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
+  MODIFY `application_subject_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=149;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `class_level`
@@ -1161,7 +1241,7 @@ ALTER TABLE `class_level`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `cv_data`
 --
 ALTER TABLE `cv_data`
-  MODIFY `cv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `district`
@@ -1173,19 +1253,19 @@ ALTER TABLE `district`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `fcm_tokens`
 --
 ALTER TABLE `fcm_tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `first_lesson`
 --
 ALTER TABLE `first_lesson`
-  MODIFY `first_lesson_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `first_lesson_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `match`
 --
 ALTER TABLE `match`
-  MODIFY `match_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
+  MODIFY `match_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `member`
@@ -1203,19 +1283,19 @@ ALTER TABLE `member_cert`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `member_detail`
 --
 ALTER TABLE `member_detail`
-  MODIFY `member_detail_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `member_detail_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=528;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=576;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `payment_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `payment_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `subject`

@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.util.Log;
 import com.example.circlea.Home;
-import com.example.circlea.LanguageManager;
 import com.example.circlea.R;
 import com.example.circlea.setting.ScanCV;
 import android.widget.Toast;
@@ -21,7 +20,6 @@ import com.example.circlea.setting.MyCVActivity;
 
 public class ApplicationFragment extends Fragment {
     private Button btnpost, btnhistory, createCvButton, myCvButton;
-    private LanguageManager languageManager;
     private static final String TAG = "ApplicationFragment";
 
     @Override
@@ -47,26 +45,6 @@ public class ApplicationFragment extends Fragment {
             Log.d(TAG, "Setting current fragment to APPLICATION");
             ((Home) getActivity()).setCurrentFragment(Home.FRAGMENT_APPLICATION);
         }
-
-        // Initialize LanguageManager
-        languageManager = new LanguageManager(requireContext());
-        languageManager.applyLanguage();
-
-        // Add language button
-        Button languageButton = view.findViewById(R.id.languageButton);
-        languageButton.setOnClickListener(v -> {
-            Log.d(TAG, "Language button clicked");
-            if (getActivity() != null) {
-                // IMPORTANT - Save our state AGAIN right before language change
-                if (getActivity() instanceof Home) {
-                    Log.d(TAG, "Saving state before language change");
-                    ((Home) getActivity()).setCurrentFragment(Home.FRAGMENT_APPLICATION);
-                }
-
-                // Now change language (this will recreate the activity)
-                languageManager.switchLanguage(getActivity());
-            }
-        });
 
         // Rest of your code remains the same
         btnpost = view.findViewById(R.id.post_button);
@@ -120,4 +98,4 @@ public class ApplicationFragment extends Fragment {
         super.onPause();
         Log.d(TAG, "onPause called");
     }
-}
+} 

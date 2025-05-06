@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dialog_content_padding">
+    android:padding="@dimen/dialog_content_padding"
+    android:background="#FFFFFF">
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_reason_no_show"
         style="@style/DialogOptionButton"

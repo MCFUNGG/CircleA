@@ -32,6 +32,7 @@ import com.bumptech.glide.Glide;
 import com.example.circlea.CheckSharedPreferences;
 import com.example.circlea.Home;
 import com.example.circlea.IPConfig;
+import com.example.circlea.LanguageManager;
 import com.example.circlea.Login;
 import com.example.circlea.R;
 import com.example.circlea.setting.MyCVActivity;
@@ -63,6 +64,7 @@ public class SettingFragment extends Fragment {
     private Button userOwnDetailbtn, userOwnCartbtn;
     private ImageView userIcon; // 用户头像的 ImageView
     private ImageView tutorBadge;
+    private LanguageManager languageManager;
 
     // 声明 ActivityResultLauncher
     private ActivityResultLauncher<Intent> getImageLauncher = registerForActivityResult(
@@ -89,6 +91,9 @@ public class SettingFragment extends Fragment {
         CheckSharedPreferences checkPrefs = new CheckSharedPreferences(requireContext());
         checkPrefs.printSharedPreferences();
 
+        // 初始化 LanguageManager
+        languageManager = new LanguageManager(requireContext());
+
         // 初始化 TextViews
         usernameTextView = view.findViewById(R.id.username);
         userEmailTextView = view.findViewById(R.id.user_email);
@@ -108,6 +113,22 @@ public class SettingFragment extends Fragment {
         userIcon.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             getImageLauncher.launch(intent); // 使用 ActivityResultLauncher
+        });
+
+        // 设置语言切换按钮点击事件
+        Button languageButton = view.findViewById(R.id.languageButton);
+        languageButton.setOnClickListener(v -> {
+            Log.d("SettingFragment", "Language button clicked");
+            if (getActivity() != null) {
+                // 保存状态
+                if (getActivity() instanceof Home) {
+                    Log.d("SettingFragment", "Saving state before language change");
+                    ((Home) getActivity()).setCurrentFragment(Home.FRAGMENT_SETTING);
+                }
+
+                // 切换语言（这将重新创建活动）
+                languageManager.switchLanguage(getActivity());
+            }
         });
 
         // 设置按钮点击监听

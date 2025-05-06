@@ -12,7 +12,7 @@
     <string name="create_cv">Create CV</string>
     <string name="edit_cv">Edit CV</string>
     <string name="my_cv">My CV</string>
-    <string name="switch_language">Switch to 中文</string>
+    <string name="switch_language">切換至中文</string>
     <string name="apply_now">Apply Now</string>
     <string name="enter_name_hint">Enter name</string>
     <string name="profile_image_description">Profile image</string>
@@ -289,7 +289,6 @@
     <string name="save_changes">Save Changes</string>
     
     <!-- Home Fragment -->
-    <string name="high_rated_tutors">High Rated Tutors</string>
     <string name="tutor_applications">Tutor Applications</string>
     <string name="student_applications">Student Applications</string>
     <string name="see_all">See All</string>
@@ -383,8 +382,6 @@
     
     <!-- Member Cart Strings -->
     <string name="saved_applications">Saved Applications</string>
-    <string name="tutor_apps">Tutor Apps</string>
-    <string name="student_apps">Student Apps</string>
     
     <!-- New strings added from the code block -->
     <string name="your_application">Your Application</string>
@@ -638,7 +635,6 @@
     <string name="all_grades">All Grades</string>
 
     <!-- Filter Button -->
-    <string name="filter_button">Filter</string>
 
     <!-- Filter Layout Strings -->
     <string name="filter_options">Filter Options</string>
@@ -664,6 +660,18 @@
     
     <!-- Video Introduction -->
     <string name="record_video_intro">Record Self-Introduction Video</string>
+
+    <!-- Home Page Tab Labels -->
+    <string name="high_rated">HIGH RATED</string>
+    <string name="tutor_apps">TUTOR APPS</string>
+    <string name="student_apps">STUDENT APPS</string>
+    <string name="high_rated_tutors">High-rated Tutors</string>
+    <string name="tutor_application">Tutor Application</string>
+    <string name="parent_student_application">Parent/Student Application</string>
+    <string name="filter_button">Filter</string>
+    
+    <!-- Additional Application Form Strings -->
+    <string name="label_aims">aims:</string>
 
 </resources>
 

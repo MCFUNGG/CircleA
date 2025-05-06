@@ -48,7 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/select_image" />
+            android:text="@string/select_image"
+            android:backgroundTint="#1e3f71"/>
 
         <!-- Contact Information Section -->
         <TextView

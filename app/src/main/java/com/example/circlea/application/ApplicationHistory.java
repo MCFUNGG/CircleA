@@ -23,6 +23,7 @@ import com.example.circlea.IPConfig;
 import com.example.circlea.R;
 import com.example.circlea.utils.ContentFilter;
 import com.google.android.material.button.MaterialButton;
+import com.example.circlea.LanguageManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +50,7 @@ public class ApplicationHistory extends AppCompatActivity {
     private MaterialButton btnTutor;
     private MaterialButton btnPS;
     private static final String TAG = "ApplicationHistory";
+    private LanguageManager languageManager;
 
     // Lists to store subject, district, and level data
     private List<String> subjects;
@@ -66,6 +68,7 @@ public class ApplicationHistory extends AppCompatActivity {
         btnTutor = findViewById(R.id.button_tutor);
         btnPS = findViewById(R.id.button_ps);
         ImageButton exitButton = findViewById(R.id.exitButton);
+        languageManager = new LanguageManager(this);
 
         setupButtons();
         
@@ -354,12 +357,19 @@ public class ApplicationHistory extends AppCompatActivity {
         String description = data.optString("description", "");
         boolean isCompleted = data.optBoolean("is_completed", false);
 
+        // 翻译学生级别
+        studentLevel = languageManager.translateDatabaseField(studentLevel, "class_level");
+
         // Process arrays
         JSONArray subjectNamesArray = data.optJSONArray("subject_names");
         JSONArray districtNamesArray = data.optJSONArray("district_names");
         
         String subjectsStr = processArrayToString(subjectNamesArray);
         String districtsStr = processArrayToString(districtNamesArray);
+        
+        // 翻译科目和地区列表
+        subjectsStr = languageManager.translateSubjectList(subjectsStr);
+        districtsStr = languageManager.translateDistrictList(districtsStr);
 
         // Set values to the view
         ((TextView) applicationView.findViewById(R.id.app_id)).setText(
@@ -468,11 +478,19 @@ public class ApplicationHistory extends AppCompatActivity {
         Button cancelButton = dialog.findViewById(R.id.cancel_button);
         Button deleteButton = dialog.findViewById(R.id.delete_button);
 
-        // Set up student level spinner
+        // 创建包含翻译后学生级别的列表供下拉菜单使用
+        List<String> translatedLevels = new ArrayList<>();
+        for (String level : this.studentLevels) {
+            translatedLevels.add(languageManager.translateDatabaseField(level, "class_level"));
+        }
+
+        // Set up student level spinner with translated levels
         ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this, 
-                android.R.layout.simple_spinner_dropdown_item, this.studentLevels);
+                android.R.layout.simple_spinner_dropdown_item, translatedLevels);
         levelSpinner.setAdapter(levelAdapter);
-        int levelPosition = this.studentLevels.indexOf(studentLevel);
+        
+        // 选择当前级别（已经是翻译后的）
+        int levelPosition = translatedLevels.indexOf(studentLevel);
         if (levelPosition >= 0) {
             levelSpinner.setSelection(levelPosition);
         }
@@ -484,13 +502,15 @@ public class ApplicationHistory extends AppCompatActivity {
         // Set up subject checkboxes
         List<String> selectedSubjects = new ArrayList<>();
         for (String subject : subjects.split(", ")) {
-            selectedSubjects.add(subject);
+            selectedSubjects.add(subject); // 这些科目已经是翻译后的
         }
         
+        // 为每个科目添加复选框，使用翻译后的名称
         for (String subject : this.subjects) {
             CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(subject);
-            checkBox.setChecked(selectedSubjects.contains(subject));
+            String translatedSubject = languageManager.translateDatabaseField(subject, "subject");
+            checkBox.setText(translatedSubject);
+            checkBox.setChecked(selectedSubjects.contains(translatedSubject));
             
             // 為 CheckBox 添加底部間距
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -505,13 +525,15 @@ public class ApplicationHistory extends AppCompatActivity {
         // Set up district checkboxes
         List<String> selectedDistricts = new ArrayList<>();
         for (String district : districts.split(", ")) {
-            selectedDistricts.add(district);
+            selectedDistricts.add(district); // 这些地区已经是翻译后的
         }
         
+        // 为每个地区添加复选框，使用翻译后的名称
         for (String district : this.districts) {
             CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(district);
-            checkBox.setChecked(selectedDistricts.contains(district));
+            String translatedDistrict = languageManager.translateDatabaseField(district, "district");
+            checkBox.setText(translatedDistrict);
+            checkBox.setChecked(selectedDistricts.contains(translatedDistrict));
             
             // 為 CheckBox 添加底部間距
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -533,23 +555,55 @@ public class ApplicationHistory extends AppCompatActivity {
         
         saveButton.setOnClickListener(v -> {
             // Collect data from dialog
-            String newLevel = levelSpinner.getSelectedItem().toString();
-            String newFee = feeInput.getText().toString();
-            String newDescription = descriptionInput.getText().toString();
-            
-            List<String> newSelectedSubjects = new ArrayList<>();
-            for (int i = 0; i < subjectContainer.getChildCount(); i++) {
-                CheckBox checkBox = (CheckBox) subjectContainer.getChildAt(i);
-                if (checkBox.isChecked()) {
-                    newSelectedSubjects.add(checkBox.getText().toString());
+            // 获取用户在下拉菜单中选择的翻译后的级别
+            String translatedNewLevel = levelSpinner.getSelectedItem().toString();
+            // 从翻译后的级别找回原始级别
+            String newLevel = "";
+            for (int i = 0; i < translatedLevels.size(); i++) {
+                if (translatedLevels.get(i).equals(translatedNewLevel)) {
+                    newLevel = this.studentLevels.get(i);
+                    break;
                 }
             }
             
+            String newFee = feeInput.getText().toString();
+            String newDescription = descriptionInput.getText().toString();
+            
+            // 收集选中的翻译后科目，并找回原始科目
+            List<String> newSelectedSubjects = new ArrayList<>();
+            List<String> translatedNewSelectedSubjects = new ArrayList<>();
+            for (int i = 0; i < subjectContainer.getChildCount(); i++) {
+                CheckBox checkBox = (CheckBox) subjectContainer.getChildAt(i);
+                if (checkBox.isChecked()) {
+                    String translatedSubject = checkBox.getText().toString();
+                    translatedNewSelectedSubjects.add(translatedSubject);
+                    
+                    // 从翻译后科目找回原始科目
+                    for (String originalSubject : this.subjects) {
+                        if (languageManager.translateDatabaseField(originalSubject, "subject").equals(translatedSubject)) {
+                            newSelectedSubjects.add(originalSubject);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // 收集选中的翻译后地区，并找回原始地区
             List<String> newSelectedDistricts = new ArrayList<>();
+            List<String> translatedNewSelectedDistricts = new ArrayList<>();
             for (int i = 0; i < districtContainer.getChildCount(); i++) {
                 CheckBox checkBox = (CheckBox) districtContainer.getChildAt(i);
                 if (checkBox.isChecked()) {
-                    newSelectedDistricts.add(checkBox.getText().toString());
+                    String translatedDistrict = checkBox.getText().toString();
+                    translatedNewSelectedDistricts.add(translatedDistrict);
+                    
+                    // 从翻译后地区找回原始地区
+                    for (String originalDistrict : this.districts) {
+                        if (languageManager.translateDatabaseField(originalDistrict, "district").equals(translatedDistrict)) {
+                            newSelectedDistricts.add(originalDistrict);
+                            break;
+                        }
+                    }
                 }
             }
             
@@ -581,12 +635,12 @@ public class ApplicationHistory extends AppCompatActivity {
                 }
             }
             
-            // 檢查是否有實際修改內容
-            boolean hasChanges = !newLevel.equals(studentLevel) || 
+            // 檢查是否有實際修改內容，比较原始数据
+            boolean hasChanges = !newLevel.equals(getOriginalLevelFromTranslated(studentLevel)) || 
                                 !newFee.equals(fee) || 
                                 !newDescription.equals(description) ||
-                                !compareSubjects(newSelectedSubjects, subjects.split(", ")) ||
-                                !compareDistricts(newSelectedDistricts, districts.split(", "));
+                                !compareSubjects(newSelectedSubjects, getOriginalSubjectsFromTranslated(subjects.split(", "))) ||
+                                !compareDistricts(newSelectedDistricts, getOriginalDistrictsFromTranslated(districts.split(", ")));
             
             // 只有在有修改且原狀態為批准時才變更狀態
             String newStatus = (hasChanges && status.equals("A")) ? "P" : status;
@@ -605,6 +659,54 @@ public class ApplicationHistory extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    // 辅助方法，根据翻译后的学生级别查找原始级别
+    private String getOriginalLevelFromTranslated(String translatedLevel) {
+        for (String originalLevel : studentLevels) {
+            if (languageManager.translateDatabaseField(originalLevel, "class_level").equals(translatedLevel)) {
+                return originalLevel;
+            }
+        }
+        return translatedLevel; // 如果找不到，返回翻译后的级别作为备选
+    }
+
+    // 辅助方法，根据翻译后的科目列表查找原始科目列表
+    private String[] getOriginalSubjectsFromTranslated(String[] translatedSubjects) {
+        String[] originalSubjects = new String[translatedSubjects.length];
+        for (int i = 0; i < translatedSubjects.length; i++) {
+            originalSubjects[i] = getOriginalSubjectFromTranslated(translatedSubjects[i]);
+        }
+        return originalSubjects;
+    }
+
+    // 辅助方法，根据翻译后的单个科目查找原始科目
+    private String getOriginalSubjectFromTranslated(String translatedSubject) {
+        for (String originalSubject : subjects) {
+            if (languageManager.translateDatabaseField(originalSubject, "subject").equals(translatedSubject)) {
+                return originalSubject;
+            }
+        }
+        return translatedSubject; // 如果找不到，返回翻译后的科目作为备选
+    }
+
+    // 辅助方法，根据翻译后的地区列表查找原始地区列表
+    private String[] getOriginalDistrictsFromTranslated(String[] translatedDistricts) {
+        String[] originalDistricts = new String[translatedDistricts.length];
+        for (int i = 0; i < translatedDistricts.length; i++) {
+            originalDistricts[i] = getOriginalDistrictFromTranslated(translatedDistricts[i]);
+        }
+        return originalDistricts;
+    }
+
+    // 辅助方法，根据翻译后的单个地区查找原始地区
+    private String getOriginalDistrictFromTranslated(String translatedDistrict) {
+        for (String originalDistrict : districts) {
+            if (languageManager.translateDatabaseField(originalDistrict, "district").equals(translatedDistrict)) {
+                return originalDistrict;
+            }
+        }
+        return translatedDistrict; // 如果找不到，返回翻译后的地区作为备选
     }
 
     // 顯示刪除確認對話框

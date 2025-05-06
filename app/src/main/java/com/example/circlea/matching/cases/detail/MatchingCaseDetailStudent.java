@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -21,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.circlea.IPConfig;
 import com.example.circlea.R;
+import com.example.circlea.matching.cases.detail.TutorVideoIntroduction;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -28,6 +30,7 @@ import com.google.android.material.textview.MaterialTextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -59,6 +62,7 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     private View paymentCard;
     private MaterialButton paymentButton;
     private MaterialButton finishLessonButton;
+    private MaterialButton interviewButton;
     private LessonStatusDialogManager dialogManager;
     private View tutorContactCard;
     private MaterialTextView tutorName;
@@ -66,6 +70,7 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     private MaterialTextView tutorEmail;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String currentBookingId;
+    private View tutorVideoCard;  // 添加导师视频卡片视图
 
 
     @Override
@@ -88,7 +93,7 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
 
         initializeViews();
         
-        // 強制隱藏更新課程狀態按鈕 - 直接在onCreate中設置，最高優先級
+        // 強制隱藏更新課程狀態按鈕和面試按鈕 - 直接在onCreate中設置，最高優先級
         if (finishLessonButton != null) {
             Log.d("ButtonDebug", "Forcing button hide in onCreate");
             finishLessonButton.setVisibility(View.GONE);
@@ -100,6 +105,21 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
                     Log.d("ButtonDebug", "Post handler button hide in onCreate");
                     finishLessonButton.setVisibility(View.GONE);
                     finishLessonButton.setEnabled(false);
+                }
+            });
+        }
+        
+        if (interviewButton != null) {
+            Log.d("ButtonDebug", "Forcing interview button hide in onCreate");
+            interviewButton.setVisibility(View.GONE);
+            interviewButton.setEnabled(false);
+            
+            // 確保在UI渲染後再次檢查並隱藏按鈕
+            new Handler().post(() -> {
+                if (interviewButton != null) {
+                    Log.d("ButtonDebug", "Post handler interview button hide in onCreate");
+                    interviewButton.setVisibility(View.GONE);
+                    interviewButton.setEnabled(false);
                 }
             });
         }
@@ -116,6 +136,31 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         
         setupSwipeRefresh();
         checkExistingRequest();
+        
+        // 检查导师是否有视频记录
+        checkTutorVideoRecord();
+        
+        // 在所有初始化完成后，检查当前用户是否为导师，只有导师才能看到Interview按钮
+        new Handler().postDelayed(() -> {
+            if (finishLessonButton != null && interviewButton != null) {
+                // 获取当前用户ID - 直接使用已存在的SharedPreferences实例
+                String currentUserId = sharedPreferences.getString("member_id", "");
+                
+                // 通过比较当前用户ID与tutorId来判断是否为导师
+                boolean isCurrentUserTutor = !currentUserId.isEmpty() && currentUserId.equals(tutorId);
+                
+                // 只有导师且finishLessonButton可见时才显示interviewButton
+                if (isCurrentUserTutor && finishLessonButton.getVisibility() == View.VISIBLE) {
+                    Log.d("ButtonDebug", "Setting interview button visible for tutor (ID: " + currentUserId + ")");
+                    interviewButton.setVisibility(View.VISIBLE);
+                    interviewButton.setEnabled(true);
+                } else {
+                    Log.d("ButtonDebug", "Keeping interview button hidden - user ID: " + currentUserId + ", tutor ID: " + tutorId);
+                    interviewButton.setVisibility(View.GONE);
+                    interviewButton.setEnabled(false);
+                }
+            }
+        }, 500); // 延迟500毫秒，确保其他UI更新已完成
     }
 
     private void initializeViews() {
@@ -126,6 +171,7 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         paymentCard = findViewById(R.id.payment_card);
         paymentButton = findViewById(R.id.payment_button);
         finishLessonButton = findViewById(R.id.finish_lesson_button);
+        interviewButton = findViewById(R.id.interview_button);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         
         // Setup RecyclerView
@@ -143,11 +189,15 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
         if (finishLessonButton != null) {
             finishLessonButton.setOnClickListener(v -> handleFinishLesson());
         }
+        if (interviewButton != null) {
+            interviewButton.setOnClickListener(v -> handleInterview());
+        }
 
         tutorContactCard = findViewById(R.id.tutor_contact_card);
         tutorName = findViewById(R.id.tutor_name);
         tutorPhone = findViewById(R.id.tutor_phone);
         tutorEmail = findViewById(R.id.tutor_email);
+        tutorVideoCard = findViewById(R.id.tutor_video_card);
     }
     
     private void setupSwipeRefresh() {
@@ -1635,41 +1685,43 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
     }
 
     private void checkAndHideButtonForConflict() {
-        // 檢查當前狀態芯片是否顯示"Conflict"
-        com.google.android.material.chip.Chip statusChip = findViewById(R.id.status_lesson);
-        if (statusChip != null && "Conflict".equals(statusChip.getText().toString())) {
-            // 如果是衝突狀態，確保按鈕隱藏
+        Log.d("ConflictUI", "Checking and hiding buttons for conflict status");
+        
+        // 從SharedPreferences獲取用戶類型
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", Context.MODE_PRIVATE);
+        boolean isTutor = sharedPreferences.getBoolean("is_tutor", false);
+        Log.d("ConflictUI", "User is tutor: " + isTutor);
+        
+        // 獲取當前Intent中的衝突狀態
+        boolean hasConflictStatus = getIntent().getBooleanExtra("has_conflict_status", false);
+        
+        // 只有當用戶是導師且沒有衝突狀態時才顯示按鈕
+        if (isTutor && !hasConflictStatus) {
+            // 導師可以看到finish_lesson_button
             if (finishLessonButton != null) {
-                Log.d("ConflictUI", "Hiding button in checkAndHideButtonForConflict method");
+                Log.d("ButtonDebug", "Showing finish lesson button for tutor");
+                finishLessonButton.setVisibility(View.VISIBLE);
+                finishLessonButton.setEnabled(true);
+            }
+            
+            // 導師可以看到interview_button
+            if (interviewButton != null) {
+                Log.d("ButtonDebug", "Showing interview button for tutor");
+                interviewButton.setVisibility(View.VISIBLE);
+                interviewButton.setEnabled(true);
+            }
+        } else {
+            // 學生或有衝突狀態時隱藏按鈕
+            if (finishLessonButton != null) {
+                Log.d("ButtonDebug", "Hiding finish lesson button");
                 finishLessonButton.setVisibility(View.GONE);
                 finishLessonButton.setEnabled(false);
-                
-                // 確保在UI刷新後也保持按鈕隱藏（立即執行）
-                runOnUiThread(() -> {
-                    if (finishLessonButton != null) {
-                        finishLessonButton.setVisibility(View.GONE);
-                        finishLessonButton.setEnabled(false);
-                    }
-                });
-                
-                // 使用Handler確保在UI渲染完成後隱藏按鈕
-                new Handler().post(() -> {
-                    if (finishLessonButton != null) {
-                        Log.d("ConflictUI", "Post handler hiding button in checkAndHideButtonForConflict");
-                        finishLessonButton.setVisibility(View.GONE);
-                        finishLessonButton.setEnabled(false);
-                    }
-                });
-                
-                // 延遲500毫秒再次檢查並隱藏按鈕
-                new Handler().postDelayed(() -> {
-                    if (finishLessonButton != null && statusChip != null && 
-                        "Conflict".equals(statusChip.getText().toString())) {
-                        Log.d("ConflictUI", "Delayed hiding button in checkAndHideButtonForConflict");
-                        finishLessonButton.setVisibility(View.GONE);
-                        finishLessonButton.setEnabled(false);
-                    }
-                }, 500);
+            }
+            
+            if (interviewButton != null) {
+                Log.d("ButtonDebug", "Hiding interview button");
+                interviewButton.setVisibility(View.GONE);
+                interviewButton.setEnabled(false);
             }
         }
     }
@@ -1693,5 +1745,133 @@ public class MatchingCaseDetailStudent extends AppCompatActivity implements Less
             Log.d("ButtonDebug", "Conflict status detected in onResume, showing conflict UI");
             showConflictUI();
         }
+    }
+
+    private void handleInterview() {
+        Intent intent = new Intent(this, TutorVideoIntroduction.class);
+        intent.putExtra("match_id", caseId);
+        intent.putExtra("member_id", tutorId);
+        startActivity(intent);
+    }
+
+    private void checkTutorVideoRecord() {
+        if (caseId == null || caseId.isEmpty()) {
+            Log.e("TutorVideo", "Case ID is null or empty");
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        
+        RequestBody formBody = new FormBody.Builder()
+                .add("match_id", caseId) // 使用当前案例ID
+                .build();
+        
+        String url = "http://" + IPConfig.getIP() + "/FYP/php/check_tutor_video.php";
+        Log.d("TutorVideo", "Checking tutor video for match_id: " + caseId);
+        
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("TutorVideo", "Failed to check tutor video: " + e.getMessage());
+                runOnUiThread(() -> {
+                    // 隐藏相关UI元素
+                    if (tutorVideoCard != null) {
+                        tutorVideoCard.setVisibility(View.GONE);
+                    }
+                });
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d("TutorVideo", "Response: " + responseData);
+                
+                try {
+                    JSONObject jsonResponse = new JSONObject(responseData);
+                    try {
+                        boolean success = jsonResponse.getBoolean("success");
+                        
+                        if (success) {
+                            try {
+                                boolean hasVideo = jsonResponse.getBoolean("has_video");
+                                
+                                runOnUiThread(() -> {
+                                    if (tutorVideoCard == null) {
+                                        Log.e("TutorVideo", "Tutor video card view is null");
+                                        return;
+                                    }
+                                    
+                                    if (hasVideo) {
+                                        try {
+                                            // 有视频记录，显示视频信息
+                                            JSONObject videoData = jsonResponse.getJSONObject("video_data");
+                                            
+                                            // 设置视频信息到UI元素
+                                            TextView videoMarkText = findViewById(R.id.video_mark);
+                                            TextView videoDateText = findViewById(R.id.video_datetime);
+                                            TextView videoSummaryText = findViewById(R.id.video_summary);
+                                            TextView videoAnalysisText = findViewById(R.id.video_analysis);
+                                            
+                                            if (videoMarkText != null && videoDateText != null && 
+                                                videoSummaryText != null && videoAnalysisText != null) {
+                                                
+                                                videoMarkText.setText(String.valueOf(videoData.optDouble("video_mark", 0)));
+                                                videoDateText.setText(videoData.optString("video_datetime", ""));
+                                                videoSummaryText.setText(videoData.optString("video_summary", ""));
+                                                videoAnalysisText.setText(videoData.optString("video_analysis", ""));
+                                                
+                                                // 显示视频卡片
+                                                tutorVideoCard.setVisibility(View.VISIBLE);
+                                                Log.d("TutorVideo", "Showing tutor video card");
+                                            } else {
+                                                Log.e("TutorVideo", "One or more video info TextViews are null");
+                                            }
+                                        } catch (JSONException e) {
+                                            Log.e("TutorVideo", "Error getting video data JSON object: " + e.getMessage());
+                                            tutorVideoCard.setVisibility(View.GONE);
+                                        }
+                                    } else {
+                                        // 没有视频记录，隐藏视频卡片
+                                        tutorVideoCard.setVisibility(View.GONE);
+                                        Log.d("TutorVideo", "No video data found, hiding tutor video card");
+                                    }
+                                });
+                            } catch (JSONException e) {
+                                Log.e("TutorVideo", "Error getting video data JSON object: " + e.getMessage());
+                                tutorVideoCard.setVisibility(View.GONE);
+                            }
+                        } else {
+                            // API返回失败
+                            String errorMsg = jsonResponse.optString("message", "Unknown error");
+                            Log.e("TutorVideo", "API error: " + errorMsg);
+                            runOnUiThread(() -> {
+                                if (tutorVideoCard != null) {
+                                    tutorVideoCard.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        Log.e("TutorVideo", "Error parsing success status: " + e.getMessage());
+                        runOnUiThread(() -> {
+                            if (tutorVideoCard != null) {
+                                tutorVideoCard.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    Log.e("TutorVideo", "Error parsing response: " + e.getMessage());
+                    runOnUiThread(() -> {
+                        if (tutorVideoCard != null) {
+                            tutorVideoCard.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            }
+        });
     }
 }

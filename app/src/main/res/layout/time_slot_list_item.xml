@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="#FFFFFF">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -41,7 +42,9 @@
             android:layout_height="wrap_content"
             android:text="@string/edit"
             style="@style/Widget.Material3.Button.TextButton.Icon"
-            app:icon="@drawable/ic_edit"/>
+            app:icon="@drawable/ic_edit"
+            app:iconTint="#1e3f71"
+            android:textColor="#1e3f71"/>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

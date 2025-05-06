@@ -40,9 +40,7 @@
     <item
         android:id="@+id/nav_message"
         android:title="@string/nav_message" />
-    <item
-        android:id="@+id/nav_application"
-        android:title="@string/nav_applications" />
+
 
     <item
         android:id="@+id/nav_setting"

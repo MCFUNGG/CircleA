@@ -8,8 +8,8 @@ public class IPConfig {
 
     // 服务器配置
     private static final String EMULATOR_IP = "10.0.2.2";        // 模擬器使用
-    private static final String REAL_DEVICE_IP = "192.168.0.10";  // 實體設備使用
-    private static final String INFINITYFREE_DOMAIN = "circlea-app-a7e9dnbxg0ggerhz.eastasia-01.azurewebsites.net"; 
+    private static final String REAL_DEVICE_IP = "10.101.168.21";  // 實體設備使用
+    private static final String INFINITYFREE_DOMAIN = "circlea-app-a7e9dnbxg0ggerhz.eastasia-01.azurewebsites.net"; //not working
     
     // 環境控制
     private static final boolean USE_PRODUCTION = false; // true使用在線服務器，false使用本地開發

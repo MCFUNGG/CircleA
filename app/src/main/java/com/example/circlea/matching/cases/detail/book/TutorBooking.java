@@ -2,6 +2,7 @@
 
     import android.app.DatePickerDialog;
     import android.content.Context;
+    import android.content.Intent;
     import android.content.SharedPreferences;
     import android.content.res.ColorStateList;
     import android.graphics.Color;
@@ -28,6 +29,7 @@
     import com.example.circlea.R;
     import com.example.circlea.matching.cases.detail.TimeSlot;
     import com.example.circlea.matching.cases.detail.TimeSlotAdapter;
+    import com.example.circlea.matching.cases.detail.TutorVideoIntroduction;
     import com.google.android.material.appbar.MaterialToolbar;
     import com.google.android.material.button.MaterialButton;
     import com.google.android.material.chip.Chip;
@@ -136,6 +138,9 @@
             saveSlotsButton.setOnClickListener(v -> saveAvailableSlots());
             MaterialButton updateLessonStatusButton = findViewById(R.id.update_lesson_status_button);
             updateLessonStatusButton.setOnClickListener(v -> showUpdateLessonStatusDialog());
+
+            MaterialButton interviewButton = findViewById(R.id.interview_button);
+            interviewButton.setOnClickListener(v -> startInterviewActivity());
 
             MaterialButton viewStudentContactButton = findViewById(R.id.view_student_contact_button);
             viewStudentContactButton.setOnClickListener(v -> getStudentContact());
@@ -380,6 +385,7 @@
                                         bookingDetailCard.setVisibility(View.VISIBLE);
                                         findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
                                         findViewById(R.id.update_lesson_status_button).setVisibility(View.VISIBLE);
+                                        findViewById(R.id.interview_button).setVisibility(View.VISIBLE);
                                         
                                         // 隱藏預約請求部分
                                         findViewById(R.id.booking_requests_title).setVisibility(View.GONE);
@@ -475,6 +481,7 @@
                         
                         // 衝突狀態下隱藏更新課程狀態按鈕
                         findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
+                        findViewById(R.id.interview_button).setVisibility(View.GONE);
                         findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
 
                         // 隱藏分隔線
@@ -512,6 +519,7 @@
                         
                         // 完成狀態下隱藏更新課程狀態按鈕
                         findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
+                        findViewById(R.id.interview_button).setVisibility(View.GONE);
                         findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
 
                         // 隱藏分隔線
@@ -547,6 +555,8 @@
                         // 顯示預約詳情部分
                         bookingDetailCard.setVisibility(View.VISIBLE);
                         findViewById(R.id.update_lesson_status_button).setVisibility(View.VISIBLE);
+                        findViewById(R.id.interview_button).setVisibility(View.VISIBLE);
+                        findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
 
                         // 隱藏分隔線
                         findViewById(R.id.booking_requests_divider).setVisibility(View.GONE);
@@ -620,6 +630,8 @@
                 
                 // 衝突狀態下隱藏更新課程狀態按鈕
                 findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
+                findViewById(R.id.interview_button).setVisibility(View.GONE);
+                findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
                 Log.d("TutorBooking", "showBookingDetail: 衝突狀態，隱藏按鈕");
             } else if ("completed".equalsIgnoreCase(status)) {
                 // 使用成功顏色表示完成狀態
@@ -631,6 +643,8 @@
                 
                 // 完成狀態下隱藏更新課程狀態按鈕
                 findViewById(R.id.update_lesson_status_button).setVisibility(View.GONE);
+                findViewById(R.id.interview_button).setVisibility(View.GONE);
+                findViewById(R.id.view_student_contact_button).setVisibility(View.VISIBLE);
                 Log.d("TutorBooking", "showBookingDetail: 已完成狀態，隱藏按鈕");
             } else {
                 // 其他狀態（已確認等）使用綠色
@@ -1510,6 +1524,13 @@
             super.onResume();
             // 在onResume中刷新內容
             refreshContent();
+        }
+
+        private void startInterviewActivity() {
+            Intent intent = new Intent(this, TutorVideoIntroduction.class);
+            intent.putExtra("match_id", caseId);
+            intent.putExtra("member_id", tutorId);
+            startActivity(intent);
         }
     }
 

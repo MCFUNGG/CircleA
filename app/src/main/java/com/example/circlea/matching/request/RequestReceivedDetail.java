@@ -51,7 +51,12 @@ public class RequestReceivedDetail extends AppCompatActivity {
             initializeViews();
             setupClickListeners();
             loadIntentData();
-            getTutorApplicationByMatchId();
+            // 获取当前用户的应用信息填充到顶部卡片
+            loadCurrentUserApplication();
+            // 检查是否已经显示了完整信息，如果没有则通过API加载
+            if (requestMessageTextView.getText().toString().contains("N/A")) {
+                getTutorApplicationByMatchId();
+            }
         } catch (Exception e) {
             Log.e("RequestDetail", "Error in onCreate: " + e.getMessage());
             e.printStackTrace();
@@ -148,12 +153,14 @@ public class RequestReceivedDetail extends AppCompatActivity {
     }
 
     private void getTutorApplicationByMatchId() {
-
-
         if (matchId == null || matchId.isEmpty()) {
             Log.e("RequestDetail", "Match ID is null or empty");
             return;
         }
+
+        // 获取当前用户ID
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
+        String memberId = sharedPreferences.getString("member_id", "");
 
         RequestBody formBody = new FormBody.Builder()
                 .add("match_id", matchId)
@@ -167,9 +174,9 @@ public class RequestReceivedDetail extends AppCompatActivity {
         new OkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("RequestDetail", "Failed to get tutor application: " + e.getMessage());
+                Log.e("RequestDetail", "Failed to get application: " + e.getMessage());
                 runOnUiThread(() -> Toast.makeText(RequestReceivedDetail.this,
-                        "Failed to load tutor details", Toast.LENGTH_SHORT).show());
+                        "Failed to load details", Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -181,7 +188,7 @@ public class RequestReceivedDetail extends AppCompatActivity {
                     if (json.getBoolean("success")) {
                         JSONArray dataArray = json.getJSONArray("data");
                         if (dataArray.length() > 0) {
-                            JSONObject data = dataArray.getJSONObject(0); // Get first tutor application
+                            JSONObject data = dataArray.getJSONObject(0); // Get first application
                             Log.d("RequestDetail", "data: " + data);
 
                             runOnUiThread(() -> {
@@ -214,24 +221,25 @@ public class RequestReceivedDetail extends AppCompatActivity {
                                         districts = TextUtils.join(", ", districtList);
                                     }
 
-                                    // Update UI
-                                    if (tutorAppIdTextView != null)
-                                        tutorAppIdTextView.setText(String.format(getString(R.string.tutor_application_id), appId));
-                                    if (tutorSubjectTextView != null)
-                                        tutorSubjectTextView.setText(String.format(getString(R.string.subjects_format), subjects));
-                                    if (tutorClassLevelTextView != null)
-                                        tutorClassLevelTextView.setText(String.format(getString(R.string.class_level_format), classLevelName));
-                                    if (tutorFeeTextView != null)
-                                        tutorFeeTextView.setText(String.format(getString(R.string.fee_hk_format), fee));
-                                    if (tutorDistrictTextView != null)
-                                        tutorDistrictTextView.setText(String.format(getString(R.string.districts_format), districts));
-                                    if (tutorMemberIdTextView != null)
-                                        tutorMemberIdTextView.setText(String.format(getString(R.string.username_format), username));
+                                    // 更新底部卡片信息（发送请求方信息）
+                                    psAppIdTextView.setText("Application ID: " + appId);
+                                    psSubjectTextView.setText("Subjects: " + subjects);
+                                    psClassLevelTextView.setText("Class Level: " + classLevelName);
+                                    psFeeTextView.setText("Fee: HK$" + fee);
+                                    psDistrictTextView.setText("Districts: " + districts);
+                                    psMemberIdTextView.setText("Username: " + username);
+                                    
+                                    // 更新请求消息
+                                    if (username != null && !username.equals("N/A")) {
+                                        String requestMessage = username + " sent you a request";
+                                        requestMessageTextView.setText(requestMessage);
+                                    }
 
                                     // Load profile icon if available
                                     String profileIcon = data.optString("profile_icon", "");
                                     if (!profileIcon.isEmpty() && RequestReceivedDetail.this.profileIcon != null) {
-                                        String fullProfileUrl = "http://10.0.2.2" + profileIcon;
+                                        String fullProfileUrl = "http://" + IPConfig.getIP() + profileIcon;
+                                        Log.d("RequestDetail", "Loading profile icon from: " + fullProfileUrl);
                                         Glide.with(RequestReceivedDetail.this)
                                                 .load(fullProfileUrl)
                                                 .error(R.drawable.circle_background)
@@ -244,20 +252,20 @@ public class RequestReceivedDetail extends AppCompatActivity {
                                     Log.e("RequestDetail", "Error updating UI: " + e.getMessage());
                                     Log.e("RequestDetail", "Response data: " + responseData);
                                     Toast.makeText(RequestReceivedDetail.this,
-                                            "Error loading tutor details", Toast.LENGTH_SHORT).show();
+                                            "Error loading details", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
                     } else {
                         Log.e("RequestDetail", "API returned error: " + json.getString("message"));
                         runOnUiThread(() -> Toast.makeText(RequestReceivedDetail.this,
-                                json.optString("message", "Error loading tutor details"),
+                                json.optString("message", "Error loading details"),
                                 Toast.LENGTH_SHORT).show());
                     }
                 } catch (JSONException e) {
                     Log.e("RequestDetail", "Error parsing JSON response: " + e.getMessage());
                     runOnUiThread(() -> Toast.makeText(RequestReceivedDetail.this,
-                            "Error loading tutor details", Toast.LENGTH_SHORT).show());
+                            "Error loading details", Toast.LENGTH_SHORT).show());
                 }
             }
         });
@@ -356,6 +364,96 @@ public class RequestReceivedDetail extends AppCompatActivity {
         });
     }
 
-
-
+    // 加载当前用户的应用信息
+    private void loadCurrentUserApplication() {
+        SharedPreferences sharedPreferences = getSharedPreferences("CircleA", MODE_PRIVATE);
+        String memberId = sharedPreferences.getString("member_id", "");
+        
+        if (matchId == null || matchId.isEmpty() || memberId.isEmpty()) {
+            return;
+        }
+        
+        // 构建请求
+        RequestBody formBody = new FormBody.Builder()
+                .add("match_id", matchId)
+                .build();
+                
+        // 使用获取当前用户应用信息的API
+        Request request = new Request.Builder()
+                .url("http://" + IPConfig.getIP() + "/FYP/php/get_tutor_application_by_match_id.php")
+                .post(formBody)
+                .build();
+                
+        new OkHttpClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("RequestDetail", "Failed to load current user application: " + e.getMessage());
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d("RequestDetail", "Current user app response: " + responseData);
+                
+                try {
+                    JSONObject json = new JSONObject(responseData);
+                    if (json.getBoolean("success")) {
+                        JSONArray dataArray = json.getJSONArray("data");
+                        if (dataArray.length() > 0) {
+                            JSONObject data = dataArray.getJSONObject(0);
+                            
+                            runOnUiThread(() -> {
+                                try {
+                                    // 获取应用信息
+                                    String appId = data.optString("app_id", "");
+                                    String classLevel = data.optString("class_level_name", "");
+                                    
+                                    // 处理科目
+                                    JSONArray subjectNames = data.optJSONArray("subject_names");
+                                    String subjects = "";
+                                    if (subjectNames != null && subjectNames.length() > 0) {
+                                        List<String> subjectList = new ArrayList<>();
+                                        for (int i = 0; i < subjectNames.length(); i++) {
+                                            subjectList.add(subjectNames.getString(i));
+                                        }
+                                        subjects = TextUtils.join(", ", subjectList);
+                                    }
+                                    
+                                    // 处理地区
+                                    JSONArray districtNames = data.optJSONArray("district_names");
+                                    String districts = "";
+                                    if (districtNames != null && districtNames.length() > 0) {
+                                        List<String> districtList = new ArrayList<>();
+                                        for (int i = 0; i < districtNames.length(); i++) {
+                                            districtList.add(districtNames.getString(i));
+                                        }
+                                        districts = TextUtils.join(", ", districtList);
+                                    }
+                                    
+                                    // 更新顶部卡片（当前用户信息）
+                                    if (!appId.isEmpty()) {
+                                        tutorAppIdTextView.setText("Application ID: " + appId);
+                                    }
+                                    if (!classLevel.isEmpty()) {
+                                        tutorClassLevelTextView.setText("Class Level: " + classLevel);
+                                    }
+                                    if (!subjects.isEmpty()) {
+                                        tutorSubjectTextView.setText("Subjects: " + subjects);
+                                    }
+                                    if (!districts.isEmpty()) {
+                                        tutorDistrictTextView.setText("Districts: " + districts);
+                                    }
+                                    
+                                } catch (Exception e) {
+                                    Log.e("RequestDetail", "Error updating top card: " + e.getMessage());
+                                }
+                            });
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.e("RequestDetail", "Error parsing current user app JSON: " + e.getMessage());
+                }
+            }
+        });
+    }
 }

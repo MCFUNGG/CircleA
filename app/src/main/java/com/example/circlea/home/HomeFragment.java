@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import com.bumptech.glide.Glide;
 import com.example.circlea.Home;
 import com.example.circlea.IPConfig;
+import com.example.circlea.LanguageManager;
 import com.example.circlea.R;
 import com.example.circlea.home.TutorProfileActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -1066,14 +1067,14 @@ public class HomeFragment extends Fragment {
         }
     }
     
-    // 在指定列表中搜索关键词
+
     private void searchInList(ArrayList<ApplicationItem> sourceList, String query, ArrayList<ApplicationItem> resultList) {
         if (sourceList == null || sourceList.isEmpty()) {
             return;
         }
         
         for (ApplicationItem item : sourceList) {
-            // 搜索用户名
+
             if (item.getUsername().toLowerCase().contains(query)) {
                 resultList.add(item);
                 continue;
@@ -1123,10 +1124,12 @@ public class HomeFragment extends Fragment {
         
         private ArrayList<ApplicationItem> data;
         private Context context;
+        private LanguageManager languageManager;
         
         public SearchResultsAdapter(ArrayList<ApplicationItem> data, Context context) {
             this.data = data;
             this.context = context;
+            this.languageManager = new LanguageManager(context);
         }
         
         @Override
@@ -1182,22 +1185,27 @@ public class HomeFragment extends Fragment {
             }
 
             holder.username.setText(item.getUsername());
-            holder.classLevelTextView.setText(item.getClassLevel());
             
-            // 设置科目
+            // 翻译学生级别
+            String classLevel = languageManager.translateDatabaseField(item.getClassLevel(), "class_level");
+            holder.classLevelTextView.setText(classLevel);
+            
+            // 设置科目并翻译
             StringBuilder subjects = new StringBuilder();
             for (String subject : item.getSubjects()) {
-                subjects.append(subject).append(", ");
+                String translatedSubject = languageManager.translateDatabaseField(subject, "subject");
+                subjects.append(translatedSubject).append(", ");
             }
             if (subjects.length() > 2) {
                 subjects.setLength(subjects.length() - 2);
             }
             holder.subjectTextView.setText(subjects.toString());
 
-            // 设置地区
+            // 设置地区并翻译
             StringBuilder districts = new StringBuilder();
             for (String district : item.getDistricts()) {
-                districts.append(district).append(", ");
+                String translatedDistrict = languageManager.translateDatabaseField(district, "district");
+                districts.append(translatedDistrict).append(", ");
             }
             if (districts.length() > 2) {
                 districts.setLength(districts.length() - 2);
@@ -1235,22 +1243,27 @@ public class HomeFragment extends Fragment {
             }
 
             holder.username.setText(item.getUsername());
-            holder.classLevelTextView.setText("aims: " + item.getClassLevel());
             
-            // 设置科目
+            // 翻译学生级别
+            String classLevel = languageManager.translateDatabaseField(item.getClassLevel(), "class_level");
+            holder.classLevelTextView.setText(getContext().getString(R.string.label_aims) + " " + classLevel);
+            
+            // 设置科目并翻译
             StringBuilder subjects = new StringBuilder();
             for (String subject : item.getSubjects()) {
-                subjects.append(subject).append(", ");
+                String translatedSubject = languageManager.translateDatabaseField(subject, "subject");
+                subjects.append(translatedSubject).append(", ");
             }
             if (subjects.length() > 2) {
                 subjects.setLength(subjects.length() - 2);
             }
             holder.subjectTextView.setText(subjects.toString());
 
-            // 设置地区
+            // 设置地区并翻译
             StringBuilder districts = new StringBuilder();
             for (String district : item.getDistricts()) {
-                districts.append(district).append(", ");
+                String translatedDistrict = languageManager.translateDatabaseField(district, "district");
+                districts.append(translatedDistrict).append(", ");
             }
             if (districts.length() > 2) {
                 districts.setLength(districts.length() - 2);

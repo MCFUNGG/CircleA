@@ -66,7 +66,7 @@
                 android:id="@+id/searchResultsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="搜索结果"
+                android:text="@string/search_results"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
@@ -82,7 +82,7 @@
                 android:id="@+id/closeSearchResultsButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="关闭搜索结果"
+                android:text="@string/close_search_results"
                 android:layout_marginTop="8dp"/>
         </LinearLayout>
 
@@ -206,7 +206,7 @@
                     android:id="@+id/tutor_filter_button"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="筛选"
+                    android:text="@string/filter_button"
                     android:textSize="14sp"
                     android:drawableLeft="@drawable/ic_filter"
                     android:paddingHorizontal="12dp"
@@ -255,7 +255,7 @@
                     android:id="@+id/student_filter_button"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="筛选"
+                    android:text="@string/filter_button"
                     android:textSize="14sp"
                     android:drawableLeft="@drawable/ic_filter"
                     android:paddingHorizontal="12dp"

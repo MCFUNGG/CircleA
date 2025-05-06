@@ -187,12 +187,42 @@
                                 android:textAppearance="?attr/textAppearanceBodyMedium"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
+                    
+                    <!-- Tutor Video Info Card -->
+                    <include
+                        android:id="@+id/tutor_video_card"
+                        layout="@layout/tutor_video_info_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone" />
+                        
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/interview_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:padding="16dp"
+                        android:text="Interview"
+                        android:textSize="16sp"
+                        android:visibility="gone"
+                        app:cornerRadius="12dp"
+                        app:icon="@drawable/ic_video_camera"
+                        app:iconGravity="textStart"
+                        app:iconPadding="12dp"
+                        app:iconSize="24dp"
+                        app:iconTint="@color/white"
+                        android:backgroundTint="?attr/colorSecondary"
+                        android:textColor="@color/white"
+                        style="@style/Widget.Material3.Button"/>
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/finish_lesson_button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="16dp"
                         android:padding="16dp"
                         android:text="Update Lesson Status"

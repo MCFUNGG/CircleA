@@ -16,7 +16,10 @@
             android:layout_height="?attr/actionBarSize"
             app:title="Case Detail"
             style="@style/Widget.Material3.Toolbar.Surface"
-            app:navigationIcon="@drawable/ic_back"/>
+            app:navigationIcon="@drawable/ic_back"
+            android:background="#1e3f71"
+            app:titleTextColor="#FFFFFF"
+            app:navigationIconTint="#FFFFFF"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -59,7 +62,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:padding="16dp">
+                        android:padding="16dp"
+                        android:background="#EAF7FF">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -104,7 +108,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:padding="16dp">
+                        android:padding="16dp"
+                        android:background="#EAF7FF">
 
                         <LinearLayout
                             android:layout_width="0dp"

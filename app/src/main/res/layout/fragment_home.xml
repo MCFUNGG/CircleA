@@ -16,22 +16,24 @@
         android:padding="16dp"
         android:background="#FFFFFF">
 
-        <!-- Search bar and menu button -->
+        <!-- Menu button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="12dp">
 
             <ImageButton
                 android:id="@+id/menuButton"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@null"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_menu"
-                android:contentDescription="Menu" />
+                android:contentDescription="Menu"
+                android:padding="8dp" />
         </LinearLayout>
 
+        <!-- Search bar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -122,7 +124,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="HIGH RATED"
+                android:text="@string/high_rated"
                 android:textSize="14sp"
                 android:textColor="@color/orange"
                 android:insetTop="0dp"
@@ -135,7 +137,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="TUTOR APPS"
+                android:text="@string/tutor_apps"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:insetTop="0dp"
@@ -147,7 +149,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="STUDENT APPS"
+                android:text="@string/student_apps"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:insetTop="0dp"
@@ -166,7 +168,7 @@
                 android:id="@+id/highRatedTutorsTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="High-rated Tutors"
+                android:text="@string/high_rated_tutors"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
@@ -198,7 +200,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tutor Application"
+                    android:text="@string/tutor_application"
                     android:textStyle="bold"
                     android:textSize="18sp" />
 
@@ -247,7 +249,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Parent/Student Application"
+                    android:text="@string/parent_student_application"
                     android:textStyle="bold"
                     android:textSize="18sp" />
 

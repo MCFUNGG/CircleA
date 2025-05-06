@@ -8,11 +8,11 @@
     <string name="application_page_title">應用頁面</string>
     <string name="post_recruitment">發佈招聘</string>
     <string name="my_application">我的申請</string>
-    <string name="tutor_section_title">我是家教</string>
+    <string name="tutor_section_title">我是導師</string>
     <string name="create_cv">建立履歷</string>
     <string name="edit_cv">編輯履歷</string>
     <string name="my_cv">我的履歷</string>
-    <string name="switch_language">切換至English</string>
+    <string name="switch_language">Switch to English</string>
 
     <!-- Navigation Menu Strings -->
     <string name="nav_all">全部</string>
@@ -167,6 +167,11 @@
     <string name="parent_student_applications">家長/學生申請</string>
 
     <string name="fee_format">港幣$%s/小時</string>
+    
+    <!-- Home Page Tab Labels -->
+    <string name="high_rated">高評分</string>
+    <string name="tutor_application">導師申請</string>
+    <string name="parent_student_application">家長/學生申請</string>
 
     <!-- Additional Application Form Strings -->
     <string name="application_form">申請表格</string>

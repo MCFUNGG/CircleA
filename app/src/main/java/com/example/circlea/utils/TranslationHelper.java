@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 帮助翻译数据库中的英文内容到用户界面显示的语言
+ * 帮助翻译数据库中的内容到用户界面显示的语言
+ * 支持中英文双向翻译
  */
 public class TranslationHelper {
     private static final String PREFS_NAME = "LanguagePrefs";
@@ -112,7 +113,7 @@ public class TranslationHelper {
     /**
      * 根据当前语言设置翻译文本
      * @param context 上下文
-     * @param englishText 英文文本
+     * @param englishText 英文文本 (来自数据库)
      * @param textType 文本类型 (district, subject, class_level, status)
      * @return 翻译后的文本
      */

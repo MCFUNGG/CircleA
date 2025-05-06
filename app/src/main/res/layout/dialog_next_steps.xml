@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFFFFF">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_rebook"
@@ -12,7 +13,7 @@
         android:layout_marginBottom="8dp"
         android:text="Rebook Lesson"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:textColor="@color/purple_500"
+        android:textColor="#1e3f71"
         android:gravity="start|center_vertical"
         android:paddingStart="4dp"
         android:paddingEnd="4dp" />
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:text="Find Other Tutor"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:textColor="@color/purple_500"
+        android:textColor="#FF5C4F"
         android:gravity="start|center_vertical"
         android:paddingStart="4dp"
         android:paddingEnd="4dp" />

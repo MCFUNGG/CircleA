@@ -11,27 +11,61 @@ if (!$connect) {
     exit;
 }
 
-// 获取match_id
+// 获取参数
 $matchId = $_POST['match_id'];
+$currentUserId = isset($_POST['member_id']) ? $_POST['member_id'] : null;
 
 if ($matchId === null) {
     echo json_encode(["success" => false, "message" => "Match ID not provided"]);
     exit;
 }
 
-// 第一步：获取match信息
-$query1 = mysqli_query($connect, "SELECT tutor_app_id FROM `match` WHERE match_id = '$matchId'");
+if ($currentUserId === null) {
+    echo json_encode(["success" => false, "message" => "Member ID not provided"]);
+    exit;
+}
+
+// 获取match信息
+$query1 = mysqli_query($connect, "SELECT ps_app_id, tutor_app_id, ps_member_id, tutor_member_id FROM `match` WHERE match_id = '$matchId'");
 $row = mysqli_fetch_assoc($query1);
 if (!$row) {
     echo json_encode(["success" => false, "message" => "Match not found"]);
     exit;
 }
-$tutorAppId = $row['tutor_app_id'];
 
-// 第二步：获取应用详情
+// 获取匹配信息
+$psAppId = $row['ps_app_id'];
+$tutorAppId = $row['tutor_app_id'];
+$psMemberId = $row['ps_member_id'];
+$tutorMemberId = $row['tutor_member_id'];
+
+// 确定当前用户的应用ID
+$currentUserAppId = null;
+$appCreator = null;
+
+// 如果当前用户是学生
+if ($currentUserId == $psMemberId) {
+    $currentUserAppId = $psAppId;
+    $appCreator = 'PS'; // 学生申请
+} 
+// 如果当前用户是导师
+else if ($currentUserId == $tutorMemberId) {
+    $currentUserAppId = $tutorAppId;
+    $appCreator = 'T'; // 导师申请
+}
+// 如果无法确定角色，返回错误
+else {
+    echo json_encode([
+        "success" => false, 
+        "message" => "Cannot determine user role in this match"
+    ]);
+    exit;
+}
+
+// 获取当前用户的应用详情
 $query2 = "SELECT app_id, member_id, class_level_id, feePerHr 
            FROM application 
-           WHERE app_creator = 'T' AND app_id = '$tutorAppId'";
+           WHERE app_id = '$currentUserAppId'";
 $result = mysqli_query($connect, $query2);
 
 if (!$result) {
@@ -162,9 +196,9 @@ if (mysqli_num_rows($result) > 0) {
 } else {
     echo json_encode([
         "success" => false, 
-        "message" => "No tutor applications found"
+        "message" => "No application found for current user"
     ]);
 }
 
 mysqli_close($connect);
-?>
+?> 

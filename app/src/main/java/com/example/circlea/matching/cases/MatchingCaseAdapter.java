@@ -108,7 +108,7 @@ public class MatchingCaseAdapter extends RecyclerView.Adapter<MatchingCaseAdapte
         }
 
         if (profileUrl != null && !profileUrl.isEmpty() && !profileUrl.equals("N/A")) {
-            String fullProfileUrl = "http://10.0.2.2" + profileUrl;
+            String fullProfileUrl = "http://" + IPConfig.getIP() + profileUrl;
             Glide.with(context)
                     .load(fullProfileUrl)
                     .placeholder(R.drawable.circle_background)

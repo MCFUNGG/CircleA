@@ -135,6 +135,17 @@
                 android:textColor="#333333"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/languageButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/switch_language"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"
+                app:cornerRadius="12dp"
+                android:backgroundTint="#FFEB3B"
+                android:textColor="#333333"/>
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/cart_button"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"

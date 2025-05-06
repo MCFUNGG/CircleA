@@ -90,11 +90,11 @@ public class Home extends AppCompatActivity {
         // Inflate custom item layouts
         View customViewApplication = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_application, null);
         TextView customTextViewApplication = customViewApplication.findViewById(R.id.custom_text_application);
-        customTextViewApplication.setText("Application - (Parent/Tutor)");
+        customTextViewApplication.setText(getString(R.string.nav_applications));
 
         View customViewTutor = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_tutor, null);
         TextView customTextViewTutor = customViewTutor.findViewById(R.id.custom_text_tutor);
-        customTextViewTutor.setText("I am Tutor");
+        customTextViewTutor.setText(getString(R.string.tutor_section_title));
 
         View customView = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_view, null);
 
@@ -191,9 +191,6 @@ public class Home extends AppCompatActivity {
                 selectedFragment = new MessageFragment();
                 setCurrentFragment(FRAGMENT_MESSAGE);
                 drawerLayout.closeDrawer(GravityCompat.START);
-            } else if (itemId == R.id.nav_application) {
-                selectedFragment = new ApplicationFragment();
-                setCurrentFragment(FRAGMENT_APPLICATION);
             } else if (itemId == R.id.nav_setting) {
                 selectedFragment = new SettingFragment();
                 setCurrentFragment(FRAGMENT_SETTING);
@@ -446,7 +443,7 @@ public class Home extends AppCompatActivity {
         // Reinflate custom item layouts with updated strings
         View customViewApplication = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_application, null);
         TextView customTextViewApplication = customViewApplication.findViewById(R.id.custom_text_application);
-        customTextViewApplication.setText(getString(R.string.nav_post_application));
+        customTextViewApplication.setText(getString(R.string.nav_applications));
 
         View customViewTutor = LayoutInflater.from(this).inflate(R.layout.menu_item_custom_tutor, null);
         TextView customTextViewTutor = customViewTutor.findViewById(R.id.custom_text_tutor);

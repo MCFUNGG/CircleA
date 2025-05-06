@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="#FFFFFF">
 
         <TextView
             android:layout_width="match_parent"
@@ -16,7 +17,7 @@
             android:text="@string/edit_application"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/purple_700"
+            android:textColor="#333333"
             android:layout_marginBottom="16dp"
             android:gravity="center"/>
 
@@ -126,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/cancel"
+                android:textColor="#FF0000"
                 android:layout_marginEnd="4dp"
                 android:layout_marginStart="4dp"
                 style="?attr/materialButtonOutlinedStyle"/>
@@ -137,7 +139,7 @@
                 android:layout_weight="1"
                 android:text="@string/save"
                 android:layout_marginStart="4dp"
-                android:backgroundTint="@color/purple_500"/>
+                android:backgroundTint="#1e3f71"/>
         </LinearLayout>
         
         <!-- Delete Button (Placed below) -->

@@ -15,6 +15,7 @@ import com.example.circlea.application.ApplicationFragment;
 import com.example.circlea.home.HomeFragment;
 import com.example.circlea.matching.Matching;
 import com.example.circlea.setting.SettingFragment;
+import com.example.circlea.message.MessageFragment;
 import com.example.circlea.utils.TranslationHelper;
 
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class LanguageManager {
                 fragmentType = Home.FRAGMENT_SETTING;
             } else if (currentFragment instanceof Matching) {
                 fragmentType = Home.FRAGMENT_MATCHING;
+            } else if (currentFragment instanceof MessageFragment) {
+                fragmentType = Home.FRAGMENT_MESSAGE;
             }
 
             // Save fragment state SYNCHRONOUSLY before language change
@@ -135,15 +138,24 @@ public class LanguageManager {
     
     /**
      * 翻译单个数据库字段
-     * @param fieldText 数据库中的文本
+     * @param fieldText 数据库中的文本 (英文)
      * @param fieldType 字段类型 (district, subject, class_level, status)
      * @return 翻译后的文本
      */
     public String translateDatabaseField(String fieldText, String fieldType) {
-        if (getCurrentLanguage().equals("en")) {
-            return fieldText; // 如果是英文，直接返回
+        // 假设所有数据库数据都是英文的
+        if (fieldText == null || fieldText.isEmpty()) {
+            return fieldText;
         }
         
+        String currentLang = getCurrentLanguage();
+        
+        // 如果界面设置为英文，直接返回英文数据
+        if (currentLang.equals("en")) {
+            return fieldText;
+        }
+        
+        // 如果界面设置为中文，将英文翻译为中文
         switch (fieldType) {
             case "district":
                 return TranslationHelper.translateDistrict(context, fieldText);
@@ -165,8 +177,12 @@ public class LanguageManager {
      * @return 翻译后的文本
      */
     public String translateCommaSeparatedList(String commaSeparatedText, String fieldType) {
-        if (commaSeparatedText == null || commaSeparatedText.isEmpty() || 
-            getCurrentLanguage().equals("en")) {
+        if (commaSeparatedText == null || commaSeparatedText.isEmpty()) {
+            return commaSeparatedText;
+        }
+        
+        // 如果界面设置为英文，直接返回英文数据
+        if (getCurrentLanguage().equals("en")) {
             return commaSeparatedText;
         }
         
